@@ -3,45 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaflet Map Test</title>
-
-    <!-- Leaflet CSS -->
-    <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
-
-    <style>
-       html, body {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-}
-
-h2 {
-    font-size:medium;
-}
-
-#map {
-  flex: 1;          /* fills remaining space */
-  width: 100%;
-}
-
-    </style>
+    <title>Ride Share App</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-
-<h2>Ride-Hailing-Aggregator</h2>
+<h1>Ride-Hailing-Aggregator</h1>
 <div id="map"></div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Your map code -->
-<script src="map.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="backend.js"></script>
+
 </body>
 </html>
