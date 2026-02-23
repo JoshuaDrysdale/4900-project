@@ -1,9 +1,18 @@
 console.log("map.js loaded");
 
-const map = L.map("map").setView([40.631092, -73.95244], 16);
+const map = L.map("map", {
+  worldCopyJump: false,
+  minZoom: 3,
+  maxBounds: [
+    [-90, -180],
+    [90, 180]
+  ],
+  maxBoundsViscosity: 0.5
+}).setView([40.631092, -73.95244], 16);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "&copy; OpenStreetMap contributors",
+    noWrap: true 
 }).addTo(map);
 
 
