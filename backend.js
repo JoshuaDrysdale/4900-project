@@ -8,7 +8,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 L.marker([40.631092, -73.95244])
   .addTo(map)
-
+ 
 function onMapClick(e) {
     alert("You clicked the map at " + e.latlng);
 }
