@@ -23,3 +23,11 @@ function calculateDistance(pointA, pointB){
 
     return distance;
 }
+
+L.Routing.control({
+  waypoints: [
+    L.latLng(40.7128, -74.0060),
+    L.latLng(40.73061, -73.935242)
+  ],
+  routeWhileDragging: true
+}).addTo(map);
