@@ -1,0 +1,6 @@
+[
+  {"provider": "UberX", "price": "$12–$15", "eta": "3 min"},
+  {"provider": "UberX", "price": "$12–$15", "eta": "5 min"},  
+  {"provider": "Lyft", "price": "$11–$14", "eta": "7 min"},
+  {"provider": "Lyft", "price": "$11–$14", "eta": "5 min"}
+]

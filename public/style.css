@@ -1,0 +1,21 @@
+/*
+CSS for mobile responsiveness
+*/
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+    font-size:medium;
+}
+
+#map {
+  flex: 1;          
+  width: 100%;
+}
