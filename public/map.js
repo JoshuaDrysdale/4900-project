@@ -46,9 +46,7 @@ map.on("click", function(e){
 
         pickup = e.latlng;
         markerPickup = L.marker(pickup).addTo(map).bindPopup("Pickup").openPopup();
-    }
-
-    else if(!dropoff){
+    }else{
 
         if(markerDropoff){
             map.removeLayer(markerDropoff);
@@ -57,35 +55,46 @@ map.on("click", function(e){
         dropoff = e.latlng;
         markerDropoff = L.marker(dropoff).addTo(map).bindPopup("Dropoff").openPopup();
 
-        drawRoute();
-
-        
+        //drawRoute();
     }
+    
+    if(pickup != null && dropoff !=null){
+        console.log("getting route...");
+        getRoute(pickup, dropoff);
+    }
+
 });
-function drawRoute(){ 
 
-    if (routingControl){
-        map.removeControl(routingControl);
+
+
+let routeLayer;
+async function getRoute(pickup, dropoff){
+    try{
+        const response = await fetch("/route",{method: "POST",headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({coordinates: [[pickup.lng, pickup.lat],[dropoff.lng, dropoff.lat]]}) } );
+        
+        const data = await response.json();
+        console.log("Route = ", data);
+
+        if(routeLayer){
+            map.removeLayer(routeLayer);
+        }
+
+        if (!data.features || data.features.length === 0) {
+            console.error("No route found");
+            return;
+        }
+        routeLayer = L.geoJSON(data, {
+                        style: {
+                        color: "blue",
+                        weight: 5
+                            }
+                    }).addTo(map);
+        map.fitBounds(routeLayer.getBounds());
+
+
+    }catch (error){
+        console.error(error);
     }
-
-    routingControl = L.Routing.control({
-        waypoints: [
-            L.latLng(pickup.lat, pickup.lng),
-            L.latLng(dropoff.lat, dropoff.lng)
-        ],
-        routeWhileDragging:false
-    }).addTo(map);
-
-   pickup = null, dropoff = null;
-}
-//circle and marker are temporary, just testing of leaflet methods
-L.circle([40.631092, -73.95244], {radius: 350})
-  .addTo(map);
-L.marker([40.631092, -73.95244])
-  .addTo(map)
-//neccesary? if we have leaflet routing machine?
-function calculateDistance(pointA, pointB){
-    const distance = map.distance(pointA, pointB);
-
-    return distance;
+    
 }
