@@ -61,9 +61,32 @@ map.on("click", function(e){
     if(pickup != null && dropoff !=null){
         console.log("getting route...");
         getRoute(pickup, dropoff);
+        pickup = null,
+        dropoff = null
     }
 
 });
+/*Functionality for Reset button*/
+document.getElementById("resetBtn").addEventListener("click",  () => {
+    if (routeLayer) {
+        map.removeLayer(routeLayer);
+        routeLayer = null;
+    }
+
+    if (markerPickup) {
+        map.removeLayer(markerPickup);
+        markerPickup = null;
+    }
+
+    if (markerDropoff) {
+        map.removeLayer(markerDropoff);
+        markerDropoff = null;
+    }
+
+    pickup = null;
+    dropoff = null;
+});
+
 
 
 
@@ -96,5 +119,62 @@ async function getRoute(pickup, dropoff){
     }catch (error){
         console.error(error);
     }
+}
+
+async function geocode(address) {
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(address)}&limit=5`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.features || data.features.length === 0) {
+        alert("Address not found");
+        return null;
+    }
+
+    const coords = data.features[0].geometry.coordinates;
+
+    return {
+        lat: coords[1],
+        lng: coords[0]
+    };
+}
+async function setPickup(){
+
+    const address = document.getElementById("pickupInput").value;
+    const coords = await geocode(address);
+    if(!coords) return;
+
+    if(markerPickup){
+        map.removeLayer(markerPickup);
+    }
+
+    pickup = coords;
+    markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+
+    map.setView(coords, 15);
+}
+
+async function setDropoff(){
+
+    const address = document.getElementById("dropoffInput").value;
+    const coords = await geocode(address);
+    if(!coords) return;
+
+    if(markerDropoff){
+        map.removeLayer(markerDropoff);
+    }
+
+    dropoff = coords;
+    markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
+
+    map.setView(coords, 15);
+
+    if(pickup && dropoff){
+    console.log("getting route...");
+    getRoute(pickup, dropoff);
     
 }
+}
+
+
