@@ -92,9 +92,24 @@ async function getRoute(pickup, dropoff){
                     }).addTo(map);
         map.fitBounds(routeLayer.getBounds());
 
+        const route = data.features[0];
+        const distanceKM = route.properties.summary.distances / 1000;
+        const durationMin = route.properties.summary.duration / 60;
+        
+        showRouteInfo(distanceKM, durationMin); 
 
     }catch (error){
         console.error(error);
     }
+
     
+}
+
+function showRouteInfo(distanceKM, durationMin){
+    const infoDiv = document.getElementById("routeInfo");
+    infoDiv.innerHTML = `
+    <h3>Trip Details</h3>
+    Distance: ${distanceKM.toFixed(2)} km <br>
+    Duration: ${durationMin.toFixed(1)} min
+    `;
 }
