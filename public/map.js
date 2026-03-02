@@ -1,5 +1,6 @@
 console.log("map.js loaded");
 
+
 const map = L.map("map", {
   worldCopyJump: false,
   minZoom: 3,
@@ -14,6 +15,8 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "&copy; OpenStreetMap contributors",
     noWrap: true 
 }).addTo(map);
+
+getUserLocation(); // getting user location
 
 
 /*(Below) Allows user to click two points in the map and have a route drawn out
@@ -175,6 +178,27 @@ async function setDropoff(){
     getRoute(pickup, dropoff);
     
 }
+
+//get user location from browser
+
+function getUserLocation(){
+    if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                map.setView([lat, lng], 15);
+
+                L.marker([lat, lng]).addTo(map)
+                    .bindPopup("You are here")
+                    .openPopup();
+
+                console.log("Your latitude: ", lat);
+                console.log("Your longitude: ", lng);
+            }, (error) =>{ console.error("Could not get location", error.message);}
+        );
+    } else {
+        console.log("Geolocation not supported");
+    }
 }
-
-
