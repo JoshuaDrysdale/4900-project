@@ -12,12 +12,21 @@
 <body>
 <h1>Ride-Hailing-Aggregator</h1>
 
-<input id="pickupInput" placeholder="Pickup address">
-<button onclick="setPickup()">Set Pickup</button>
+<div class="search-container">
+  <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
+  <button onclick="setPickup()">Set Pickup</button>
+  <div id="pickupResults" class="results"></div>
 
-<input id="dropoffInput" placeholder="Dropoff address">
-<button onclick="setDropoff()">Set Dropoff</button>
-
+  <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
+  <button onclick="setDropoff()">Set Dropoff</button>
+  <div id="dropoffResults" class="results"></div> 
+</div> 
+<button id="resetBtn">Reset Pickup & Dropoff</button>
+    <!--//routing machine URLs for routing 
+    Commented out since there is no functionality yet, reduced clutter
+<button id="setLocClick">Set Locations by Click</button>
+<button id="setLocAddress">Set Locations by Address</button>
+-->
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
