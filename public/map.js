@@ -176,6 +176,7 @@ async function setDropoff(){
     if(pickup && dropoff){
     console.log("getting route...");
     getRoute(pickup, dropoff);
+    }
     
 }
 
@@ -201,4 +202,4 @@ function getUserLocation(){
     } else {
         console.log("Geolocation not supported");
     }
-}
+};
