@@ -34,6 +34,20 @@ app.post("/route", async (req, res) => {
     }
 });
 
+//Calling ORS for autocomplete
+app.get("/autocomplete", async (req,res)=>{
+    const query = req.query.q;
+    const response = await fetch(`https://api.openrouteservice.org/geocode/autocomplete?api_key=${process.env.ORS_API_KEY}&text=${query}`);
+
+    if(!response.ok){
+        return res.status(response.status).json({error:`ORS request failed with status ${response.status}`})
+    }
+    
+    const data = await response.json();
+    res.json(data.features);
+});
+
+
 
 app.use(express.static("public"));
 app.listen(3000, () => {

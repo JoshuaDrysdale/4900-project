@@ -16,7 +16,37 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     noWrap: true 
 }).addTo(map);
 
-getUserLocation(); // getting user location
+
+//GLOBAL VARIABLES
+const pickupInput = document.getElementById("pickupInput");
+const dropoffInput = document.getElementById("dropoffInput");
+let pickup = null,
+    dropoff = null,
+    routingControl = null,
+    markerPickup = null,
+    markerDropoff = null;
+    
+
+
+
+
+
+//END OF GLOBAL VARIABLES
+
+
+
+//GLOBAL EVENT LISTINERS
+const debouncedPickup = debounce((e) => autocomplete(e, "pickupSuggestions"), 200);
+const debouncedDropoff = debounce((e) => autocomplete(e, "dropoffSuggestions"), 200);
+pickupInput.addEventListener("input", debouncedPickup);
+dropoffInput.addEventListener("input", debouncedDropoff);
+
+
+
+//END OF GLOBAL EVENT LISTINERS
+
+
+getUserLocation();
 
 
 /*(Below) Allows user to click two points in the map and have a route drawn out
@@ -33,11 +63,6 @@ Certain variables and values are set so that users are able to reselect differen
 points in the map for differnet routes. A reset route button will be implemented later
 for a better User Interface and better User Experience. 
 */
-let pickup = null,
-    dropoff = null,
-    routingControl = null,
-    markerPickup = null,
-    markerDropoff = null;
 
 map.on("click", function(e){
 
@@ -69,6 +94,7 @@ map.on("click", function(e){
     }
 
 });
+
 /*Functionality for Reset button*/
 document.getElementById("resetBtn").addEventListener("click",  () => {
     if (routeLayer) {
@@ -124,6 +150,7 @@ async function getRoute(pickup, dropoff){
     }
 }
 
+
 async function geocode(address) {
     const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(address)}&limit=5`;
 
@@ -142,6 +169,8 @@ async function geocode(address) {
         lng: coords[0]
     };
 }
+
+
 async function setPickup(){
 
     const address = document.getElementById("pickupInput").value;
@@ -203,3 +232,48 @@ function getUserLocation(){
         console.log("Geolocation not supported");
     }
 };
+
+//autocomplete
+async function autocomplete(e, suggestionId) {
+    
+    try{
+        const value = e.target.value;
+        const suggestions = document.getElementById(suggestionId);
+
+        if (value.length < 3) {
+            suggestions.innerHTML = "";
+            return;
+        }
+
+        const res = await fetch(`/autocomplete?q=${value}`);
+        const data = await res.json();
+
+        suggestions.innerHTML = "";
+
+        console.log("Response from backend:", data);//FOR DEBUGGING
+
+        data.forEach(place => {
+            const li = document.createElement("li");
+            li.textContent = place.properties.label;
+
+            li.addEventListener("click", () => {
+                e.target.value = place.properties.label;
+                suggestions.innerHTML = "";
+            });
+
+            suggestions.appendChild(li);
+        });
+
+    }catch(error){
+        console.error("Autocomplete failed:", error);
+    }
+}
+
+//throttle autocomplete
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    }
+}
