@@ -112,4 +112,4 @@ function showRouteInfo(distanceKM, durationMin){
     Distance: ${distanceKM.toFixed(2)} km <br>
     Duration: ${durationMin.toFixed(1)} min
     `;
-}
+} 
