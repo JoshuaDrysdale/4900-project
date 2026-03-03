@@ -109,3 +109,54 @@ to be used for displaying results in address lookup (which is not implemented ye
   }
 
 }
+
+.autocomplete-container {
+    position: relative;
+    flex: 0 0 300px;
+}
+
+.autocomplete-container input {
+    width: 400px;       /* adjust as needed */
+    padding: 8px 12px;
+    font-size: 16px;
+    box-sizing: border-box; /* ensures padding doesn’t increase total width */
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 1000;
+}
+
+.suggestions li {
+    padding: 8px 12px;
+    cursor: pointer;
+    text-decoration: none; /* remove any line-through */
+    color: black;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestions li:last-child {
+    border-bottom: none;
+}
+
+.suggestions li:hover {
+    background-color: #f0f0f0;
+}
+
+.inputs-row {
+    display: flex;                  /* make inputs side by side */
+    justify-content: center;        /* center the row horizontally */
+    gap: 40px;                      /* space between pickup & dropoff */
+    margin: 20px 0;                 /* optional vertical spacing */
+}
