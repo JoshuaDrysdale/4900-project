@@ -168,7 +168,7 @@ async function geocode(address) {
         return null;
     }
 }
-// Reverse Geocode
+// Reverse Geocode (Click on Map, and address will show on input fields)
 async function reverseGeocode(lat, lng) {
     try {
         const res = await fetch(`/api/reverse?lat=${lat}&lon=${lng}`);
