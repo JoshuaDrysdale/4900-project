@@ -47,6 +47,38 @@ app.get("/autocomplete", async (req,res)=>{
     res.json(data.features);
 });
 
+// Geocode (address -> lat/lng) (address to point on map)
+app.get("/api/geocode", async (req, res) => {
+    const query = req.query.q;
+    if (!query) return res.status(400).json({ error: "Missing query" });
+
+    try {
+        const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`);
+        if (!response.ok) throw new Error(`Photon request failed with status ${response.status}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (err) {
+        console.error("Photon geocode failed:", err);
+        res.status(500).json({ error: "Failed to fetch geocoding data" });
+    }
+});
+
+// Reverse Geocode (lat/lng -> address) (point on map to address)
+app.get("/api/reverse", async (req, res) => {
+    const { lat, lon } = req.query;
+    if (!lat || !lon) return res.status(400).json({ error: "Missing lat/lon" });
+
+    try {
+        const response = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lon}`);
+        if (!response.ok) throw new Error(`Photon reverse request failed with status ${response.status}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (err) {
+        console.error("Photon reverse geocode failed:", err);
+        res.status(500).json({ error: "Failed to fetch reverse geocoding data" });
+    }
+});
+
 
 
 app.use(express.static("public"));

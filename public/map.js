@@ -64,37 +64,31 @@ points in the map for differnet routes. A reset route button will be implemented
 for a better User Interface and better User Experience. 
 */
 
-map.on("click", function(e){
+map.on("click", async function(e) {
+    const coords = e.latlng;
 
-    if(!pickup){
+    try {
+        const addressLabel = await reverseGeocode(coords.lat, coords.lng);
 
-        if(markerPickup){
-            map.removeLayer(markerPickup);
+        if (!pickup) {
+            if (markerPickup) map.removeLayer(markerPickup);
+            pickup = coords;
+            markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+            pickupInput.value = addressLabel;
+        } else if (!dropoff) {
+            if (markerDropoff) map.removeLayer(markerDropoff);
+            dropoff = coords;
+            markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
+            dropoffInput.value = addressLabel;
         }
 
-        pickup = e.latlng;
-        markerPickup = L.marker(pickup).addTo(map).bindPopup("Pickup").openPopup();
-    }else{
+        if (pickup && dropoff) getRoute(pickup, dropoff);
 
-        if(markerDropoff){
-            map.removeLayer(markerDropoff);
-        }
-
-        dropoff = e.latlng;
-        markerDropoff = L.marker(dropoff).addTo(map).bindPopup("Dropoff").openPopup();
-
-        //drawRoute();
+    } catch (err) {
+        console.error("Reverse geocode failed:", err);
+        alert("Failed to fetch address for clicked location");
     }
-    
-    if(pickup != null && dropoff !=null){
-        console.log("getting route...");
-        getRoute(pickup, dropoff);
-        pickup = null,
-        dropoff = null
-    }
-
 });
-
 /*Functionality for Reset button*/
 document.getElementById("resetBtn").addEventListener("click",  () => {
     if (routeLayer) {
@@ -114,6 +108,8 @@ document.getElementById("resetBtn").addEventListener("click",  () => {
 
     pickup = null;
     dropoff = null;
+    pickupInput.value='';
+    dropoffInput.value='';
 });
 
 
@@ -150,65 +146,100 @@ async function getRoute(pickup, dropoff){
     }
 }
 
-
+// Geocode
 async function geocode(address) {
-    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(address)}&limit=5`;
+    try {
+        const res = await fetch(`/api/geocode?q=${encodeURIComponent(address)}`);
+        if (!res.ok) throw new Error("Geocode proxy failed");
 
-    const res = await fetch(url);
-    const data = await res.json();
+        const data = await res.json();
+        if (!data.features || data.features.length === 0) return null;
 
-    if (!data.features || data.features.length === 0) {
-        alert("Address not found");
+        const feature = data.features[0];
+
+        return {
+            lat: feature.geometry.coordinates[1],
+            lng: feature.geometry.coordinates[0],
+            label: feature.properties.label
+        };
+
+    } catch (err) {
+        console.error("Geocode failed:", err);
         return null;
     }
+}
+// Reverse Geocode
+async function reverseGeocode(lat, lng) {
+    try {
+        const res = await fetch(`/api/reverse?lat=${lat}&lon=${lng}`);
+        if (!res.ok) throw new Error("Reverse proxy failed");
+        const data = await res.json();
 
-    const coords = data.features[0].geometry.coordinates;
+        if (!data.features || data.features.length === 0)
+            return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
-    return {
-        lat: coords[1],
-        lng: coords[0]
-    };
+        const props = data.features[0].properties;
+        const house = props.housenumber || "";
+        const street = props.street || props.name || "";
+        const city = props.city || props.state || props.country || "";
+
+        return `${house} ${street}, ${city}`.trim();    } 
+        catch (err) {
+        console.error("Reverse geocode failed:", err);
+        return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
 }
 
+// Set Pickup from address input
+async function setPickup() {
+    const address = pickupInput.value;
+    if (!address) return;
 
-async function setPickup(){
+    const result = await geocode(address);
 
-    const address = document.getElementById("pickupInput").value;
-    const coords = await geocode(address);
-    if(!coords) return;
-
-    if(markerPickup){
-        map.removeLayer(markerPickup);
+    if (!result) {
+        alert("Address not found");
+        return;
     }
+
+    const coords = { lat: result.lat, lng: result.lng };
+
+    if (result.label) pickupInput.value = result.label;
+
+    if (markerPickup) map.removeLayer(markerPickup);
 
     pickup = coords;
     markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
 
     map.setView(coords, 15);
+
+    if (pickup && dropoff) getRoute(pickup, dropoff);
 }
+// Set Dropoff from address input
+async function setDropoff() {
+    const address = dropoffInput.value;
+    if (!address) return;
 
-async function setDropoff(){
+    const result = await geocode(address);
 
-    const address = document.getElementById("dropoffInput").value;
-    const coords = await geocode(address);
-    if(!coords) return;
-
-    if(markerDropoff){
-        map.removeLayer(markerDropoff);
+    if (!result) {
+        alert("Address not found");
+        return;
     }
+
+    const coords = { lat: result.lat, lng: result.lng };
+
+    if (result.label) dropoffInput.value = result.label;
+
+    if (markerDropoff) map.removeLayer(markerDropoff);
 
     dropoff = coords;
     markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
 
     map.setView(coords, 15);
 
-    if(pickup && dropoff){
-    console.log("getting route...");
-    getRoute(pickup, dropoff);
-    }
-    
+    if (pickup && dropoff) getRoute(pickup, dropoff);
 }
-
 //get user location from browser
 
 function getUserLocation(){
@@ -275,5 +306,41 @@ function debounce(func, delay) {
     return function(...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), delay);
+    }
+}
+
+document.getElementById("swapLocations").addEventListener("click", swapLocations);
+
+function swapLocations() {
+
+    // swap coordinates
+    let temp = pickup;
+    pickup = dropoff;
+    dropoff = temp;
+
+    // swap input text
+    let tempText = pickupInput.value;
+    pickupInput.value = dropoffInput.value;
+    dropoffInput.value = tempText;
+
+    // swap markers
+    if (markerPickup) map.removeLayer(markerPickup);
+    if (markerDropoff) map.removeLayer(markerDropoff);
+
+    if (pickup) {
+        markerPickup = L.marker(pickup)
+            .addTo(map)
+            .bindPopup("Pickup");
+    }
+
+    if (dropoff) {
+        markerDropoff = L.marker(dropoff)
+            .addTo(map)
+            .bindPopup("Dropoff");
+    }
+
+    // redraw route
+    if (pickup && dropoff) {
+        getRoute(pickup, dropoff);
     }
 }

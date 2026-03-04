@@ -19,21 +19,22 @@
     <!-- Pickup -->
     <div class="autocomplete-container">
       <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
+        <button onclick="setPickup()">Set Pickup</button>
+      
       <ul id="pickupSuggestions" class="suggestions"></ul>
     </div>
-
+    <button id="swapLocations">⇅ Swap</button>
     <!-- Dropoff -->
     <div class="autocomplete-container">
       <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
+        <button onclick="setDropoff()">Set Dropoff</button>
+
       <ul id="dropoffSuggestions" class="suggestions"></ul>
     </div>
   </div>
 
-  <button onclick="setPickup()">Set Pickup</button>
-  <div id="pickupResults" class="results"></div>
 
-  <button onclick="setDropoff()">Set Dropoff</button>
-  <div id="dropoffResults" class="results"></div>
+
 </div>
 
 <button id="resetBtn">Reset Pickup & Dropoff</button>
