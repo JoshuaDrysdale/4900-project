@@ -19,7 +19,6 @@ h1 {
 #map {
   flex: 1;          
   width: 100%;
-  margin-top:105px;
 }
 
 .search-container {
@@ -28,7 +27,8 @@ h1 {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  width: 20%;
+  width: 90%;
+  max-width: 900px;
 }
 
 input {
@@ -72,7 +72,8 @@ to be used for displaying results in address lookup (which is not implemented ye
 /* Set location buttons */
 #setLocClick,
 #setLocAddress {
-  position: absolute;
+  position: static;
+  margin-bottom: 8px;
   left: 10px;
   z-index: 1000;
   cursor: pointer;
@@ -112,18 +113,19 @@ to be used for displaying results in address lookup (which is not implemented ye
 
 .autocomplete-container {
     position: relative;
-    flex: 0 0 300px;
+    flex: 1;
+    min-width: 0;
 }
 
 .autocomplete-container input {
-    width: 400px;       /* adjust as needed */
+    width: 100%;       /* adjust as needed */
     padding: 8px 12px;
     font-size: 16px;
     box-sizing: border-box; /* ensures padding doesn’t increase total width */
 }
 
 .suggestions {
-    position: absolute;
+    position: relative;
     top: 100%;
     left: 0;
     right: 0;
@@ -157,7 +159,8 @@ to be used for displaying results in address lookup (which is not implemented ye
 .inputs-row {
     display: flex;                  /* make inputs side by side */
     justify-content: center;        /* center the row horizontally */
-    gap: 40px;                      /* space between pickup & dropoff */
+    gap: 20px;                      /* space between pickup & dropoff */
+    flex-wrap: wrap;                
     margin: 20px 0;                 /* optional vertical spacing */
 }
 #swapLocations {
