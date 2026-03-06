@@ -19,21 +19,29 @@ h1 {
 #map {
   flex: 1;          
   width: 100%;
+margin-top:75px;
 }
+
 
 .search-container {
   position: absolute;
-  top: 20px;
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  width: 90%;
-  max-width: 900px;
-}
 
+  width: 100%;
+  max-width: 1000px;
+
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
 input {
   width: 100%;
-  padding: 8px;
+  padding: 14px;
   margin-bottom: 5px;
   font-size: 16px;
 }
@@ -58,15 +66,21 @@ to be used for displaying results in address lookup (which is not implemented ye
 }
 /*css for buttons */
 #resetBtn {
-  position: absolute;  
-  top: 5px;
-  right: 5px;
-  z-index: 1000;      
-  padding: 8px 8px;
-  background-color: red;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  padding: 6px 10px;
+  font-size: 13px;
+
+  background: #ef4444;
+  color: white;
+
+  border: none;
+  border-radius: 6px;
+
   cursor: pointer;
+  z-index: 1000;
 }
 
 /* Set location buttons */
@@ -90,54 +104,54 @@ to be used for displaying results in address lookup (which is not implemented ye
   top: 110px;
 }
 
-@media (max-width: 600px) {
 
-  .search-container {
-    width: 95%;
-    top: 40px; 
-  }
-
-  #resetBtn {
-    padding: 6px 10px;
-    font-size: 14px;
-  }
-
-  #setLocClick,
-  #setLocAddress {
-    left: 5px;
-    padding: 6px 10px;
-    font-size: 14px;
-  }
-
-}
 
 .autocomplete-container {
-    position: relative;
-    flex: 1;
-    min-width: 0;
+  position: relative;
+  flex: 1;
+  min-width: 200px;
 }
 
 .autocomplete-container input {
-    width: 100%;       /* adjust as needed */
-    padding: 8px 12px;
-    font-size: 16px;
-    box-sizing: border-box; /* ensures padding doesn’t increase total width */
+  width: 100%;
+  padding: 4px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  
 }
 
+.autocomplete-container button {
+  margin-top: 4px;
+  width: 100%;
+  padding: 6px;
+
+  border-radius: 6px;
+  border: none;
+
+  background: #2563eb;
+  color: white;
+
+  cursor: pointer;
+}
 .suggestions {
-    position: relative;
+    position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background-color: white;
+
+    background: white;
     border: 1px solid #ccc;
     border-radius: 4px;
+
     max-height: 200px;
     overflow-y: auto;
+
     list-style: none;
     margin: 0;
     padding: 0;
-    z-index: 1000;
+
+    z-index: 2000;
 }
 
 .suggestions li {
@@ -164,7 +178,89 @@ to be used for displaying results in address lookup (which is not implemented ye
     margin: 20px 0;                 /* optional vertical spacing */
 }
 #swapLocations {
-    padding: 5px 5px;
-    font-size: 18px;
+  align-self: center;
+  right:80%;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+  border: none;
+
+  font-size: 16px;
+  background: white;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#swapLocations:hover{
+  background: #e5e7eb;
+}
+
+.mode-controls{
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    gap: 8px;
+
+    background: white;
+    padding: 6px;
+
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+
+    z-index: 1000;
+}
+.mode-btn{
+    border: none;
+    padding: 10px 16px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    border-radius: 8px;
     cursor: pointer;
+
+    background: #f3f4f6;
+    color: #333;
+
+    transition: all 0.2s ease;
+}
+
+.mode-btn:hover{
+    background: #e5e7eb;
+}
+
+.mode-btn.active{
+    background: #2563eb;
+    color: white;
+}
+
+/*
+CSS FOR SMALLER SCREENS
+*/
+
+@media (max-width: 600px) {
+
+  .search-container {
+    width: 95%;
+    top: 40px; 
+  }
+
+  #resetBtn {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  #setLocClick,
+  #setLocAddress {
+    left: 5px;
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
 }

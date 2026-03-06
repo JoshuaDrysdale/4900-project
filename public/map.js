@@ -25,7 +25,7 @@ let pickup = null,
     routingControl = null,
     markerPickup = null,
     markerDropoff = null;
-    
+    inputMode = null;
 
 
 
@@ -65,32 +65,53 @@ for a better User Interface and better User Experience.
 */
 
 map.on("click", async function(e) {
+
+    if (inputMode !== "map") return;
+
     const coords = e.latlng;
 
     try {
+
         const addressLabel = await reverseGeocode(coords.lat, coords.lng);
 
         if (!pickup) {
+
             if (markerPickup) map.removeLayer(markerPickup);
+
             pickup = coords;
-            markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
             pickupInput.value = addressLabel;
+
+            markerPickup = L.marker(coords)
+                .addTo(map)
+                .bindPopup("Pickup")
+                .openPopup();
+
         } else if (!dropoff) {
+
             if (markerDropoff) map.removeLayer(markerDropoff);
+
             dropoff = coords;
-            markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
             dropoffInput.value = addressLabel;
+
+            markerDropoff = L.marker(coords)
+                .addTo(map)
+                .bindPopup("Dropoff")
+                .openPopup();
+
         }
 
-        if (pickup && dropoff) getRoute(pickup, dropoff);
+        if (pickup && dropoff) {
+            getRoute(pickup, dropoff);
+        }
 
     } catch (err) {
-        console.error("Reverse geocode failed:", err);
-        alert("Failed to fetch address for clicked location");
+        console.error(err);
     }
+
 });
 /*Functionality for Reset button*/
-document.getElementById("resetBtn").addEventListener("click",  () => {
+document.getElementById("resetBtn").addEventListener("click", () => {
+
     if (routeLayer) {
         map.removeLayer(routeLayer);
         routeLayer = null;
@@ -108,11 +129,30 @@ document.getElementById("resetBtn").addEventListener("click",  () => {
 
     pickup = null;
     dropoff = null;
-    pickupInput.value='';
-    dropoffInput.value='';
+
+    pickupInput.value = "";
+    dropoffInput.value = "";
+
+});
+document.getElementById("addressModeBtn").addEventListener("click", () => {
+
+    inputMode = "address";
+
+    pickupInput.disabled = false;
+    dropoffInput.disabled = false;
+
+    map.getContainer().style.cursor = "";
 });
 
+document.getElementById("mapModeBtn").addEventListener("click", () => {
 
+    inputMode = "map";
+
+    pickupInput.disabled = true;
+    dropoffInput.disabled = true;
+
+    map.getContainer().style.cursor = "crosshair";
+});
 
 
 let routeLayer;
@@ -192,6 +232,7 @@ async function reverseGeocode(lat, lng) {
 
 // Set Pickup from address input
 async function setPickup() {
+    if (inputMode !== "address") return;
     const address = pickupInput.value;
     if (!address) return;
 
@@ -217,6 +258,7 @@ async function setPickup() {
 }
 // Set Dropoff from address input
 async function setDropoff() {
+    if (inputMode !== "address") return;
     const address = dropoffInput.value;
     if (!address) return;
 
@@ -344,3 +386,21 @@ function swapLocations() {
         getRoute(pickup, dropoff);
     }
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const addressBtn = document.getElementById("addressModeBtn");
+    const mapBtn = document.getElementById("mapModeBtn");
+
+    addressBtn.addEventListener("click", () => {
+        addressBtn.classList.add("active");
+        mapBtn.classList.remove("active");
+    });
+
+    mapBtn.addEventListener("click", () => {
+        mapBtn.classList.add("active");
+        addressBtn.classList.remove("active");
+    });
+
+});
