@@ -11,9 +11,65 @@ const map = L.map("map", {
   maxBoundsViscosity: 0.5
 }).setView([40.631092, -73.95244], 16);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+// --- 1. Map Tile Layers ---
+const streetLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "&copy; OpenStreetMap contributors",
-    noWrap: true 
+  noWrap: true
+});
+
+const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+  attribution: "Tiles © Esri",
+  noWrap: true
+});
+//Layers following are either too light or dark, experimenting
+/*
+
+const lightLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  {
+    attribution: "&copy; OpenStreetMap &copy; Carto",
+    subdomains: "abcd",
+  }
+); 
+
+const darkLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  attribution: "&copy; OpenStreetMap &copy; Carto",
+  subdomains: 'abcd',
+  maxZoom: 19
+});
+
+*/
+
+const esriStreet = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+  {
+    attribution: "Tiles © Esri"
+  }
+);
+const esriTopo = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+  {
+    attribution: "Tiles © Esri"
+  }
+);
+
+const osmHum = L.tileLayer(
+  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+  {
+    attribution: "&copy; OpenStreetMap contributors"
+  }
+);
+// Add default layer to map
+streetLayer.addTo(map);
+
+// --- 2. Layer Control ---
+L.control.layers({
+  "Street": streetLayer,
+  "Satellite": satelliteLayer,
+  "Test1": esriStreet,
+  "Test2": esriTopo,
+  "Test3":osmHum
+  //"Light": lightLayer
+  //"Dark": darkLayer"
 }).addTo(map);
 
 
@@ -25,9 +81,8 @@ let pickup = null,
     routingControl = null,
     markerPickup = null,
     markerDropoff = null;
-    inputMode = null;
-
-
+    inputMode = "address";
+//inputMode="address" sets the corruet locaiton mode selection to "Enter address"
 
 
 
@@ -402,5 +457,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mapBtn.classList.add("active");
         addressBtn.classList.remove("active");
     });
+
+    
 
 });

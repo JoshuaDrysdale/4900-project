@@ -19,7 +19,7 @@ h1 {
 #map {
   flex: 1;          
   width: 100%;
-margin-top:75px;
+margin-top:60px;
 }
 
 
@@ -83,26 +83,6 @@ to be used for displaying results in address lookup (which is not implemented ye
   z-index: 1000;
 }
 
-/* Set location buttons */
-#setLocClick,
-#setLocAddress {
-  position: static;
-  margin-bottom: 8px;
-  left: 10px;
-  z-index: 1000;
-  cursor: pointer;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-}
-
-#setLocClick {
-  top: 60px;
-}
-
-#setLocAddress {
-  top: 110px;
-}
 
 
 
@@ -179,7 +159,6 @@ to be used for displaying results in address lookup (which is not implemented ye
 }
 #swapLocations {
   align-self: center;
-  right:80%;
 
   width: 40px;
   height: 40px;
@@ -245,22 +224,66 @@ CSS FOR SMALLER SCREENS
 */
 
 @media (max-width: 600px) {
-
-  .search-container {
-    width: 95%;
-    top: 40px; 
-  }
-
   #resetBtn {
     padding: 6px 10px;
-    font-size: 14px;
+    font-size: 10px;
+
   }
 
-  #setLocClick,
-  #setLocAddress {
-    left: 5px;
-    padding: 6px 10px;
-    font-size: 14px;
+   .search-container {
+    top: auto;
+    bottom: 10px;
+    transform: translateX(-50%);
+    padding:8px;
+    width: 92%;
+    border-radius: 16px;
   }
+
+ input {
+ width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  font-size: 14px;
+  }
+ .inputs-row {
+    flex-direction: column;
+    gap: 10px;
+      margin: 10px 0;
+
+  }
+
+    #swapLocations{
+      width: 30px;
+      height: 30px;
+      font-size: 14px;
+  }
+
+    .mode-btn{
+      padding: 6px 10px;
+      font-size: 12px;
+  }
+ .mode-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    top:45px;
+    
+  }
+
+   #map {
+    margin-top: 1px;
+  }
+/*this removes the zoom in and zoom out buttons on mobile, removed for less clutter, remove styling if needed*/
+   .leaflet-control-zoom {
+    display: none;
+  }
+
+
+
+.autocomplete-container button {
+  margin-top: 2px;
+  width: 100%;
+  padding: 4px;
+  font-size: 13px;
+}
 
 }
