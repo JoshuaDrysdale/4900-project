@@ -114,7 +114,7 @@ to be used for displaying results in address lookup (which is not implemented ye
 
 .autocomplete-container input {
   width: 100%;
-  padding: 4px;
+  padding: 10px;
   font-size: 16px;
   border-radius: 6px;
   border: 1px solid #ccc;
@@ -258,9 +258,13 @@ CSS FOR SMALLER SCREENS
 
   #setLocClick,
   #setLocAddress {
-    left: 5px;
     padding: 6px 10px;
     font-size: 14px;
+  }
+
+  .inputs-row{
+    flex-direction: column;
+    gap: 10px;
   }
 
 }
