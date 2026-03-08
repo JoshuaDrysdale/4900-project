@@ -1,10 +1,11 @@
-/*
-CSS for mobile responsiveness
-*/
+/* =============================================================================
+   BASE & LAYOUT
+   ============================================================================= */
+
 html, body {
   height: 100%;
   margin: 0;
-  background-color:whitesmoke;
+  background-color: whitesmoke;
 }
 
 body {
@@ -13,32 +14,100 @@ body {
 }
 
 h1 {
-    font-size:large;
+  font-size: large;
 }
+
+
+/* =============================================================================
+   MAP
+   ============================================================================= */
 
 #map {
-  flex: 1;          
+  flex: 1;
   width: 100%;
-margin-top:60px;
+  margin-top: 60px;
 }
 
+
+/* =============================================================================
+   MODE CONTROLS (top center bar)
+   ============================================================================= */
+
+.mode-controls {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 8px;
+
+  background: white;
+  padding: 6px;
+
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+
+  z-index: 1000;
+}
+
+.mode-btn {
+  border: none;
+  padding: 10px 16px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  border-radius: 8px;
+  cursor: pointer;
+
+  background: #f3f4f6;
+  color: #333;
+
+  transition: all 0.2s ease;
+}
+
+.mode-btn:hover {
+  background: #e5e7eb;
+}
+
+.mode-btn.active {
+  background: #2563eb;
+  color: white;
+}
+
+
+/* =============================================================================
+   SEARCH CONTAINER (bottom/top floating panel)
+   ============================================================================= */
 
 .search-container {
   position: absolute;
   top: 60px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
 
   width: 100%;
   max-width: 1000px;
 
   background: white;
   padding: 12px;
-  border-radius: 12px;
 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+  z-index: 1000;
 }
+
+.inputs-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
 input {
   width: 100%;
   padding: 14px;
@@ -46,25 +115,79 @@ input {
   font-size: 16px;
 }
 
-/*
-to be used for displaying results in address lookup (which is not implemented yet)
-*/
-.results {
-  background: white;
-  border: 1px solid #ccc;
-  max-height: 150px;
-  overflow-y: auto;
+
+/* =============================================================================
+   AUTOCOMPLETE
+   ============================================================================= */
+
+.autocomplete-container {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
 }
 
-.results div {
-  padding: 8px;
+.autocomplete-container input {
+  width: 100%;
+  padding: 4px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.autocomplete-container button {
+  margin-top: 4px;
+  width: 100%;
+  padding: 6px;
+
+  border-radius: 6px;
+  border: none;
+
+  background: #2563eb;
+  color: white;
+
   cursor: pointer;
 }
 
-.results div:hover {
-  background: #f0f0f0;
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  max-height: 200px;
+  overflow-y: auto;
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  z-index: 2000;
 }
-/*css for buttons */
+
+.suggestions li {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: black;
+  border-bottom: 1px solid #eee;
+}
+
+.suggestions li:last-child {
+  border-bottom: none;
+}
+
+.suggestions li:hover {
+  background-color: #f0f0f0;
+}
+
+
+/* =============================================================================
+   BUTTONS
+   ============================================================================= */
+
 #resetBtn {
   position: absolute;
   top: 10px;
@@ -83,80 +206,30 @@ to be used for displaying results in address lookup (which is not implemented ye
   z-index: 1000;
 }
 
+#recenterBtn {
+  position: absolute;
+  top: 200px;
+  right: 10px;
 
+  width: 36px;
+  height: 36px;
 
-
-.autocomplete-container {
-  position: relative;
-  flex: 1;
-  min-width: 200px;
-}
-
-.autocomplete-container input {
-  width: 100%;
-  padding: 4px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  
-}
-
-.autocomplete-container button {
-  margin-top: 4px;
-  width: 100%;
-  padding: 6px;
-
-  border-radius: 6px;
+  background: white;
   border: none;
+  border-radius: 6px;
 
-  background: #2563eb;
-  color: white;
-
+  font-size: 18px;
   cursor: pointer;
-}
-.suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
 
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 
-    max-height: 200px;
-    overflow-y: auto;
-
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
-    z-index: 2000;
 }
 
-.suggestions li {
-    padding: 8px 12px;
-    cursor: pointer;
-    text-decoration: none; /* remove any line-through */
-    color: black;
-    border-bottom: 1px solid #eee;
+#recenterBtn:hover {
+  background: #e5e7eb;
 }
 
-.suggestions li:last-child {
-    border-bottom: none;
-}
-
-.suggestions li:hover {
-    background-color: #f0f0f0;
-}
-
-.inputs-row {
-    display: flex;                  /* make inputs side by side */
-    justify-content: center;        /* center the row horizontally */
-    gap: 20px;                      /* space between pickup & dropoff */
-    flex-wrap: wrap;                
-    margin: 20px 0;                 /* optional vertical spacing */
-}
 #swapLocations {
   align-self: center;
 
@@ -173,117 +246,88 @@ to be used for displaying results in address lookup (which is not implemented ye
   transition: 0.2s;
 }
 
-#swapLocations:hover{
+#swapLocations:hover {
   background: #e5e7eb;
 }
 
-.mode-controls{
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
 
-    display: flex;
-    gap: 8px;
-
-    background: white;
-    padding: 6px;
-
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-
-    z-index: 1000;
-}
-.mode-btn{
-    border: none;
-    padding: 10px 16px;
-
-    font-size: 14px;
-    font-weight: 500;
-
-    border-radius: 8px;
-    cursor: pointer;
-
-    background: #f3f4f6;
-    color: #333;
-
-    transition: all 0.2s ease;
-}
-
-.mode-btn:hover{
-    background: #e5e7eb;
-}
-
-.mode-btn.active{
-    background: #2563eb;
-    color: white;
-}
-
-/*
-CSS FOR SMALLER SCREENS
-*/
+/* =============================================================================
+   RESPONSIVE — SMALL SCREENS (max-width: 600px)
+   ============================================================================= */
 
 @media (max-width: 600px) {
-  #resetBtn {
-    padding: 6px 10px;
-    font-size: 10px;
 
-  }
-
-   .search-container {
-    top: auto;
-    bottom: 10px;
-    transform: translateX(-50%);
-    padding:8px;
-    width: 92%;
-    border-radius: 16px;
-  }
-
- input {
- width: 100%;
-  padding: 6px 8px;
-  margin-bottom: 4px;
-  font-size: 14px;
-  }
- .inputs-row {
-    flex-direction: column;
-    gap: 10px;
-      margin: 10px 0;
-
-  }
-
-    #swapLocations{
-      width: 30px;
-      height: 30px;
-      font-size: 14px;
-  }
-
-    .mode-btn{
-      padding: 6px 10px;
-      font-size: 12px;
-  }
- .mode-controls {
-    flex-wrap: wrap;
-    justify-content: center;
-    top:45px;
-    
-  }
-
-   #map {
+  /* Map */
+  #map {
     margin-top: 1px;
   }
-/*this removes the zoom in and zoom out buttons on mobile, removed for less clutter, remove styling if needed*/
-   .leaflet-control-zoom {
+
+  /* Hide zoom controls on mobile to reduce clutter — remove if needed */
+  .leaflet-control-zoom {
     display: none;
   }
 
+  /* Mode controls */
+  .mode-controls {
+    top: 45px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
+  .mode-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
 
-.autocomplete-container button {
-  margin-top: 2px;
-  width: 100%;
-  padding: 4px;
-  font-size: 13px;
-}
+  /* Search container */
+  .search-container {
+    top: auto;
+    bottom: 10px;
+    transform: translateX(-50%);
+
+    width: 92%;
+    padding: 8px;
+
+    border-radius: 16px;
+  }
+
+  .inputs-row {
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  /* Inputs */
+  input {
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+
+  .autocomplete-container button {
+    margin-top: 2px;
+    padding: 4px;
+    font-size: 13px;
+  }
+
+  /* Buttons */
+  #resetBtn {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  #recenterBtn {
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  #swapLocations {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
 
 }
