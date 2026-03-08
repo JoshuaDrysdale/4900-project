@@ -1,6 +1,5 @@
 console.log("map.js loaded");
 
-
 const map = L.map("map", {
   worldCopyJump: false,
   minZoom: 3,
@@ -20,8 +19,9 @@ const streetLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.
 const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
   attribution: "Tiles © Esri",
   noWrap: true
+
 });
-//Layers following are either too light or dark, experimenting
+//Layers following that are commmenteds are either too light or dark, experimenting
 /*
 
 const lightLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
@@ -38,7 +38,6 @@ const darkLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x
 });
 
 */
-
 const esriStreet = L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
   {
@@ -72,7 +71,6 @@ L.control.layers({
   //"Dark": darkLayer"
 }).addTo(map);
 
-
 //GLOBAL VARIABLES
 const pickupInput = document.getElementById("pickupInput");
 const dropoffInput = document.getElementById("dropoffInput");
@@ -82,84 +80,73 @@ let pickup = null,
     markerPickup = null,
     markerDropoff = null;
     inputMode = "address";
-//inputMode="address" sets the corruet locaiton mode selection to "Enter address"
-
-
-
+//^inputMode="address" sets the intial locaiton mode selection to "Enter address"
 //END OF GLOBAL VARIABLES
-
-
 
 //GLOBAL EVENT LISTINERS
 const debouncedPickup = debounce((e) => autocomplete(e, "pickupSuggestions"), 200);
 const debouncedDropoff = debounce((e) => autocomplete(e, "dropoffSuggestions"), 200);
 pickupInput.addEventListener("input", debouncedPickup);
 dropoffInput.addEventListener("input", debouncedDropoff);
-
-
-
 //END OF GLOBAL EVENT LISTINERS
 
 
 getUserLocation();
 
-
-/*(Below) Allows user to click two points in the map and have a route drawn out
---Click could be useful if user wants to be picked up on a certain distant location 
-other than their current location but does not necessarrly know the exact
-address of said location.
-
-If we want users to select address for pickup and dropff, it will probably 
-follow similar logic below
-
-The distance(km/miles) given by routing machine is slightly inaccurate.
-
-Certain variables and values are set so that users are able to reselect different
-points in the map for differnet routes. A reset route button will be implemented later
-for a better User Interface and better User Experience. 
-*/
-
+// Handle map click events for selecting pickup and dropoff locations
 map.on("click", async function(e) {
 
+    // Only allow map clicks if the user selected "map input mode"
     if (inputMode !== "map") return;
 
+    // Get the latitude and longitude of the click
     const coords = e.latlng;
 
     try {
 
+        // Convert coordinates to a human-readable address
         const addressLabel = await reverseGeocode(coords.lat, coords.lng);
 
+        // --- Set Pickup Location ---
         if (!pickup) {
 
+            // Remove existing pickup marker if it exists
             if (markerPickup) map.removeLayer(markerPickup);
 
+            // Save pickup coordinates and update input field
             pickup = coords;
             pickupInput.value = addressLabel;
 
+            // Create and display pickup marker
             markerPickup = L.marker(coords)
                 .addTo(map)
                 .bindPopup("Pickup")
                 .openPopup();
 
+        // --- Set Dropoff Location ---
         } else if (!dropoff) {
 
+            // Remove existing dropoff marker if it exists
             if (markerDropoff) map.removeLayer(markerDropoff);
 
+            // Save dropoff coordinates and update input field
             dropoff = coords;
             dropoffInput.value = addressLabel;
 
+            // Create and display dropoff marker
             markerDropoff = L.marker(coords)
                 .addTo(map)
                 .bindPopup("Dropoff")
                 .openPopup();
 
         }
-
+        // If both locations are selected, request a route
         if (pickup && dropoff) {
             getRoute(pickup, dropoff);
         }
 
     } catch (err) {
+        // Log errors from reverse geocoding or routing
         console.error(err);
     }
 
@@ -187,7 +174,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 
     pickupInput.value = "";
     dropoffInput.value = "";
-
+/*Functionality for Address Mode button*/
 });
 document.getElementById("addressModeBtn").addEventListener("click", () => {
 
@@ -198,7 +185,7 @@ document.getElementById("addressModeBtn").addEventListener("click", () => {
 
     map.getContainer().style.cursor = "";
 });
-
+/*Functionality for Select on Map Mode button*/
 document.getElementById("mapModeBtn").addEventListener("click", () => {
 
     inputMode = "map";
@@ -241,17 +228,21 @@ async function getRoute(pickup, dropoff){
     }
 }
 
-// Geocode
+// Convert an address string to geographic coordinates (lat/lng)
 async function geocode(address) {
     try {
+        // Call backend geocode API
         const res = await fetch(`/api/geocode?q=${encodeURIComponent(address)}`);
         if (!res.ok) throw new Error("Geocode proxy failed");
 
         const data = await res.json();
+
+        // Return null if no features found
         if (!data.features || data.features.length === 0) return null;
 
         const feature = data.features[0];
 
+        // Return coordinates and label
         return {
             lat: feature.geometry.coordinates[1],
             lng: feature.geometry.coordinates[0],
@@ -259,17 +250,22 @@ async function geocode(address) {
         };
 
     } catch (err) {
+        // Log errors and return null
         console.error("Geocode failed:", err);
         return null;
     }
 }
-// Reverse Geocode (Click on Map,and address will show on input fields)
+
+// Convert geographic coordinates to a human-readable address
 async function reverseGeocode(lat, lng) {
     try {
+        // Call backend reverse geocode API
         const res = await fetch(`/api/reverse?lat=${lat}&lon=${lng}`);
         if (!res.ok) throw new Error("Reverse proxy failed");
+
         const data = await res.json();
 
+        // Return coordinates if no address found
         if (!data.features || data.features.length === 0)
             return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
@@ -278,8 +274,11 @@ async function reverseGeocode(lat, lng) {
         const street = props.street || props.name || "";
         const city = props.city || props.state || props.country || "";
 
-        return `${house} ${street}, ${city}`.trim();    } 
-        catch (err) {
+        // Format address string
+        return `${house} ${street}, ${city}`.trim();    
+
+    } catch (err) {
+        // Log errors and fallback to coordinates
         console.error("Reverse geocode failed:", err);
         return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
     }
@@ -442,7 +441,7 @@ function swapLocations() {
     }
 }
 
-
+//Location Selection Mode Event listener
 document.addEventListener("DOMContentLoaded", () => {
 
     const addressBtn = document.getElementById("addressModeBtn");
