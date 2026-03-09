@@ -14,7 +14,7 @@ body {
 }
 
 h1 {
-  font-size: large;
+  font-size: x-small;
 }
 
 
@@ -25,7 +25,7 @@ h1 {
 #map {
   flex: 1;
   width: 100%;
-  margin-top: 60px;
+  margin-top: 1px;
 }
 
 
@@ -250,6 +250,75 @@ input {
   background: #e5e7eb;
 }
 
+/* =============================================================================
+   GEOLOCATION MODAL
+   ============================================================================= */
+
+#geoModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+#geoModal.open {
+  display: flex;
+}
+
+#geoModalCard {
+  background: white;
+  border-radius: 14px;
+  padding: 24px 20px 20px;
+  width: 88%;
+  max-width: 300px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+#geoModalIcon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+#geoModalTitle {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+}
+
+#geoAddressLabel {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+#geoModalBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#geoModalBtns button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+#geoModalBtns button:hover {
+  opacity: 0.85;
+}
+
+#geoSetPickup   { background: #22c55e; color: white; }
+#geoRecenterOnly { background: #f3f4f6; color: #333; }
 
 /* =============================================================================
    RESPONSIVE — SMALL SCREENS (max-width: 600px)

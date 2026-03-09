@@ -129,24 +129,9 @@ document.getElementById("mapModeBtn").addEventListener("click", () => {
   document.getElementById("addressModeBtn").classList.remove("active");
 });
 
-document.getElementById("recenterBtn").addEventListener("click", () => {
-  if (!navigator.geolocation) {
-    alert("Geolocation is not supported by your browser");
-    return;
-  }
+//Recenter button will always reset the optional pickup assignment
+document.getElementById("recenterBtn").addEventListener("click", getUserLocation);
 
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      map.flyTo([lat, lng], 15);
-    },
-    (error) => {
-      alert("Could not get your location. Check browser permissions.");
-      console.error(error.message);
-    }
-  );
-});
 
 // =============================================================================
 // MAP CLICK — SELECT PICKUP / DROPOFF ON MAP
@@ -343,7 +328,7 @@ function swapLocations() {
 }
 
 // =============================================================================
-// GEOLOCATION — CENTER MAP ON USER
+// GEOLOCATION — CENTER MAP + OPTIONAL PICKUP ASSIGNMENT
 // =============================================================================
 
 function getUserLocation() {
@@ -353,21 +338,52 @@ function getUserLocation() {
   }
 
   navigator.geolocation.getCurrentPosition(
-    (position) => {
+    async (position) => {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
 
       map.setView([lat, lng], 15);
-      L.marker([lat, lng]).addTo(map).bindPopup("You are here").openPopup();
 
-      console.log("Your latitude:", lat);
-      console.log("Your longitude:", lng);
+      const addressLabel = await reverseGeocode(lat, lng);
+      showGeoModal(lat, lng, addressLabel);
     },
     (error) => { console.error("Could not get location:", error.message); }
   );
 }
-
 getUserLocation();
+
+function showGeoModal(lat, lng, addressLabel) {
+  const modal    = document.getElementById("geoModal");
+  const addrEl   = document.getElementById("geoAddressLabel");
+
+  addrEl.textContent = addressLabel;
+  modal.classList.add("open");
+
+  // Clone buttons to remove any stale listeners from previous calls
+  ["geoSetPickup", "geoRecenterOnly"].forEach(id => {
+    const el = document.getElementById(id);
+    el.replaceWith(el.cloneNode(true));
+  });
+
+  const coords = { lat, lng };
+  const close  = () => modal.classList.remove("open");
+
+  document.getElementById("geoSetPickup").addEventListener("click", () => {
+    if (markerPickup) map.removeLayer(markerPickup);
+    pickup = coords;
+    pickupInput.value = addressLabel;
+    markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+    if (pickup && dropoff) getRoute(pickup, dropoff);
+    close();
+  });
+
+  document.getElementById("geoRecenterOnly").addEventListener("click", close);
+
+  // Tap backdrop to dismiss
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); }, { once: true });
+}
+
+
 
 // =============================================================================
 // AUTOCOMPLETE
