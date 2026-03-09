@@ -11,7 +11,7 @@ const map = L.map("map", {
     [90, 180]
   ],
   maxBoundsViscosity: 0.5
-}).setView([40.631092, -73.95244], 16);
+}).setView([40.631092, -73.95244], 13);
 
 // =============================================================================
 // TILE LAYERS
@@ -342,7 +342,7 @@ function getUserLocation() {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
 
-      map.setView([lat, lng], 15);
+      map.flyTo([lat, lng], 15);
 
       const addressLabel = await reverseGeocode(lat, lng);
       showGeoModal(lat, lng, addressLabel);
