@@ -32,23 +32,33 @@
       <ul id="dropoffSuggestions" class="suggestions"></ul>
     </div>
   </div>
-
-
-
 </div>
 
 <button id="resetBtn">Reset Pickup & Dropoff</button>
+
 <div class="mode-controls">
     <button id="addressModeBtn" class="mode-btn active">
         ✏️ Enter Address
     </button>
-
     <button id="mapModeBtn" class="mode-btn">
         🗺 Select on Map
     </button>
 </div>
 
 <button id="recenterBtn" title="My Location">📍</button>
+
+<!-- Geolocation Assignment Modal -->
+<div id="geoModal">
+  <div id="geoModalCard">
+    <div id="geoModalIcon">📍</div>
+    <p id="geoModalTitle">Your location found</p>
+    <p id="geoAddressLabel"></p>
+    <div id="geoModalBtns">
+      <button id="geoSetPickup">🟢 Set as Pickup</button>
+      <button id="geoRecenterOnly">No Thanks</button>
+    </div>
+  </div>
+</div>
 
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
