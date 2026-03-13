@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const pool = require("./db");
 
 const app = express();
 app.use(express.json());
@@ -79,6 +80,18 @@ app.get("/api/reverse", async (req, res) => {
     }
 });
 
+//Call Database
+app.get("/person", async (req,res)=>{
+    try{
+        const result = await pool.query("SELECT * FROM person");
+        res.json(result.rows);
+
+    }catch(err){
+        console.error(err);
+        res.status(500).send(err.message);
+        res.status(500).send("Database Error");
+    }
+})
 
 
 app.use(express.static("public"));
