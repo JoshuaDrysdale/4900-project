@@ -1,9 +1,17 @@
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
 const pool = require("./db");
 
 const app = express();
 app.use(express.json());
+
+
+//Making sure login page opens first
+app.get("/", (req, res)=>{
+    res.sendFile(path.join(__dirname, "login.html"));
+})
+app.get("public/index.html", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 //Calling the OpenRouteService API
 app.post("/route", async (req, res) => {
