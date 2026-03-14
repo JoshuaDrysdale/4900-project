@@ -18,6 +18,7 @@ Built with **Leaflet.js** on the frontend and a lightweight **Node.js/Express** 
 -  **Geocoding & Reverse Geocoding** via Photon (address ↔ coordinates)
 -  **Geolocation support** — detects your current location and optionally sets it as your pickup
 -  **Responsive design** — works on both desktop and mobile
+-  **Signup and Login** Stores information in a PostgreSQL database
 
 ---
 
@@ -30,6 +31,7 @@ Built with **Leaflet.js** on the frontend and a lightweight **Node.js/Express** 
 | Backend    | [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/) |
 | Routing    | [OpenRouteService API](https://openrouteservice.org/) |
 | Geocoding  | [Photon by Komoot](https://photon.komoot.io/) |
+| Database   | PostgreSQL |
 
 ---
 
