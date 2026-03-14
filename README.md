@@ -13,7 +13,7 @@ Built with **Leaflet.js** on the frontend and a lightweight **Node.js/Express** 
 -  **Interactive map** powered by Leaflet.js with multiple tile layer options (Street, Satellite, Topo, etc.)
 -  **Two input modes** — type an address or click directly on the map to place markers
 -  **Swap pickup/dropoff** with a single button click
--  **Driving route rendering** via OpenRouteService Directions API (displayed as GeoJSON)
+-  **Driving route rendering** via OpenRouteService Directions API 
 -  **Address autocomplete** via ORS Geocode API
 -  **Geocoding & Reverse Geocoding** via Photon (address ↔ coordinates)
 -  **Geolocation support** — detects your current location and optionally sets it as your pickup
@@ -31,6 +31,7 @@ Built with **Leaflet.js** on the frontend and a lightweight **Node.js/Express** 
 | Routing    | [OpenRouteService API](https://openrouteservice.org/) |
 | Geocoding  | [Photon by Komoot](https://photon.komoot.io/) |
 
+---
 
 ##  Installation
 
@@ -56,8 +57,7 @@ ORS_API_KEY=your_api_key_here
 
 # 4. Start the server
 node server.js
-```
-```bash
+
 # Server runs at http://localhost:3000
 ```
 Open your browser and navigate to the URL above to begin using the application.
@@ -66,6 +66,7 @@ Please allow location permissions for full functionality.
 Start experiemnting with it!
 
 ---
+
 ## 📖 Usage
 
 1. **Address mode (default):** Type a pickup address → click **Set Pickup**. Type a dropoff address → click **Set Dropoff**. A route appears automatically.
@@ -74,7 +75,7 @@ Start experiemnting with it!
 4. **Reset:** Click the red **Reset** button to clear all markers and the route.
 5. **My Location:** Click 📍 to fly to your current location. A modal asks if you'd like to set it as your pickup.
 
-## Future Improvemnts
+## Some of future implementations
 
 Ride price estimation
 
