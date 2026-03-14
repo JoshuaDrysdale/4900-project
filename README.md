@@ -18,7 +18,7 @@ Built with **Leaflet.js** on the frontend and a lightweight **Node.js/Express** 
 -  **Geocoding & Reverse Geocoding** via Photon (address ↔ coordinates)
 -  **Geolocation support** — detects your current location and optionally sets it as your pickup
 -  **Responsive design** — works on both desktop and mobile
--  **Signup and Login** Stores information in a PostgreSQL database
+-  **Signup and Login** - Stores information in a PostgreSQL database
 
 ---
 
