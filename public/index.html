@@ -12,42 +12,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.9.4/leaflet-geocoder-mapzen.css"><!--leaflet geocoder-->
 </head>
 <body>
+
 <h1>Ride-Hailing-Aggregator</h1>
 
+<!-- =========================================================================
+     MODE TOGGLE — switches between typing an address and clicking the map
+     ========================================================================= -->
+<div class="mode-controls">
+  <button id="addressModeBtn" class="mode-btn active">✏️ Enter Address</button>
+  <button id="mapModeBtn"     class="mode-btn">🗺 Select on Map</button>
+</div>
+
+<!-- =========================================================================
+     SEARCH PANEL — pickup / dropoff address inputs with autocomplete
+     ========================================================================= -->
 <div class="search-container">
   <div class="inputs-row">
-    <!-- Pickup -->
+
+    <!-- Pickup input -->
     <div class="autocomplete-container">
       <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
-        <button onclick="setPickup()">Set Pickup</button>
-      
+      <button onclick="setPickup()">Set Pickup</button>
       <ul id="pickupSuggestions" class="suggestions"></ul>
     </div>
-    <button id="swapLocations">⇅ Swap</button>
-    <!-- Dropoff -->
+
+    <!-- Swap button — reverses pickup and dropoff -->
+    <button id="swapLocations"> Swap ⇅</button>
+
+    <!-- Dropoff input -->
     <div class="autocomplete-container">
       <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
-        <button onclick="setDropoff()">Set Dropoff</button>
-
+      <button onclick="setDropoff()">Set Dropoff</button>
       <ul id="dropoffSuggestions" class="suggestions"></ul>
     </div>
+
   </div>
 </div>
 
-<button id="resetBtn">Reset Pickup & Dropoff</button>
+<!-- Reset button — clears all markers and the drawn route -->
+<button id="resetBtn">Reset Markers and Input</button>
 
-<div class="mode-controls">
-    <button id="addressModeBtn" class="mode-btn active">
-        ✏️ Enter Address
-    </button>
-    <button id="mapModeBtn" class="mode-btn">
-        🗺 Select on Map
-    </button>
-</div>
-
+<!-- Recenter / My Location button -->
 <button id="recenterBtn" title="My Location">📍</button>
 
-<!-- Geolocation Assignment Modal -->
+<!-- =========================================================================
+     GEOLOCATION MODAL
+     Shown when the browser resolves the user's current position.
+     User can choose to set it as their pickup or just recenter the map.
+     ========================================================================= -->
 <div id="geoModal">
   <div id="geoModalCard">
     <div id="geoModalIcon">📍</div>
