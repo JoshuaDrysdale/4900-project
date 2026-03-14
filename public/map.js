@@ -40,18 +40,18 @@ const osmHum = L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.pn
 });
 
 // Experimenting — too light or dark for now
-/*
-const lightLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-  attribution: "&copy; OpenStreetMap &copy; Carto",
-  subdomains: "abcd"
-});
 
-const darkLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-  attribution: "&copy; OpenStreetMap &copy; Carto",
-  subdomains: "abcd",
-  maxZoom: 19
-});
-*/
+// const lightLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+//   attribution: "&copy; OpenStreetMap &copy; Carto",
+//   subdomains: "abcd"
+// });
+
+// const darkLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+//   attribution: "&copy; OpenStreetMap &copy; Carto",
+//   subdomains: "abcd",
+//   maxZoom: 19
+// });
+
 
 // Add default layer
 streetLayer.addTo(map);
