@@ -4,17 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="/login.css">
 </head>
 <body>
-    <h1>Login</h1>
-    <input id="username" placeholder="enter username/email">
-    <input id="password" type="password" placeholder="enter password">
-    <button onclick="login()">Next</button>
-    <br>
-    <p1>Don't have an account?</p1>
-    <button onclick="signup()">Signup</button>
+    <div class="brandingContainer">
+        <h1 class="appName">🚗 RHA</h1> <!--short for ride hailing aggregaor, change name as neededr-->
+        <p class="tagline">Your ride, your way.</p>
+    </div>
+    <div class="loginContainer">
+        <h1 id="loginHeading">Login</h1>
+        <p class="welcomeText">Welcome back! Please sign in to continue.</p>
 
-    <script src ="login.js" defer></script>
-    
+        <input id="username" placeholder="Enter username / email">
+        <input id="password" type="password" placeholder="Enter password">
+        <a href="#" class="forgotPassword">Forgot password?</a>  
+        <p class="tagline">Your ride, your way.</p>
+        <button id="submitButtonLogin" onclick="login()">Login</button>
+        <p>Don't have an account?</p>
+        <button class="signupButton" onclick="signup()">Sign Up</button>
+    </div>
+    <script src="/login.js" defer></script>
 </body>
 </html>
