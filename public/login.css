@@ -153,3 +153,46 @@ p {
   background-color: #3D53CA;
   color: white;
 }
+
+/* Tablet (iPad) */
+@media (max-width: 768px) {
+  .loginContainer, .signupContainer {
+    width: 85vw;          /* takes up 85% of screen width */
+    padding: 30px 30px 40px 30px;
+  }
+
+  .appName {
+    font-size: 38px;
+  }
+}
+
+/* Phone */
+@media (max-width: 480px) {
+  .loginContainer, .signupContainer {
+    width: 90vw;          /* takes up 90% of screen width */
+    padding: 24px 20px 32px 20px;
+  }
+
+  .appName {
+    font-size: 28px;
+  }
+
+  .tagline {
+    font-size: 13px;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  #submitButtonLogin, #submitButtonSignup {
+    padding: 12px;
+  }
+}
+
+/* prevent horizontal scroll globally */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
