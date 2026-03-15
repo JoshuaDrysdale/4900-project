@@ -1,0 +1,153 @@
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #3D53CA, #8B5CF6, #FB8CB0, #3D53CA);
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite; /* animated background */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.brandingContainer {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.appName {
+  font-size: 36px;
+  color: white;
+  margin: 0;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.tagline {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 15px;
+  margin: 4px 0 0 0;
+  letter-spacing: 1px;
+}
+
+.loginContainer {
+  background-image: url('/assets/loginBackground.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 500px;          /* fixed narrow width */
+  max-width: 90vw;       /* doesn't overflow on small screens */
+  padding: 60px 100px 100px 100px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  overflow: hidden;      /* stops content spilling outside rounded corners */
+  position: relative;
+
+
+}
+
+/* overlay to dim the background image */
+.loginContainer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.65); /* white tint — adjust opacity */
+  z-index: 0;
+}
+
+/* keeps form elements above the overlay */
+.loginContainer * {
+  position: relative;
+  z-index: 1;
+}
+
+#loginHeading {
+  font-size: 36px;
+  margin: 0 0 4px 0;
+  color: #1a1a1a;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.85); /* slight transparency */
+}
+
+input:focus {
+  outline: none;
+  border-color: #3D53CA;
+  box-shadow: 0 0 0 3px rgba(61, 83, 202, 0.15);
+
+}
+
+.forgotPassword {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  color: #3D53CA;
+  text-decoration: none;
+  margin: 4px 0 16px 0;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+#submitButtonLogin {
+  width: 100%;
+  padding: 12px;
+  margin-top: 4px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3D53CA;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#submitButtonLogin:hover {
+  background-color: #2e42a8;
+}
+
+p {
+  margin: 16px 0 6px 0;
+  font-size: 14px;
+  color: #333;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+}
+
+.signupButton {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid #3D53CA;
+  background: transparent;
+  color: #3D53CA;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signupButton:hover {
+  background-color: #3D53CA;
+  color: white;
+}
