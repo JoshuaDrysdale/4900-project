@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
     <link rel="stylesheet" href="/signup.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
 
@@ -20,12 +21,22 @@
             <input name="username" placeholder="Username" required>
             <input name="email" placeholder="E-mail" required>
             <input name="password" type="password" placeholder="Password" required>
-            <input name="date_of_birth" type="date" required>
+            <input name="date_of_birth" id="date_of_birth" placeholder="Date of Birth" readonly required>
             <button type="submit" id="submitButtonSignup">Sign Up</button>
         </form>
         <p>Already have an account?</p>
 <button class="loginButton" onclick="window.location.href='/login'">Login</button>    </div>
 
     <script src="/signup.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+  flatpickr("#date_of_birth", {
+    dateFormat: "Y-m-d",       // format sent to the database, change as needed
+    altInput: true,             // shows a friendly format to the user
+    altFormat: "F j, Y",        // e.g. January 15, 2000
+    maxDate: "today",           // can't select a future date
+    yearRange: [1900, new Date().getFullYear()], // sensible year range
+  });
+</script>
 </body>
 </html>
