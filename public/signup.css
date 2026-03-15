@@ -23,18 +23,19 @@ body {
 }
 
 .appName {
-  font-size: 36px;
+  font-size: 48px;        
   color: white;
   margin: 0;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  letter-spacing: 3px;
+  font-weight: 900;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
-
 .tagline {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 15px;
-  margin: 4px 0 0 0;
-  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  margin: 6px 0 0 0;
+  letter-spacing: 2px;
+  font-style: italic;
 }
 
 .signupContainer {
@@ -58,7 +59,7 @@ body {
   top: 0; left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.82);
   z-index: 0;
 }
 
@@ -99,7 +100,7 @@ input:focus {
 
 #submitButtonSignup {
   width: 100%;
-  padding: 12px;
+  padding: 14px;          
   margin-top: 8px;
   border-radius: 8px;
   border: none;
@@ -110,7 +111,6 @@ input:focus {
   cursor: pointer;
   transition: background 0.2s;
 }
-
 #submitButtonSignup:hover {
   background-color: #2e42a8;
 }
@@ -123,12 +123,12 @@ p {
 
 .loginButton {
   width: 100%;
-  padding: 10px;
+  padding: 14px;          
   border-radius: 8px;
   border: 2px solid #3D53CA;
   background: transparent;
   color: #3D53CA;
-  font-size: 15px;
+  font-size: 16px;        
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
@@ -137,4 +137,27 @@ p {
 .loginButton:hover {
   background-color: #3D53CA;
   color: white;
+}
+
+.strengthBar {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin: 4px 0 2px 0;
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  width: 0%;
+  border-radius: 4px;
+  transition: width 0.3s, background 0.3s;
+}
+
+.strengthText {
+  font-size: 12px;
+  margin: 0 0 8px 0;
+  text-align: left;
+  color: #555;
 }
