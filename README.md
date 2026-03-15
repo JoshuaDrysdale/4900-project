@@ -31,7 +31,7 @@ Built with **Leaflet.js** on the frontend and a lightweight **Node.js/Express** 
 | Backend    | [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/) |
 | Routing    | [OpenRouteService API](https://openrouteservice.org/) |
 | Geocoding  | [Photon by Komoot](https://photon.komoot.io/) |
-| Database   | PostgreSQL |
+| Database   | [PostgreSQL](https://www.postgresql.org/) |
 
 ---
 
@@ -65,7 +65,7 @@ node server.js
 Open your browser and navigate to the URL above to begin using the application.
 Please allow location permissions for full functionality.
 
-Start experiemnting with it!
+Start experimenting with it!
 
 ---
 
