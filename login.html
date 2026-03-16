@@ -8,16 +8,26 @@
 </head>
 <body>
     <div class="brandingContainer">
-        <h1 class="appName">🚗 RHA</h1> <!--short for ride hailing aggregaor, change name as neededr-->
+        <h1 class="appName">🚗 RHA</h1> <!--short for ride hailing aggregaor, change name as needed-->
         <p class="tagline">Your ride, your way.</p>
-    </div>
+        </div>
     <div class="loginContainer">
         <h1 id="loginHeading">Login</h1>
         <p class="welcomeText">Welcome back! Please sign in to continue.</p>
 
         <input id="username" placeholder="Enter username / email">
-        <input id="password" type="password" placeholder="Enter password">
-        <a href="#" class="forgotPassword">Forgot password?</a>  
+        <div class="errorMsg" id="usernameError"></div>
+
+        <div class="passwordWrapper">
+            <input id="password" type="password" placeholder="Enter password">
+            <button type="button" class="togglePassword" onclick="togglePassword()">👁</button>
+        </div>
+        
+        <div class="errorMsg" id="passwordError"></div>
+
+        <a href="/forgot-password" class="forgotPassword">Forgot password?</a> <!--no functionality-->
+        <div class="errorMsg" id="formError"></div>
+
         <p class="tagline">Your ride, your way.</p>
         <button id="submitButtonLogin" onclick="login()">Login</button>
         <p>Don't have an account?</p>
