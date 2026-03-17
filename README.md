@@ -2,7 +2,7 @@
 
 As of right now, this is a web application ride route planner that lets users set pickup and dropoff locations — either by typing an address or clicking directly on the map — and displays a driving route between them.
 
-Future implementaitons will include combining many ride share apps and displaying prices so that users can pick thier preferred option
+Future implementaitons will include combining many ride share apps and displaying prices so that users can pick thier preferred option. Deployment of certain technologies will be considered.
 
 Built with **Leaflet.js** on the frontend and a lightweight **Node.js/Express** backend that proxies requests to [OpenRouteService](https://openrouteservice.org/) and [Photon by Komoot](https://photon.komoot.io/).
 
