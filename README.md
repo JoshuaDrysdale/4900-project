@@ -61,12 +61,11 @@ ORS_API_KEY=your_api_key_here
 node server.js
 
 # Server runs at http://localhost:3000
-```
 Open your browser and navigate to the URL above to begin using the application.
 Please allow location permissions for full functionality.
 
 Start experimenting with it!
-
+```
 ---
 
 ## 📖 Usage
