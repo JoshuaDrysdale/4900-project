@@ -1,13 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-
+// =============================================================================
+// FORM SUBMISSION
+// =============================================================================
 document.getElementById("signupForm").addEventListener("submit", async e => {
     e.preventDefault();
 
     const form = e.target;
 
-    clearErrors();
+    clearErrors(); // clear any previous error messages before revalidating
 
-    let valid = true;
+    let valid = true; // assume valid until a check fails
+
+        // username validation checks
 
     if (!form.username.value.trim()) {
         showError("usernameError", "Please enter a username.");
@@ -25,6 +29,8 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
     valid = false;
     }
 
+        // email validation checks
+
     if (!form.email.value.trim()) {
         showError("emailError", "Please enter your email.");
         valid = false;
@@ -33,28 +39,30 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
         valid = false;
     }
 
-   
+        // password validation checks
+     
     if (!form.password.value.trim()) {
     showError("passwordError", "Please enter a password.");
     valid = false;
-    } else if (getPasswordStrength(form.password.value) < 3) {
+    } else if (getPasswordStrength(form.password.value) < 4) {
     showError("passwordError", "Password is too weak. Please make it stronger.");
     valid = false;
     }
     
-    // confirm password
+        // confirm password
     if (form.confirmPassword.value !== form.password.value) {
     showError("confirmPasswordError", "Passwords do not match.");
     valid = false;
     }
 
-
+        //DoB cehck
     if (!form.date_of_birth.value) {
         showError("dobError", "Please enter your date of birth.");
         valid = false;
     }
 
-    if (!valid) return;
+        
+    if (!valid) return; // stop submission if any validation failed
 
     const body = {
         username: form.username.value,
@@ -82,29 +90,40 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
         showError("formError", "Something went wrong. Please try again.");
     }
 });
-
+// =============================================================================
+// PASSWORD STRENGTH BAR + REQUIREMENTS CHECKLIST
+// updates in real time as the user types
+// =============================================================================
 document.getElementById('passwordInput').addEventListener('input', function() {
     const val = this.value;
     const fill = document.getElementById('strengthFill');
     const text = document.getElementById('strengthText');
 
+    // strength bar
     const strength = getPasswordStrength(val);
-    
-       const levels = [
-      { width: '0%',   color: '#e0e0e0', label: '' },
-      { width: '25%',  color: '#e74c3c', label: 'Weak' },
-      { width: '50%',  color: '#e67e22', label: 'Fair' },
-      { width: '75%',  color: '#f1c40f', label: 'Good' },
-      { width: '100%', color: '#2ecc71', label: 'Strong' },
+    const levels = [
+        { width: '0%',   color: '#e0e0e0', label: '' },
+        { width: '25%',  color: '#e74c3c', label: 'Weak' },
+        { width: '50%',  color: '#e67e22', label: 'Fair' },
+        { width: '75%',  color: '#f1c40f', label: 'Good' },
+        { width: '100%', color: '#2ecc71', label: 'Strong' },
     ];
-
     fill.style.width = levels[strength].width;
     fill.style.background = levels[strength].color;
     text.textContent = levels[strength].label;
     text.style.color = levels[strength].color;
+
+    // update each requirement
+    updateReq('req-length',  val.length >= 8);
+    updateReq('req-upper',   /[A-Z]/.test(val));
+    updateReq('req-number',  /[0-9]/.test(val));
+    updateReq('req-special', /[^A-Za-z0-9]/.test(val));
 });
 
-
+// =============================================================================
+// FLATPICKR DATE PICKER
+// replaces the default browser date input with a styled calendar
+// =============================================================================
 flatpickr("#date_of_birth", {
     dateFormat: "Y-m-d",
     altInput: true,
@@ -113,14 +132,66 @@ flatpickr("#date_of_birth", {
     yearRange: [1900, new Date().getFullYear()],
 });
 
+// username live validation
+// =============================================================================
+// LIVE VALIDATION HINTS
+// shows red errors and green checkmarks as the user types each field
+// =============================================================================
+document.querySelector('[name="username"]').addEventListener('input', function() {
+    const val = this.value.trim();
+    const error = document.getElementById('usernameError');
+
+    if (!val) {
+        setHint(error, 'Please enter a username.', 'error');
+    } else if (val.length < 4) {
+        setHint(error, 'Username must be at least 4 characters.', 'error');
+    } else if (val.length > 14) {
+        setHint(error, 'Username must be under 14 characters.', 'error');
+    } else if (!/^[a-zA-Z0-9_]+$/.test(val)) {
+        setHint(error, 'Only letters, numbers, and underscores.', 'error');
+    } else {
+        setHint(error, '✔ Looks good!', 'success');
+    }
+});
+
+// email live validation
+document.querySelector('[name="email"]').addEventListener('input', function() {
+    const val = this.value.trim();
+    const error = document.getElementById('emailError');
+
+    if (!val) {
+        setHint(error, 'Please enter your email.', 'error');
+    } else if (!isValidEmail(val)) {
+        setHint(error, 'Please enter a valid email address.', 'error');
+    } else {
+        setHint(error, '✔ Looks good!', 'success');
+    }
+});
+
+// confirm password live validation
+document.getElementById('confirmPasswordInput').addEventListener('input', function() {
+    const val = this.value;
+    const password = document.getElementById('passwordInput').value;
+    const error = document.getElementById('confirmPasswordError');
+
+    if (!val) {
+        setHint(error, 'Please confirm your password.', 'error');
+    } else if (val !== password) {
+        setHint(error, 'Passwords do not match.', 'error');
+    } else {
+        setHint(error, '✔ Passwords match!', 'success');
+    }
+});
+
 }); // end DOMContentLoaded
 
 // =============================================================================
 // HELPER FUNCTIONS 
 // =============================================================================
 
-//very basic password strength checker, at lesat one uppercase letter
+//very basic password strength checker, one uppercase letter
 //a number, length of 8, and a special letter for max strength, 
+// requires all 4 to pass for a strong password
 
 
 function getPasswordStrength(val) {
@@ -144,6 +215,16 @@ function getPasswordStrength(val) {
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); //regular expression script to check for valid email address
 }
+// updates a password requirement checklist item to pass (green) or fail (red)
+
+function updateReq(id, passes) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.textContent = (passes ? '✔ ' : '✖ ') + el.textContent.slice(2);
+        el.style.color = passes ? '#2ecc71' : '#e74c3c';
+    }
+}
+//error message under form
 
 function showError(id, message) {
     const el = document.getElementById(id);
@@ -152,6 +233,7 @@ function showError(id, message) {
         el.style.display = "block";
     }
 }
+// clears all error messages from the form
 
 function clearErrors() {
     ["usernameError", "emailError", "passwordError", "confirmPasswordError", "dobError", "formError"].forEach(id => {
@@ -162,13 +244,49 @@ function clearErrors() {
         }
     });
 }
+// displays a live hint under a field, green for success and red for error
 
+function setHint(el, message, type) {
+    if (el) {
+        el.textContent = message;
+        el.style.display = 'block';
+        el.style.color = type === 'success' ? '#2ecc71' : '#e74c3c';
+    }
+}
+//following toggles are to show/hide password for each password field
 function togglePassword() {
     const input = document.getElementById("passwordInput");
-    input.type = input.type === "password" ? "text" : "password";
+    const btn = document.getElementById("togglePasswordBtn");
+    if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "Hide";
+    } else {
+        input.type = "password";
+        btn.textContent = "Show";
+    }
 }
 
 function toggleConfirmPassword() {
     const input = document.getElementById("confirmPasswordInput");
-    input.type = input.type === "password" ? "text" : "password";
+    const btn = document.getElementById("toggleConfirmBtn");
+    if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "Hide";
+    } else {
+        input.type = "password";
+        btn.textContent = "Show";
+    }
+}
+/*allow users to copy the password to thier clipboard so that they
+easily paste it into the confirm password field */
+
+function copyPassword() {
+    const input = document.getElementById("passwordInput");
+    const btn = document.getElementById("copyPasswordBtn");
+    navigator.clipboard.writeText(input.value).then(() => {
+        btn.textContent = "Copied!";
+        setTimeout(() => {
+            btn.textContent = "📋";
+        }, 5000); // resets after 5 seconds, change as needed
+    });
 }
