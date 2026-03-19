@@ -1,38 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/login.css">
+
+    <!-- favicon using car emoji, change as needed -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
+
 </head>
 <body>
+
+    <!-- app branding above the login card -->
     <div class="brandingContainer">
         <h1 class="appName">🚗 RHA</h1> <!--short for ride hailing aggregaor, change name as needed-->
         <p class="tagline">Your ride, your way.</p>
         </div>
+
+    <!-- main login card -->
     <div class="loginContainer">
         <h1 id="loginHeading">Login</h1>
         <p class="welcomeText">Welcome back! Please sign in to continue.</p>
-
-        <input id="username" placeholder="Enter username / email">
+        
+        <!-- username/email input -->
+        <input id="username" placeholder="Enter username / email" autocomplete="username">
         <div class="errorMsg" id="usernameError"></div>
 
+        <!-- password input with show/hide toggle -->
         <div class="passwordWrapper">
-            <input id="password" type="password" placeholder="Enter password">
-            <button type="button" class="togglePassword" onclick="togglePassword()">👁</button>
+            <input id="password" type="password" placeholder="Enter password" autocomplete="current-password">
+            <button type="button" class="togglePassword" id="togglePasswordBtn" onclick="togglePassword()">Show</button>
         </div>
-        
+
+        <!-- caps lock warning — shown/hidden by login.js -->
+        <div class="errorMsg" id="capsWarning" style="display:none; color: #e67e22;">⚠ Caps Lock is on</div>
         <div class="errorMsg" id="passwordError"></div>
 
+        <!-- forgot password link — no functionality yet -->
         <a href="/forgot-password" class="forgotPassword">Forgot password?</a> <!--no functionality-->
+        
+        <!-- general form error e.g. invalid credentials -->
         <div class="errorMsg" id="formError"></div>
 
-        <p class="tagline">Your ride, your way.</p>
+        <!-- remember me checkbox — saves username to localStorage -->
+        <div class="rememberMe">
+             <input type="checkbox" id="rememberMe">
+             <label for="rememberMe">Remember me</label>
+        </div>  
+
         <button id="submitButtonLogin" onclick="login()">Login</button>
+        
         <p>Don't have an account?</p>
         <button class="signupButton" onclick="signup()">Sign Up</button>
     </div>
+    
     <script src="/login.js" defer></script>
 </body>
 </html>

@@ -1,27 +1,34 @@
-function showError(id, message) {
-    const el = document.getElementById(id);
-    if (el) {
-        el.textContent = message;
-        el.style.display = "block";
-    }
-}
 
-function clearErrors() {
-    ["usernameError", "passwordError", "formError"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.textContent = "";
-            el.style.display = "none";
-        }
-    });
+// =============================================================================
+// RATE LIMITING (DISABLED/COMMENTED OUT FOR NOW SINCE IT IS STILL DEV BUILD)
+
+// disables login button after 5 failed attempts for 30 seconds
+// =============================================================================
+
+/* let failedAttempts = 0;
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_TIME = 30000; // 30 seconds
+
+function lockout() {
+    const btn = document.getElementById("submitButtonLogin");
+    btn.disabled = true;
+    btn.textContent = "Too many attempts. Wait 30s...";
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = "Login";
+        failedAttempts = 0;
+    }, LOCKOUT_TIME);
 }
+*/
 
 // =============================================================================
 // LOGIN
 // =============================================================================
+
 async function login() {
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
+    const rememberMe = document.getElementById("rememberMe").checked;
 
     const body = {
         username: username,
@@ -63,19 +70,104 @@ async function login() {
         const data = await res.json();
 
         if (data.success) {
+            // save username to localStorage if remember me is checked
+            if (rememberMe) {
+                localStorage.setItem("rememberedUser", username);
+            } else {
+                localStorage.removeItem("rememberedUser");
+            }
             window.location.href = "/index.html";
         } else {
-            showError("formError", data.error || "Invalid username or password.");
-        }
+    // failedAttempts++;
+    // if (failedAttempts >= MAX_ATTEMPTS) {
+    //     lockout();
+    // } else {
+    //     showError("formError", `Invalid username or password. ${MAX_ATTEMPTS - failedAttempts} attempt(s) remaining.`);
+    // }
+    showError("formError", "Invalid username or password."); // simple error for now
+}
     } catch (err) {
         showError("formError", "Something went wrong. Please try again.");
     }
 }
-function togglePassword() {
-    const input = document.getElementById("password");
-    input.type = input.type === "password" ? "text" : "password";
+
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
+
+// displays an error message under a form field
+function showError(id, message) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.textContent = message;
+        el.style.display = "block";
+        el.style.color = "#e74c3c";
+    }
 }
 
+// clears all error messages from the form
+function clearErrors() {
+    ["usernameError", "passwordError", "formError"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = "";
+            el.style.display = "none";
+        }
+    });
+}
+
+// toggles password visibility between shown and hidden
+function togglePassword() {
+    const input = document.getElementById("password");
+    const btn = document.getElementById("togglePasswordBtn");
+    if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "Hide";
+    } else {
+        input.type = "password";
+        btn.textContent = "Show";
+    }
+}
+
+// =============================================================================
+// REMEMBER ME
+// saves and loads username from localStorage
+// =============================================================================
+function loadRememberedUser() {
+    const saved = localStorage.getItem("rememberedUser");
+    if (saved) {
+        document.getElementById("username").value = saved;
+        document.getElementById("rememberMe").checked = true;
+    }
+}
+
+// =============================================================================
+// CAPS LOCK WARNING
+// runs after DOM is fully loaded
+// =============================================================================
+document.addEventListener("DOMContentLoaded", function () {
+
+    // load remembered username if it exists
+    loadRememberedUser();
+
+    // caps lock warning on password field — checks on keyup and focus
+    document.getElementById("password").addEventListener("keyup", checkCapsLock);
+    document.getElementById("password").addEventListener("keydown", checkCapsLock);
+
+
+});
+
+// checks if caps lock is on and shows/hides warning accordingly
+function checkCapsLock(e) {
+    const capsWarning = document.getElementById("capsWarning");
+    if (e.getModifierState("CapsLock")) {
+        capsWarning.style.display = "block";
+    } else {
+        capsWarning.style.display = "none";
+    }
+}
+
+// redirects to the signup page
 function signup() {
     window.location.href = "/signup.html";
 }

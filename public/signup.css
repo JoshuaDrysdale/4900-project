@@ -380,3 +380,10 @@ input:focus {
     padding: 12px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none;
+        background: #3D53CA; /* static color instead of animated gradient */
+    }
+}

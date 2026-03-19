@@ -11,7 +11,7 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 
     let valid = true; // assume valid until a check fails
 
-        // username validation checks
+    // username validation checks
 
     if (!form.username.value.trim()) {
         showError("usernameError", "Please enter a username.");
@@ -118,6 +118,17 @@ document.getElementById('passwordInput').addEventListener('input', function() {
     updateReq('req-upper',   /[A-Z]/.test(val));
     updateReq('req-number',  /[0-9]/.test(val));
     updateReq('req-special', /[^A-Za-z0-9]/.test(val));
+    
+// recheck confirm password match whenever password changes
+    const confirmVal = document.getElementById('confirmPasswordInput').value;
+    const confirmError = document.getElementById('confirmPasswordError');
+    if (confirmVal) { // only recheck if confirm field has something in it
+        if (confirmVal !== this.value) {
+            setHint(confirmError, 'Passwords do not match.', 'error');
+        } else {
+            setHint(confirmError, '✔ Passwords match!', 'success');
+        }
+    }
 });
 
 // =============================================================================

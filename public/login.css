@@ -1,3 +1,7 @@
+/* =============================================================================
+   ANIMATED GRADIENT BACKGROUND
+   shifts colors smoothly across the page
+============================================================================= */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -8,8 +12,8 @@ body {
   margin: 0;
   height: 100vh;
   background: linear-gradient(135deg, #3D53CA, #8B5CF6, #FB8CB0, #3D53CA);
-  background-size: 300% 300%;
-  animation: gradientShift 8s ease infinite; /* animated background */
+  background-size: 300% 300%; /* oversized so the animation has room to pan */
+  animation: gradientShift 8s ease infinite;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -17,13 +21,16 @@ body {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
+/* =============================================================================
+   BRANDING — app name and tagline above the login card
+============================================================================= */
 .brandingContainer {
   text-align: center;
   margin-bottom: 24px;
 }
 
 .appName {
-  font-size: 48px;        
+  font-size: 48px;
   color: white;
   margin: 0;
   letter-spacing: 3px;
@@ -39,12 +46,16 @@ body {
   font-style: italic;
 }
 
+/* =============================================================================
+   LOGIN CARD
+   contains the background image with a white overlay on top
+============================================================================= */
 .loginContainer {
   background-image: url('/assets/loginBackground.webp');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  width: 500px;          /* fixed narrow width */
+  width: 500px;
   max-width: 90vw;       /* doesn't overflow on small screens */
   padding: 60px 100px 100px 100px;
   border-radius: 16px;
@@ -52,33 +63,44 @@ body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   overflow: hidden;      /* stops content spilling outside rounded corners */
   position: relative;
-
-
 }
 
-/* overlay to dim the background image */
+/* white tint overlay to make form elements readable over the background image */
 .loginContainer::before {
   content: '';
   position: absolute;
   top: 0; left: 0;
   width: 100%;
   height: 100%;
- background: rgba(255, 255, 255, 0.82); /* white tint — adjust opacity */
+  background: rgba(255, 255, 255, 0.82); /* adjust opacity as needed */
   z-index: 0;
 }
 
-/* keeps form elements above the overlay */
+/* keeps all form elements above the overlay */
 .loginContainer * {
   position: relative;
   z-index: 1;
 }
 
+/* =============================================================================
+   HEADINGS AND TEXT
+============================================================================= */
 #loginHeading {
   font-size: 36px;
   margin: 0 0 4px 0;
   color: #1a1a1a;
 }
 
+p {
+  margin: 16px 0 6px 0;
+  font-size: 14px;
+  color: #333;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+}
+
+/* =============================================================================
+   INPUTS
+============================================================================= */
 input {
   display: block;
   width: 100%;
@@ -88,16 +110,46 @@ input {
   border: 1px solid #ccc;
   font-size: 15px;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.85); /* slight transparency */
+  background: rgba(255, 255, 255, 0.85);
 }
 
 input:focus {
   outline: none;
   border-color: #3D53CA;
   box-shadow: 0 0 0 3px rgba(61, 83, 202, 0.15);
-
 }
 
+/* =============================================================================
+   PASSWORD WRAPPER
+   positions the show/hide toggle button inside the input
+============================================================================= */
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.passwordWrapper input {
+  width: 100%;
+  padding-right: 40px; /* makes room for the toggle button */
+}
+
+.togglePassword {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  width: auto;   /* overrides the full width button style */
+  margin: 0;
+}
+
+/* =============================================================================
+   FORGOT PASSWORD LINK
+============================================================================= */
 .forgotPassword {
   display: block;
   text-align: right;
@@ -111,9 +163,34 @@ input:focus {
   text-decoration: underline;
 }
 
+/* =============================================================================
+   REMEMBER ME CHECKBOX
+============================================================================= */
+.rememberMe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 16px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.rememberMe input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.rememberMe label {
+  cursor: pointer;
+}
+
+/* =============================================================================
+   BUTTONS
+============================================================================= */
 #submitButtonLogin {
- width: 100%;
-  padding: 14px;          
+  width: 100%;
+  padding: 14px;
   margin-top: 8px;
   border-radius: 8px;
   border: none;
@@ -127,13 +204,6 @@ input:focus {
 
 #submitButtonLogin:hover {
   background-color: #2e42a8;
-}
-
-p {
-  margin: 16px 0 6px 0;
-  font-size: 14px;
-  color: #333;
-  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
 }
 
 .signupButton {
@@ -154,34 +224,14 @@ p {
   color: white;
 }
 
-.passwordWrapper {
-    position: relative;
-    width: 100%;
-}
-
-.passwordWrapper input {
-    width: 100%;
-    padding-right: 40px; /* makes room for the eye icon */
-}
-
-.togglePassword {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 0;
-    width: auto;        /* overrides the full width button style */
-    margin: 0;
-}
+/* =============================================================================
+   RESPONSIVE — tablet and phone sizes
+============================================================================= */
 
 /* Tablet (iPad) */
 @media (max-width: 768px) {
   .loginContainer, .signupContainer {
-    width: 85vw;          /* takes up 85% of screen width */
+    width: 85vw;
     padding: 30px 30px 40px 30px;
   }
 
@@ -193,7 +243,7 @@ p {
 /* Phone */
 @media (max-width: 480px) {
   .loginContainer, .signupContainer {
-    width: 90vw;          /* takes up 90% of screen width */
+    width: 90vw;
     padding: 24px 20px 32px 20px;
   }
 
@@ -215,9 +265,19 @@ p {
   }
 }
 
-/* prevent horizontal scroll globally */
+/* prevent horizontal scroll on all screen sizes */
 html, body {
   overflow-x: hidden;
   max-width: 100%;
 }
 
+/* =============================================================================
+   ACCESSIBILITY — respects user's reduced motion preference
+   replaces animated gradient with a static color
+============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background: #3D53CA;
+  }
+}
