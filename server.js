@@ -122,9 +122,20 @@ app.get("/users", async (req,res)=>{
 // =============================================================================
 // SIGNUP ENDPOINT
 // =============================================================================
+function validatePassword(password) {
+  if (password.length < 8)             return 'Password must be at least 8 characters';
+  if (!/[A-Z]/.test(password))         return 'Password must contain an uppercase letter';
+  if (!/[0-9]/.test(password))         return 'Password must contain a number';
+  if (!/[^A-Za-z0-9]/.test(password))  return 'Password must contain a special character';
+  return null;
+}
+
 app.post("/signup", async(req,res)=>{
     const {username, email, password, date_of_birth} = req.body;
-
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+    return res.status(400).json({ error: passwordError });
+  }
     try{
         const hashed = await bcrypt.hash(password,10);
 
