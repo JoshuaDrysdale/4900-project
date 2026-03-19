@@ -31,7 +31,7 @@
         <!-- password input with show/hide toggle -->
         <div class="passwordWrapper">
             <input id="password" type="password" placeholder="Enter password" autocomplete="current-password">
-            <button type="button" class="togglePassword" id="togglePasswordBtn" onclick="togglePassword()">Show</button>
+            <button type="button" class="togglePassword" id="togglePasswordBtn" onclick="togglePassword()" title="Show or hide password">Show</button>
         </div>
 
         <!-- caps lock warning — shown/hidden by login.js -->
@@ -55,7 +55,7 @@
         <p>Don't have an account?</p>
         <button class="signupButton" onclick="signup()">Sign Up</button>
     </div>
-    
+
     <script src="/login.js" defer></script>
 </body>
 </html>
