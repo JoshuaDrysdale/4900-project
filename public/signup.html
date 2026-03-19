@@ -33,8 +33,8 @@
     <!-- Password input with toggle + copy functionality -->
     <div class="passwordWrapper" id="passwordWrapper">
         <input name="password" type="password" id="passwordInput" placeholder="Password" required autocomplete="new-password">
-        <button type="button" class="togglePassword" id="togglePasswordBtn" onclick="togglePassword()">Show</button>
-        <button type="button" class="copyPassword" id="copyPasswordBtn" onclick="copyPassword()">📋</button>
+        <button type="button" class="togglePassword" id="togglePasswordBtn" onclick="togglePassword()" title="Show or hide password">Show</button>
+        <button type="button" class="copyPassword" id="copyPasswordBtn" onclick="copyPassword()" title="Copy password to clipboard">📋</button>
     </div>
 
     <!-- Strength bar -->
@@ -55,7 +55,7 @@
     <!--Confirm Password -->
     <div class="passwordWrapper" id="confirmPasswordWrapper">
         <input name="confirmPassword" type="password" id="confirmPasswordInput" placeholder="Confirm Password" required autocomplete="new-password">
-        <button type="button" class="togglePassword" id="toggleConfirmBtn" onclick="toggleConfirmPassword()">Show</button>
+        <button type="button" class="togglePassword" id="toggleConfirmBtn" onclick="toggleConfirmPassword()" title="Show or hide confirm password">Show</button>
     </div>
     <div class="errorMsg" id="confirmPasswordError"></div>
         
