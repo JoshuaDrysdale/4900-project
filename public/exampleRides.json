@@ -1,6 +1,8 @@
 [
-  {"provider": "UberX", "price": "$12–$15", "eta": "3 min"},
-  {"provider": "UberX", "price": "$12–$15", "eta": "5 min"},  
-  {"provider": "Lyft", "price": "$11–$14", "eta": "7 min"},
-  {"provider": "Lyft", "price": "$11–$14", "eta": "5 min"}
+  {"provider": "Uber", "type": "UberX", "price": "$12–$15", "eta": "3 min", "logo": "🚗"},
+  {"provider": "Uber", "type": "Uber Comfort", "price": "$18–$22", "eta": "5 min", "logo": "🚙"},
+  {"provider": "Uber", "type": "Uber XL", "price": "$24–$28", "eta": "8 min", "logo": "🚐"},
+  {"provider": "Lyft", "type": "Lyft Standard", "price": "$11–$14", "eta": "4 min", "logo": "🚗"},
+  {"provider": "Lyft", "type": "Lyft XL", "price": "$22–$26", "eta": "6 min", "logo": "🚐"},
+  {"provider": "Lyft", "type": "Lyft Lux", "price": "$30–$35", "eta": "10 min", "logo": "🚘"}
 ]
