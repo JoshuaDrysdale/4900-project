@@ -11,11 +11,13 @@
     <link rel="stylesheet" href="style.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"><!--leaflet geocoder-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.9.4/leaflet-geocoder-mapzen.css"><!--leaflet geocoder-->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
-  </head>
+    <title>RHA</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">  </head>
 <body>
 
-<h1>Ride-Hailing-Aggregator</h1>
+<div class="mapBranding">
+    <span class="mapAppName">🚗 RHA</span>
+</div>
 
 <!-- =========================================================================
      MODE TOGGLE — switches between typing an address and clicking the map
@@ -48,6 +50,8 @@
       <ul id="dropoffSuggestions" class="suggestions"></ul>
     </div>
 
+    <div id="routeInfo" style="text-align:center; font-size: 14px; color: #555; margin-top: 6px;"></div>
+
   </div>
 </div>
 
@@ -56,6 +60,11 @@
 
 <!-- Recenter / My Location button -->
 <button id="recenterBtn" title="My Location">📍</button>
+
+<div id="loadingIndicator" style="display:none;">
+    <div class="spinner"></div>
+    <p>Finding route...</p>
+</div>
 
 <!-- =========================================================================
      GEOLOCATION MODAL

@@ -177,6 +177,8 @@ map.on("click", async function (e) {
 // =============================================================================
 
 async function getRoute(pickup, dropoff) {
+    document.getElementById("loadingIndicator").style.display = "block";
+
   try {
     const response = await fetch("/route", {
       method: "POST",
@@ -199,14 +201,24 @@ async function getRoute(pickup, dropoff) {
       return;
     }
 
+    // extract distance and duration from ORS response
+    const summary = data.features[0].properties.summary;
+    const distanceKm = (summary.distance / 1000).toFixed(1);
+    const durationMin = Math.round(summary.duration / 60);
+
+    document.getElementById("routeInfo").textContent = `${distanceKm} km · ${durationMin} min`;
+
     routeLayer = L.geoJSON(data, {
       style: { color: "blue", weight: 5 }
     }).addTo(map);
 
     map.fitBounds(routeLayer.getBounds());
+        document.getElementById("loadingIndicator").style.display = "none";
 
   } catch (error) {
     console.error(error);
+        document.getElementById("loadingIndicator").style.display = "none";
+
   }
 }
 
