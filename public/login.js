@@ -1,25 +1,30 @@
 
 // =============================================================================
-// RATE LIMITING (DISABLED/COMMENTED OUT FOR NOW SINCE IT IS STILL DEV BUILD)
-
-// disables login button after 5 failed attempts for 30 seconds
+// RATE LIMITING — disables login after 5 failed attempts for 30 seconds
 // =============================================================================
-
-/* let failedAttempts = 0;
+let failedAttempts = 0;
 const MAX_ATTEMPTS = 5;
-const LOCKOUT_TIME = 30000; // 30 seconds
+const LOCKOUT_TIME = 30000;
 
 function lockout() {
     const btn = document.getElementById("submitButtonLogin");
     btn.disabled = true;
-    btn.textContent = "Too many attempts. Wait 30s...";
-    setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = "Login";
-        failedAttempts = 0;
-    }, LOCKOUT_TIME);
+
+    let remaining = LOCKOUT_TIME / 1000;
+    btn.textContent = `Too many attempts. Try again in ${remaining}s`;
+
+    const countdown = setInterval(() => {
+        remaining--;
+        btn.textContent = `Too many attempts. Try again in ${remaining}s`;
+        if (remaining <= 0) {
+            clearInterval(countdown);
+            btn.disabled = false;
+            btn.textContent = "Login";
+            failedAttempts = 0;
+            clearErrors();
+        }
+    }, 1000);
 }
-*/
 
 // =============================================================================
 // LOGIN
@@ -78,13 +83,16 @@ async function login() {
             }
             window.location.href = "/index.html";
         } else {
-    // failedAttempts++;
-    // if (failedAttempts >= MAX_ATTEMPTS) {
-    //     lockout();
-    // } else {
-    //     showError("formError", `Invalid username or password. ${MAX_ATTEMPTS - failedAttempts} attempt(s) remaining.`);
-    // }
-    showError("formError", "Invalid username or password."); // simple error for now
+    failedAttempts++;
+    shakeForm();
+
+    if (failedAttempts >= MAX_ATTEMPTS) {
+        lockout();
+    } else {
+        const left = MAX_ATTEMPTS - failedAttempts;
+        const plural = left === 1 ? "attempt" : "attempts";
+        showError("formError", `Incorrect username or password. ${left} ${plural} remaining.`);
+    }
 }
     } catch (err) {
         showError("formError", "Something went wrong. Please try again.");
@@ -127,6 +135,12 @@ function togglePassword() {
         input.type = "password";
         btn.textContent = "Show";
     }
+}
+
+function shakeForm() {
+    const container = document.querySelector(".loginContainer");
+    container.classList.add("shake");
+    setTimeout(() => container.classList.remove("shake"), 500);
 }
 
 // =============================================================================
