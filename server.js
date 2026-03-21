@@ -142,18 +142,25 @@ app.post("/signup", async(req,res)=>{
         await pool.query("INSERT INTO users (username, email, password, date_of_birth) VALUES ($1,$2,$3,$4)", [username, email, hashed, date_of_birth]);
 
         res.json({success: true});
-    }catch (err){
-        console.error(err);
-        console.error("Signup failed:", err.message); // log actual DB error
-        res.status(500).json({error: "Signup failed"});
+    } catch (err) {
+    if (err.code === '23505') { // PostgreSQL unique violation code
+        if (err.detail.includes('username')) {
+            return res.status(400).json({ error: 'Username already taken.' });
+        }
+        if (err.detail.includes('email')) {
+            return res.status(400).json({ error: 'Email already registered.' });
+        }
     }
+    res.status(500).json({ error: 'Signup failed' });
+}
 });
 
 //login endpoint
 app.post("/login", async (req,res)=>{
         const{username, password} = req.body;
     try{
-        const result = await pool.query("SELECT * FROM users WHERE username = $1",[username]);
+        const result = await pool.query("SELECT * FROM users WHERE username = $1 OR email = $1", [username]);
+
 
         if (result.rows.length ===0){
             return res.status(401).json({error: "user not found"});

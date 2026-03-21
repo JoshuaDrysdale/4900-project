@@ -103,6 +103,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   dropoff = null;
   pickupInput.value  = "";
   dropoffInput.value = "";
+  document.getElementById("routeInfo").textContent = "";
 });
 
 document.getElementById("addressModeBtn").addEventListener("click", () => {

@@ -295,7 +295,7 @@ function copyPassword() {
     const input = document.getElementById("passwordInput");
     const btn = document.getElementById("copyPasswordBtn");
     navigator.clipboard.writeText(input.value).then(() => {
-        btn.textContent = "Copied!";
+        btn.textContent = "✔ Copied!";
         setTimeout(() => {
             btn.textContent = "📋";
         }, 5000); // resets after 5 seconds, change as needed
