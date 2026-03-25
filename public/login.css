@@ -9,16 +9,13 @@
 }
 
 body {
-  margin: 0;
-  height: 100vh;
-  background: linear-gradient(135deg, #3D53CA, #8B5CF6, #FB8CB0, #3D53CA);
-  background-size: 300% 300%; /* oversized so the animation has room to pan */
-  animation: gradientShift 8s ease infinite;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 /* =============================================================================
@@ -50,8 +47,10 @@ body {
    LOGIN CARD
    contains the background image with a white overlay on top
 ============================================================================= */
+  /*if you want to put an image for the signup/login container, do so here*/ 
+
 .loginContainer {
-  background-image: url('/assets/loginBackground.webp');
+  background-image:none;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
