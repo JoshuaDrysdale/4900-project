@@ -105,19 +105,6 @@ app.get("/api/reverse", async (req, res) => {
     }
 });
 
-// =============================================================================
-// CALL DATABASE
-// =============================================================================
-app.get("/users", async (req,res)=>{
-    try{
-        const result = await pool.query("SELECT * FROM users");
-        res.json(result.rows);
-
-    }catch(err){
-        console.error(err);
-        res.status(500).send("Database Error");
-    }
-});
 
 // =============================================================================
 // SIGNUP ENDPOINT
@@ -157,32 +144,25 @@ app.post("/signup", async(req,res)=>{
 
 //login endpoint
 app.post("/login", async (req,res)=>{
-        const{username, password} = req.body;
+    const{username, password} = req.body;
+
     try{
         const result = await pool.query("SELECT * FROM users WHERE username = $1 OR email = $1", [username]);
 
-
-        if (result.rows.length ===0){
-            return res.status(401).json({error: "user not found"});
-        }
-
         const user = result.rows[0];
-        const match = await bcrypt.compare(password, user.password);
+        const match = user ? await bcrypt.compare(password, user.password) : false;
 
-        if(!match){
-            return res.status(401).json({error: "wrong password"});
+        if (!user || !match) {
+            return res.status(401).json({ error: "Invalid username or password." });
         }
 
-        res.json({success: true, user: user.username});
-
-
+        res.json({ success: true, user: user.username });
 
     }catch (err){
         console.error(err);
         res.status(500).json({error: "login failed"});
     }
 })
-
 
 app.use(express.static("public"));
 app.listen(3000, () => {
