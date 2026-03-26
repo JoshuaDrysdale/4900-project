@@ -21,6 +21,7 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 -  **Geocoding & Reverse Geocoding** via Photon (address ↔ coordinates)
 -  **Responsive design** — works on both desktop and mobile
 
+
 ### Authentication
 - 🔒 **Signup** with username, email, password and date of birth
 - 🔒 **Login** with username or email
@@ -31,6 +32,8 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 -  **Forgot password** page (email flow coming soon)
 -  **PostgreSQL database** for storing user credentials (bcrypt hashed passwords)
 -  **Server-side password validation** matching frontend rules
+-  **Supabase** cloud database for deployment
+
 
 ---
 
@@ -43,7 +46,7 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 | Backend    | [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/) |
 | Routing    | [OpenRouteService API](https://openrouteservice.org/) |
 | Geocoding  | [Photon by Komoot](https://photon.komoot.io/) |
-| Database   | [PostgreSQL](https://www.postgresql.org/) |
+| Database   | [Supabase (PostgreSQL)](https://supabase.com/) |
 | Email (planned)| [Nodemailer](https://nodemailer.com/) + Gmail |
 
 ---
@@ -60,8 +63,10 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 
 ```bash
 # 1. Clone the repository (with submodules)
-
+git clone 
+cd 
 # 2. Install dependencies
+npm install
 
 # 3. Set up your environment variables
 Create a .env file in the root directory:
@@ -72,6 +77,8 @@ ORS_API_KEY=your_api_key_here
 
 # 5. Start the server
 node server.js
+# or with nodemon:
+nodemon server.jsim
 
 # Server runs at http://localhost:3000
 Open your browser and navigate to the URL above to begin using the application.
@@ -102,7 +109,6 @@ Please allow location permissions for full functionality.
 -  Forgot password email flow via Nodemailer
 -  Ride price comparison across Uber, Lyft and other providers
 -  Fare estimation based on route distance
--  Supabase cloud database for deployment
 -  Server-side rate limiting for login attempts
 -  Multiple transportation modes
 -  Saved locations

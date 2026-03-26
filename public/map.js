@@ -283,8 +283,16 @@ async function setPickup() {
   if (!address) return;
 
   const result = await geocode(address);
-  if (!result) { alert("Address not found"); return; }
-
+  if (!result) {
+    const input = document.getElementById("pickupInput");
+    input.style.borderColor = "#ef4444";
+    showInputError("pickupError", "Address not found, please try again.");
+    setTimeout(() => {
+        input.style.borderColor = "";
+        clearInputError("pickupError");
+    }, 3000);
+    return;
+}
   const coords = { lat: result.lat, lng: result.lng };
   if (result.label) pickupInput.value = result.label;
 
@@ -304,7 +312,16 @@ async function setDropoff() {
   if (!address) return;
 
   const result = await geocode(address);
-  if (!result) { alert("Address not found"); return; }
+  if (!result) {
+    const input = document.getElementById("dropoffInput");
+    input.style.borderColor = "#ef4444";
+    showInputError("dropoffError", "Address not found, please try again.");
+    setTimeout(() => {
+        input.style.borderColor = "";
+        clearInputError("dropoffError");
+    }, 3000);
+    return;
+}
 
   const coords = { lat: result.lat, lng: result.lng };
   if (result.label) dropoffInput.value = result.label;
@@ -447,4 +464,26 @@ function debounce(func, delay) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), delay);
   };
+}
+// =============================================================================
+// Error messages
+// =============================================================================
+
+function showInputError(id, message) {
+    let el = document.getElementById(id);
+    if (!el) {
+        el = document.createElement("div");
+        el.id = id;
+        el.style.cssText = "color:#ef4444; font-size:12px; margin-top:2px;";
+    }
+    el.textContent = message;
+    const container = id === "pickupError"
+        ? document.querySelector("#pickupInput").closest(".autocomplete-container")
+        : document.querySelector("#dropoffInput").closest(".autocomplete-container");
+    container.appendChild(el);
+}
+
+function clearInputError(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
 }
