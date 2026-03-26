@@ -5,8 +5,7 @@ const pool = require("./db");
 const bcrypt = require("bcrypt");
 
 const app = express();
-app.use(express.json());
-
+app.use(express.json({ limit: "10kb" }));
 
 //Making sure login page opens first
 app.get("/", (req, res)=>{
@@ -26,12 +25,16 @@ app.get("/login", (req, res) => {
 // Calling the OpenRouteService API
 // =============================================================================
 app.post("/route", async (req, res) => {
+    const { coordinates } = req.body;
+    if (!coordinates || !Array.isArray(coordinates) || coordinates.length < 2) {
+        return res.status(400).json({ error: "Invalid coordinates." });
+    }
     try{
         const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car/geojson", {
-        method: "POST",
-        headers: {
-        "Authorization": process.env.ORS_API_KEY,
-        "Content-Type": "application/json"
+            method: "POST",
+            headers: {
+            "Authorization": process.env.ORS_API_KEY,
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(req.body)
     });
@@ -57,16 +60,24 @@ app.post("/route", async (req, res) => {
 // =============================================================================
 // Calling ORS for autocomplete
 // =============================================================================
-app.get("/autocomplete", async (req,res)=>{
+app.get("/autocomplete", async (req, res) => {
     const query = req.query.q;
-    const response = await fetch(`https://api.openrouteservice.org/geocode/autocomplete?api_key=${process.env.ORS_API_KEY}&text=${query}`);
+    if (!query) return res.status(400).json({ error: "Missing query" });
 
-    if(!response.ok){
-        return res.status(response.status).json({error:`ORS request failed with status ${response.status}`})
+    try {
+        const response = await fetch(`https://api.openrouteservice.org/geocode/autocomplete?api_key=${process.env.ORS_API_KEY}&text=${encodeURIComponent(query)}`);
+        
+        if (!response.ok) {
+            return res.status(response.status).json({ error: `ORS request failed with status ${response.status}` });
+        }
+
+        const data = await response.json();
+        res.json(data.features);
+
+    } catch (err) {
+        console.error("Autocomplete failed:", err);
+        res.status(500).json({ error: "Autocomplete service unavailable." });
     }
-    
-    const data = await response.json();
-    res.json(data.features);
 });
 
 // =============================================================================
@@ -119,6 +130,21 @@ function validatePassword(password) {
 
 app.post("/signup", async(req,res)=>{
     const {username, email, password, date_of_birth} = req.body;
+
+    // input validation
+    if (!username || !email || !password || !date_of_birth) {
+        return res.status(400).json({ error: "All fields are required." });
+    }
+    if (username.length < 4 || username.length > 14) {
+        return res.status(400).json({ error: "Invalid username length." });
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        return res.status(400).json({ error: "Invalid username characters." });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: "Invalid email address." });
+    }
+
     const passwordError = validatePassword(password);
     if (passwordError) {
     return res.status(400).json({ error: passwordError });
@@ -126,10 +152,15 @@ app.post("/signup", async(req,res)=>{
     try{
         const hashed = await bcrypt.hash(password,10);
 
-        await pool.query("INSERT INTO users (username, email, password, date_of_birth) VALUES ($1,$2,$3,$4)", [username, email, hashed, date_of_birth]);
+        await pool.query(
+            "INSERT INTO users (username, email, password, date_of_birth) VALUES ($1,$2,$3,$4)", 
+            [username, email, hashed, date_of_birth]
+        );
 
         res.json({success: true});
+
     } catch (err) {
+
     if (err.code === '23505') { // PostgreSQL unique violation code
         if (err.detail.includes('username')) {
             return res.status(400).json({ error: 'Username already taken.' });
@@ -138,16 +169,26 @@ app.post("/signup", async(req,res)=>{
             return res.status(400).json({ error: 'Email already registered.' });
         }
     }
+    console.error("Signup error:", err);
     res.status(500).json({ error: 'Signup failed' });
 }
 });
 
-//login endpoint
+// =============================================================================
+// LOGIN ENDPOINT
+// =============================================================================
 app.post("/login", async (req,res)=>{
     const{username, password} = req.body;
 
+    if (!username || !password) {
+        return res.status(400).json({ error: "All fields are required." });
+    }
+
     try{
-        const result = await pool.query("SELECT * FROM users WHERE username = $1 OR email = $1", [username]);
+        const result = await pool.query(
+            "SELECT * FROM users WHERE username = $1 OR email = $1", 
+            [username]
+        );
 
         const user = result.rows[0];
         const match = user ? await bcrypt.compare(password, user.password) : false;

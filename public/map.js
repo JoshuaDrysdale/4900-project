@@ -429,8 +429,7 @@ async function autocomplete(e, suggestionId) {
       return;
     }
 
-    const res  = await fetch(`/autocomplete?q=${value}`);
-    const data = await res.json();
+    const res = await fetch(`/autocomplete?q=${encodeURIComponent(value)}`);    const data = await res.json();
 
     console.log("Autocomplete response:", data); // debug
 
