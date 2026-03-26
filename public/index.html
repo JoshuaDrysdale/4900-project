@@ -8,14 +8,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="style.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"><!--leaflet geocoder-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.9.4/leaflet-geocoder-mapzen.css"><!--leaflet geocoder-->
     <title>RHA</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">  </head>
 <body>
 
 <div class="mapBranding">
     <span class="mapAppName">🚗 RHA</span>
+    <span class="mapTagline">Find your best ride</span>
 </div>
 
 <!-- =========================================================================
@@ -35,17 +34,17 @@
     <!-- Pickup input -->
     <div class="autocomplete-container">
       <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
-      <button onclick="setPickup()">Set Pickup</button>
+      <button onclick="setPickup()">Confirm Pickup</button>
       <ul id="pickupSuggestions" class="suggestions"></ul>
     </div>
 
     <!-- Swap button — reverses pickup and dropoff -->
-    <button id="swapLocations"> Swap ⇅</button>
+    <button id="swapLocations">⇅ Swap </button>
 
     <!-- Dropoff input -->
     <div class="autocomplete-container">
       <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
-      <button onclick="setDropoff()">Set Dropoff</button>
+      <button onclick="setDropoff()">Confirm Dropoff</button>
       <ul id="dropoffSuggestions" class="suggestions"></ul>
     </div>
 
@@ -55,7 +54,7 @@
 </div>
 
 <!-- Reset button — clears all markers and the drawn route -->
-<button id="resetBtn">Reset Markers and Input</button>
+<button id="resetBtn">Clear Trip</button>
 
 <!-- Recenter / My Location button -->
 <button id="recenterBtn" title="My Location">📍</button>
@@ -85,8 +84,6 @@
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script><!--leaflet geocoder-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.9.4/leaflet-geocoder-mapzen.js"></script><!--leaflet geocoder-->
 <script src="map.js"></script>
 
 </body>
