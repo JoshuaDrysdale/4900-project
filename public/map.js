@@ -508,3 +508,15 @@ function clearInputError(id) {
     const el = document.getElementById(id);
     if (el) el.remove();
 }
+
+document.getElementID("pickupInput").addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    setPickup();
+  }
+});
+
+document.getElementID("dropoffInput").addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    setDropoff();
+  }
+});
