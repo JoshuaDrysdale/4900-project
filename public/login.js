@@ -76,6 +76,7 @@ async function login() {
 
         if (data.success) {
             // save username to localStorage if remember me is checked
+            failedAttempts = 0;
             if (rememberMe) {
                 localStorage.setItem("rememberedUser", username);
             } else {
