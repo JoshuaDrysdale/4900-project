@@ -166,7 +166,7 @@ map.on("click", async function (e) {
       markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
     }
 
-    if (pickup && dropoff) getRoute(pickup, dropoff);
+    if (pickup && dropoff) getRoute(pickup, dropoff), routeTime(pickup,dropoff);
 
   } catch (err) {
     console.error(err);
@@ -202,12 +202,12 @@ async function getRoute(pickup, dropoff) {
       return;
     }
 
-    // extract distance and duration from ORS response
-    const summary = data.features[0].properties.summary;
-    const distanceKm = (summary.distance / 1000).toFixed(1);
-    const durationMin = Math.round(summary.duration / 60);
+    // // extract distance and duration from ORS response
+    // const summary = data.features[0].properties.summary;
+    // const distanceKm = (summary.distance / 1000).toFixed(1);
+    // const durationMin = Math.round(summary.duration / 60);
 
-    document.getElementById("routeInfo").textContent = `${distanceKm} km · ${durationMin} min`;
+    // document.getElementById("routeInfo").textContent = `${distanceKm} km · ${durationMin} min`;
 
     routeLayer = L.geoJSON(data, {
       style: { color: "blue", weight: 5 }
@@ -449,6 +449,28 @@ async function autocomplete(e, suggestionId) {
 
   } catch (error) {
     console.error("Autocomplete failed:", error);
+  }
+}
+
+//get route time
+async function routeTime(pickup, dropoff){
+  try{
+    const start = { lat: pickup.lat, lon: pickup.lng };
+    const end = { lat: dropoff.lat, lon: dropoff.lng };
+
+    const response = await fetch("/route-time", {
+      method: "POST",
+      headers: {"Content-Type" : "application/json"},
+      body: JSON.stringify({start, end})
+    }) ;
+
+    const data = await response.json();
+    console.log("Route time =", data);
+
+     document.getElementById("routeInfo").textContent = `${data.distanceMeters/1000} km · ${data.estimatedMinutes} min`;
+
+  }catch(err){
+    console.error(err);
   }
 }
 
