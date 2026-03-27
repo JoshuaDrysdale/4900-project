@@ -183,6 +183,40 @@ app.post("/login", async (req,res)=>{
     }
 })
 
+//tom_tom
+app.post("/route-time", async (req,res)=>{
+    try{
+        const {start, end} = req.body;
+
+        if(!start || !end){
+            return res.status(500).json({error: "Mising start or end coordinated"});
+        }
+
+        const url = `https://api.tomtom.com/routing/1/calculateRoute/${start.lat},${start.lon}:${end.lat},${end.lon}/json?key=${process.env.TOM_TOM_KEY}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        const route = data.routes?.[0];
+
+        if (!route) {
+            return res.status(500).json({ error: "No route found" });
+        }
+
+        const summary = route.summary;
+
+        res.json({
+            distanceMeters: summary.lengthInMeters,
+            travelTimeSeconds: summary.travelTimeInSeconds,
+            trafficDelaySeconds: summary.trafficDelayInSeconds,
+            estimatedMinutes: Math.round(summary.travelTimeInSeconds / 60)
+        });
+
+    }catch (err){
+        console.error(err);
+        res.status(500).json({error:"TomTom api"});
+    }
+});
+
 
 app.use(express.static("public"));
 app.listen(3000, () => {
