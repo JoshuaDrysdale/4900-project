@@ -81,15 +81,23 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
         const data = await res.json();
 
         if (data.success) {
-            alert("Signup successful!");
-            window.location.href = "/login";
-        } else {
-            showError("formError", data.error || "Signup failed. Please try again.");
-        }
+             // Store JWT token in localStorage
+        localStorage.setItem("token", data.token);
+        console.log("✅ Signup successful, JWT token stored");
+ 
+        // Redirect to map
+        setTimeout(() => {
+          window.location.href = "/index.html";
+        }, 300);
+      } else {
+        showError("formError", data.error || "Signup failed. Please try again.");
+      }
     } catch (err) {
         showError("formError", "Something went wrong. Please try again.");
     }
 });
+
+
 // =============================================================================
 // PASSWORD STRENGTH BAR + REQUIREMENTS CHECKLIST
 // updates in real time as the user types

@@ -3,9 +3,44 @@ const express = require("express");
 const path = require("path");
 const pool = require("./db");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 
 const app = express();
 app.use(express.json({ limit: "10kb" }));
+
+
+// ============================================================================
+// JWT Configuration
+// ============================================================================
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRY = "7d";
+
+// ============================================================================
+// JWT Middleware - Verify token on protected routes
+// ============================================================================
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Bearer <token>
+ 
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+ 
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; // Attach user info to request
+    next();
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Token expired" });
+    }
+    return res.status(401).json({ error: "Invalid token" });
+  }
+};
+
+// ============================================================================
+// Route to login page
+// ============================================================================
 
 //Making sure login page opens first
 app.get("/", (req, res)=>{
@@ -16,6 +51,11 @@ app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "login.html"));
 });
 
+// Serve static files from public folder (signup.html, index.html, etc.)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Also serve static files from root
+app.use(express.static(__dirname));
 //Accessing files from the public folder
 // app.get("public/index.html", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 // app.get("public/signup.html", (req, res) => res.sendFile(path.join(__dirname, "signup.html")));
@@ -152,15 +192,30 @@ app.post("/signup", async(req,res)=>{
     try{
         const hashed = await bcrypt.hash(password,10);
 
-        await pool.query(
-            "INSERT INTO users (username, email, password, date_of_birth) VALUES ($1,$2,$3,$4)", 
-            [username, email, hashed, date_of_birth]
-        );
+        const result = await pool.query(
+      "INSERT INTO users (username, email, password, date_of_birth) VALUES ($1,$2,$3,$4) RETURNING id, username, email",
+      [username, email, hashed, date_of_birth]
+    );
+ 
+    const user = result.rows[0];
+ 
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, username: user.username, email: user.email },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRY }
+    );
 
-        res.json({success: true});
 
-    } catch (err) {
-
+    console.log(`✅ User registered: ${user.username}`);
+    res.status(201).json({
+      success: true,
+      message: "Signup successful",
+      token,
+      user: { id: user.id, username: user.username, email: user.email }
+    });
+}
+catch (err) {
     if (err.code === '23505') { // PostgreSQL unique violation code
         if (err.detail.includes('username')) {
             return res.status(400).json({ error: 'Username already taken.' });
@@ -183,12 +238,11 @@ app.post("/login", async (req,res)=>{
     if (!username || !password) {
         return res.status(400).json({ error: "All fields are required." });
     }
-
-    try{
-        const result = await pool.query(
-            "SELECT * FROM users WHERE username = $1 OR email = $1", 
-            [username]
-        );
+ try {
+    const result = await pool.query(
+      "SELECT id, username, email, password FROM users WHERE username = $1 OR email = $1",
+      [username]
+    );
 
         const user = result.rows[0];
         const match = user ? await bcrypt.compare(password, user.password) : false;
@@ -197,14 +251,55 @@ app.post("/login", async (req,res)=>{
             return res.status(401).json({ error: "Invalid username or password." });
         }
 
-        res.json({ success: true, user: user.username });
+        // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, username: user.username, email: user.email },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRY }
+    );
+ 
+    console.log(`✅ User logged in: ${user.username}`);
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: { id: user.id, username: user.username, email: user.email }
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Login failed" });
+  }
+});
 
-    }catch (err){
-        console.error(err);
-        res.status(500).json({error: "login failed"});
+
+// ============================================================================
+// LOGOUT ENDPOINT (logs server-side, token deletion is client-side)
+// ============================================================================
+app.post("/logout", verifyToken, (req, res) => {
+  console.log(`✅ User logged out: ${req.user.username}`);
+  res.status(200).json({ message: "Logged out successfully" });
+});
+
+// ============================================================================
+// GET CURRENT USER (protected route example)
+// ============================================================================
+app.get("/me", verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, username, email, date_of_birth, created_at FROM users WHERE id = $1",
+      [req.user.id]
+    );
+ 
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
     }
-})
-
+ 
+    res.status(200).json({ user: result.rows[0] });
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({ error: "Failed to fetch user info" });
+  }
+});
 
 //tom_tom
 app.post("/route-time", async (req,res)=>{

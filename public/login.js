@@ -61,7 +61,9 @@ async function login() {
     if (!valid) return;
 
     if (username === "1" && password === "1") { //dev shortcut for now
-        window.location.href = "/index.html";
+    console.warn("⚠️ DEV SHORTCUT USED — Remove before deployment");
+    localStorage.setItem("token");
+    window.location.href = "/index.html";
         return;
     }
 
@@ -77,13 +79,19 @@ async function login() {
         if (data.success) {
             // save username to localStorage if remember me is checked
             failedAttempts = 0;
+             // Store JWT token in localStorage
+        localStorage.setItem("token", data.token);
+        console.log("✅ Login successful, JWT token stored");
             if (rememberMe) {
                 localStorage.setItem("rememberedUser", username);
             } else {
                 localStorage.removeItem("rememberedUser");
             }
-            window.location.href = "/index.html";
-        } else {
+
+        setTimeout(() => {
+        window.location.href = "/index.html";
+      }, 300);        
+    } else {
     failedAttempts++;
     shakeForm();
 

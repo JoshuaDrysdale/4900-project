@@ -1,3 +1,42 @@
+// =============================================================================
+// JWT TOKEN VERIFICATION — Protect the map page
+// =============================================================================
+ 
+function getToken() {
+  return localStorage.getItem("token");
+}
+ 
+function isAuthenticated() {
+  const token = getToken();
+  return token !== null;
+}
+ 
+// Redirect to login if not authenticated
+window.addEventListener("DOMContentLoaded", () => {
+  if (!isAuthenticated()) {
+    console.warn("⚠️ No token found, redirecting to login");
+    window.location.href = "/login.html";
+  }
+});
+ 
+// =============================================================================
+// LOGOUT FUNCTION
+// =============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+});
+
+function logout() {
+  localStorage.removeItem("token");
+  console.log("✅ Logged out, token removed from localStorage");
+  window.location.href = "/login.html";
+}
+ 
+
+
 console.log("map.js loaded");
 // =============================================================================
 // MAP INITIALIZATION
@@ -166,7 +205,10 @@ map.on("click", async function (e) {
       markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
     }
 
-    if (pickup && dropoff) getRoute(pickup, dropoff), routeTime(pickup,dropoff);
+    if (pickup && dropoff) {
+     getRoute(pickup, dropoff);
+     routeTime(pickup, dropoff);
+   }
 
   } catch (err) {
     console.error(err);
