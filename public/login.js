@@ -60,13 +60,6 @@ async function login() {
 
     if (!valid) return;
 
-    if (username === "1" && password === "1") { //dev shortcut for now
-    console.warn("⚠️ DEV SHORTCUT USED — Remove before deployment");
-    localStorage.setItem("token");
-    window.location.href = "/index.html";
-        return;
-    }
-
     try {
         const res = await fetch("/login", {
             method: "POST",
