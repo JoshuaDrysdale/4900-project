@@ -314,7 +314,7 @@ app.post("/route-time", async (req,res)=>{
         
         const response = await fetch(url);
         const data = await response.json();
-        const route = data.routes?.[0];
+        const route = data.routes?.[0];                    
 
         if (!route) {
             return res.status(500).json({ error: "No route found" });
@@ -322,12 +322,13 @@ app.post("/route-time", async (req,res)=>{
 
         const summary = route.summary;
 
-        res.json({
-            distanceMeters: summary.lengthInMeters,
-            travelTimeSeconds: summary.travelTimeInSeconds,
-            trafficDelaySeconds: summary.trafficDelayInSeconds,
-            estimatedMinutes: Math.round(summary.travelTimeInSeconds / 60)
-        });
+        const points = route.legs[0].points;
+
+    res.json({
+        points,
+        distanceMeters: summary.lengthInMeters,
+        estimatedMinutes: Math.round(summary.travelTimeInSeconds / 60)
+    });
 
     }catch (err){
         console.error(err);

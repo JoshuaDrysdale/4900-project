@@ -206,8 +206,9 @@ map.on("click", async function (e) {
     }
 
     if (pickup && dropoff) {
-     getRoute(pickup, dropoff);
+    // getRoute(pickup, dropoff);
      routeTime(pickup, dropoff);
+     tomRoute(pickup, dropoff);
    }
 
   } catch (err) {
@@ -219,51 +220,51 @@ map.on("click", async function (e) {
 // ROUTING
 // =============================================================================
 
-async function getRoute(pickup, dropoff) {
-    document.getElementById("loadingIndicator").style.display = "block";
+// async function getRoute(pickup, dropoff) {
+//     document.getElementById("loadingIndicator").style.display = "block";
 
-  try {
-    const response = await fetch("/route", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        coordinates: [
-          [pickup.lng, pickup.lat],
-          [dropoff.lng, dropoff.lat]
-        ]
-      })
-    });
+//   try {
+//     const response = await fetch("/route", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         coordinates: [
+//           [pickup.lng, pickup.lat],
+//           [dropoff.lng, dropoff.lat]
+//         ]
+//       })
+//     });
 
-    const data = await response.json();
-    console.log("Route =", data);
+//     const data = await response.json();
+//     console.log("Route =", data);
 
-    if (routeLayer) map.removeLayer(routeLayer);
+//     if (routeLayer) map.removeLayer(routeLayer);
 
-    if (!data.features || data.features.length === 0) {
-      console.error("No route found");
-      return;
-    }
+//     if (!data.features || data.features.length === 0) {
+//       console.error("No route found");
+//       return;
+//     }
 
-    // // extract distance and duration from ORS response
-    // const summary = data.features[0].properties.summary;
-    // const distanceKm = (summary.distance / 1000).toFixed(1);
-    // const durationMin = Math.round(summary.duration / 60);
+//     // // extract distance and duration from ORS response
+//     // const summary = data.features[0].properties.summary;
+//     // const distanceKm = (summary.distance / 1000).toFixed(1);
+//     // const durationMin = Math.round(summary.duration / 60);
 
-    // document.getElementById("routeInfo").textContent = `${distanceKm} km · ${durationMin} min`;
+//     // document.getElementById("routeInfo").textContent = `${distanceKm} km · ${durationMin} min`;
 
-    routeLayer = L.geoJSON(data, {
-      style: { color: "blue", weight: 5 }
-    }).addTo(map);
+//     routeLayer = L.geoJSON(data, {
+//       style: { color: "blue", weight: 5 }
+//     }).addTo(map);
 
-    map.fitBounds(routeLayer.getBounds());
-        document.getElementById("loadingIndicator").style.display = "none";
+//     map.fitBounds(routeLayer.getBounds());
+//         document.getElementById("loadingIndicator").style.display = "none";
 
-  } catch (error) {
-    console.error(error);
-        document.getElementById("loadingIndicator").style.display = "none";
+//   } catch (error) {
+//     console.error(error);
+//         document.getElementById("loadingIndicator").style.display = "none";
 
-  }
-}
+//   }
+// }
 
 // =============================================================================
 // GEOCODING
@@ -344,7 +345,7 @@ async function setPickup() {
   markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
   map.setView(coords, 15);
 
-  if (pickup && dropoff) getRoute(pickup, dropoff);
+  if (pickup && dropoff) tomRoute(pickup, dropoff);
 }
 
 async function setDropoff() {
@@ -374,7 +375,7 @@ async function setDropoff() {
   markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
   map.setView(coords, 15);
 
-  if (pickup && dropoff) getRoute(pickup, dropoff);
+  if (pickup && dropoff) tomRoute(pickup, dropoff);
 }
 
 // =============================================================================
@@ -513,6 +514,49 @@ async function routeTime(pickup, dropoff){
 
   }catch(err){
     console.error(err);
+  }
+}
+
+//tomtom draw route
+async function tomRoute(pickup, dropoff) {
+  try {
+    // Send POST request to backend
+    const res = await fetch("/route-time", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        start: { lat: pickup.lat, lon: pickup.lng },
+        end: { lat: dropoff.lat, lon: dropoff.lng }
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data.points || !data.points.length) {
+      throw new Error("No route points returned");
+    }
+
+    // Map points to Leaflet [lat, lon] array
+    const latlngs = data.points.map(p => [p.latitude, p.longitude]);
+
+    // Remove previous route if it exists
+    if (window.currentRoute) map.removeLayer(window.currentRoute);
+    if (window.startMarker) map.removeLayer(window.startMarker);
+    if (window.endMarker) map.removeLayer(window.endMarker);
+
+    // Add polyline for route
+    window.currentRoute = L.polyline(latlngs, { color: "red", weight: 5 }).addTo(map);
+
+    // Add markers for start and end
+    window.startMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Start").openPopup();
+    window.endMarker = L.marker([dropoff.lat, dropoff.lng]).addTo(map).bindPopup("End");
+
+    // Fit map to route bounds
+    map.fitBounds(window.currentRoute.getBounds());
+
+    console.log(`Route added! Distance: ${data.distanceMeters}m, ETA: ${data.estimatedMinutes} min`);
+  } catch (err) {
+    console.error("Routing error:", err);
   }
 }
 

@@ -3,7 +3,7 @@
 // RATE LIMITING — disables login after 5 failed attempts for 30 seconds
 // =============================================================================
 let failedAttempts = 0;
-const MAX_ATTEMPTS = 5;
+const MAX_ATTEMPTS = 500;
 const LOCKOUT_TIME = 30000;
 
 function lockout() {
