@@ -68,10 +68,15 @@
         
         <button type="submit" id="submitButtonSignup">Sign Up</button>
         </form>
+        <div id="verificationMessage" style="display: none; 
+         background: #e8f5e9; padding: 15px; border-radius: 5px; color: #2e7d32;">
+        ✓ Account created! Check your email to verify your account.
+        <a href="/" style="color: #2e7d32; font-weight: bold;">Continue to map</a>
+        </div>
 
     <!-- Redirect to login page -->
         <p>Already have an account?</p>
-        <button class="loginButton" onclick="window.location.href='/login'">Login</button>    
+        <button class="loginButton" onclick="window.location.href='/login.html'">Login</button>    
     </div>   
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="/signup.js"></script>
