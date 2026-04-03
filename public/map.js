@@ -137,6 +137,10 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   if (routeLayer)    { map.removeLayer(routeLayer);    routeLayer    = null; }
   if (markerPickup)  { map.removeLayer(markerPickup);  markerPickup  = null; }
   if (markerDropoff) { map.removeLayer(markerDropoff); markerDropoff = null; }
+  
+  if (window.currentRoute) { map.removeLayer(window.currentRoute); window.currentRoute = null; }
+  if (window.startMarker)  { map.removeLayer(window.startMarker);  window.startMarker  = null; }
+  if (window.endMarker)    { map.removeLayer(window.endMarker);    window.endMarker    = null; }
 
   pickup = null;
   dropoff = null;
@@ -144,7 +148,6 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   dropoffInput.value = "";
   document.getElementById("routeInfo").textContent = "";
 });
-
 document.getElementById("addressModeBtn").addEventListener("click", () => {
   inputMode = "address";
 
@@ -207,7 +210,7 @@ map.on("click", async function (e) {
 
     if (pickup && dropoff) {
     // getRoute(pickup, dropoff);
-     routeTime(pickup, dropoff);
+    // routeTime(pickup, dropoff);
      tomRoute(pickup, dropoff);
    }
 
@@ -397,7 +400,7 @@ function swapLocations() {
   if (dropoff) markerDropoff = L.marker(dropoff).addTo(map).bindPopup("Dropoff");
 
   // Redraw route
-  if (pickup && dropoff) getRoute(pickup, dropoff);
+  if (pickup && dropoff) tomRoute(pickup, dropoff);
 }
 
 // =============================================================================
@@ -446,7 +449,7 @@ function showGeoModal(lat, lng, addressLabel) {
     pickup = coords;
     pickupInput.value = addressLabel;
     markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
-    if (pickup && dropoff) getRoute(pickup, dropoff);
+    if (pickup && dropoff) tomRoute(pickup, dropoff);
     close();
   });
 
@@ -495,7 +498,8 @@ async function autocomplete(e, suggestionId) {
   }
 }
 
-//get route time
+//get route time  
+/*
 async function routeTime(pickup, dropoff){
   try{
     const start = { lat: pickup.lat, lon: pickup.lng };
@@ -516,6 +520,7 @@ async function routeTime(pickup, dropoff){
     console.error(err);
   }
 }
+ */
 
 //tomtom draw route
 async function tomRoute(pickup, dropoff) {
@@ -550,6 +555,11 @@ async function tomRoute(pickup, dropoff) {
     // Add markers for start and end
     window.startMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Start").openPopup();
     window.endMarker = L.marker([dropoff.lat, dropoff.lng]).addTo(map).bindPopup("End");
+
+document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1000).toFixed(1)} km · ${data.estimatedMinutes} min`;
+// if we want to show miles, below is the routeInfo display 
+//document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1609.34).toFixed(1)} mi · ${data.estimatedMinutes} min`;
+
 
     // Fit map to route bounds
     map.fitBounds(window.currentRoute.getBounds());
@@ -595,13 +605,13 @@ function clearInputError(id) {
     if (el) el.remove();
 }
 
-document.getElementID("pickupInput").addEventListener("keydown", (e) => {
+document.getElementById("pickupInput").addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
     setPickup();
   }
 });
 
-document.getElementID("dropoffInput").addEventListener("keydown", (e) => {
+document.getElementById("dropoffInput").addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
     setDropoff();
   }
