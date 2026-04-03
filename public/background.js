@@ -62,8 +62,8 @@
     function applyOverlay() {
         const style = document.createElement("style");
         style.textContent = `
-            .loginContainer::before, .signupContainer::before {
-                background: ${theme.overlay} !important;
+            .loginContainer::before, .signupContainer::before, .forgot-password-container::before, .reset-password-container::before {
+        background: ${theme.overlay} !important;
             }
         `;
         document.head.appendChild(style);
