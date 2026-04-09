@@ -291,13 +291,3 @@ html, body {
   max-width: 100%;
 }
 
-/* =============================================================================
-   ACCESSIBILITY — respects user's reduced motion preference
-   replaces animated gradient with a static color
-============================================================================= */
-@media (prefers-reduced-motion: reduce) {
-  body {
-    animation: none;
-    background: #3D53CA;
-  }
-}
