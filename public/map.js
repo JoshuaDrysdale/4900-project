@@ -113,6 +113,9 @@ L.control.layers({
 const pickupInput  = document.getElementById("pickupInput");
 const dropoffInput = document.getElementById("dropoffInput");
 
+const tripHistoryList = document.getElementById("tripHistoryList");
+const TRIP_HISTORY_KEY = "rha_trip_history";
+
 let pickup        = null;
 let dropoff       = null;
 let routingControl = null;
