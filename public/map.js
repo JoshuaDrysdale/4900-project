@@ -582,6 +582,21 @@ function getTripHistory(){
   return data ? JSON.parse(data) : [];
 }
 
+function renderTripHistory(){
+  const trips = getTripHistory();
+
+  if (!tripHistoryList) return;
+
+  if (trips.length === 0){
+    tripHistoryList.innerHTML = "No recent trips yet.";
+    return;
+  }
+
+  tripHistoryList.innerHTML = trips
+   .map(trip => `${trip.pickupLabel} -> ${trip.dropoffLabel}`)
+   .join("<br>"); 
+}
+
 // =============================================================================
 // UTILITIES
 // =============================================================================
