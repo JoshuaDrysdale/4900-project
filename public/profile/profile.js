@@ -7,7 +7,6 @@ window.onload = async function getUserInfo(){
     headers: {
         Authorization: `Bearer ${token}`
     } }).then(res => res.json()).then(data => {
-        console.log(data.user);
 
         document.getElementById("username").value = data.user.username;
         document.getElementById("email").value = data.user.email;
