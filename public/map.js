@@ -574,11 +574,12 @@ document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1000)
 }
 //buttons: home, settings profile
 document.getElementById("profileBtn").addEventListener("click", ()=>{
-  window.location.href= "profile/profile.html";
+  window.location.href= "menu/profile.html";
 })
 document.getElementById("settingsBtn").addEventListener("click", ()=>{
-  window.location.href= "settings/settings.html";
+  window.location.href= "menu/settings.html";
 })
+
 
 
 // =============================================================================
