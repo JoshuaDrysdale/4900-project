@@ -819,6 +819,26 @@ app.get("/api/verify-reset-token", async (req, res) => {
 });
 
 
+/////update user in database
+app.put("/update-user-db", verifyToken, async(req, res)=>{
+  const id = req.user.id;
+  const {username, email} = req.body;
+
+  try{
+    const result = await pool.query(
+      'UPDATE users SET username = $1, email = $2 WHERE id = $3 RETURNING id, username, email',
+      [username, email, id]);
+    
+      res.json({user: result.rows[0]})
+
+  }catch (err){
+    console.error(err);
+    res.status(500).json({ error: "Update failed" });
+  }
+
+})
+
+
 app.use(express.static("public"));
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");

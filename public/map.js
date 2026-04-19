@@ -572,6 +572,14 @@ document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1000)
     console.error("Routing error:", err);
   }
 }
+//buttons: home, settings profile
+document.getElementById("profileBtn").addEventListener("click", ()=>{
+  window.location.href= "profile/profile.html";
+})
+document.getElementById("settingsBtn").addEventListener("click", ()=>{
+  window.location.href= "settings/settings.html";
+})
+
 
 // =============================================================================
 // READ TRIP HISTORY
