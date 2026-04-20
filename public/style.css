@@ -737,6 +737,7 @@ input {
 #geoSetPickup   { background: #22c55e; color: white; }
 #geoRecenterOnly { background: #f3f4f6; color: #333; }
 
+
 /* =============================================================================
    RESPONSIVE — SMALL SCREENS (max-width: 600px)
    ============================================================================= */
@@ -818,4 +819,24 @@ input {
     font-size: 14px;
   }
 
+  
+
+}
+
+#comparisonTab {
+  position: fixed;
+  left: 0;
+  bottom: 0;           
+  width: 100%;
+  height: 200px;
+  background: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  z-index: 999999;
+
+  transform: translateY(100%); 
+  transition: transform 0.3s ease;
+}
+
+#comparisonTab.show {
+  transform: translateY(0);
 }
