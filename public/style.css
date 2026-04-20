@@ -160,6 +160,7 @@ input {
   padding: 14px;
   margin-bottom: 5px;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 
@@ -174,11 +175,12 @@ input {
 }
 
 .autocomplete-container input {
-  width: 100%;
-  padding: 4px;
-  font-size: 16px;
+  padding: 8px 36px 8px 8px !important;
+  font-size: 15px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
+  margin-bottom: 0;
 }
 
 .autocomplete-container button {
@@ -193,6 +195,21 @@ input {
   color: white;
 
   cursor: pointer;
+}
+
+.autocomplete-container .star-btn {
+  width: auto !important;
+  background: none !important;
+  color: #f59e0b !important;
+  margin-top: 0 !important;
+  padding: 2px !important;
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  border: none !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
 }
 
 .suggestions {
@@ -272,7 +289,239 @@ input {
   font-size: 13px;
   color: #666;
 }
+/* =============================================================================
+   INPUT WITH STAR BUTTON
+   ============================================================================= */
 
+.input-with-star {
+  position: relative;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.input-with-star input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 36px 6px 8px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 0;
+}
+
+.star-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #f59e0b;
+  padding: 2px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+  width: auto;        /* override any global button width */
+  margin-top: 0;      /* override any global button margin */
+}
+
+.star-btn:hover { transform: translateY(-50%) scale(1.2); }
+.star-btn.starred { color: #f59e0b; }
+
+/* =============================================================================
+   SAVED LOCATIONS POPOVER
+   ============================================================================= */
+
+.saved-popover {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 3000;
+  overflow: hidden;
+}
+
+.saved-popover.open { display: block; }
+
+.saved-popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.save-current-btn {
+  width: auto !important;
+  background: none !important;
+  color: #2563eb !important;
+  margin-top: 0 !important;
+  padding: 2px 4px !important;
+}
+
+.save-current-btn:hover { text-decoration: underline; }
+
+.saved-popover-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.saved-popover-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #111;
+  border-bottom: 1px solid #f9fafb;
+  transition: background 0.1s;
+}
+
+.saved-popover-list li:last-child { border-bottom: none; }
+.saved-popover-list li:hover { background: #f0f4ff; }
+
+.saved-loc-icon { font-size: 16px; flex-shrink: 0; }
+
+.saved-loc-info { flex: 1; overflow: hidden; }
+
+.saved-loc-name {
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.saved-loc-addr {
+  font-size: 11px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.saved-loc-delete {
+  width: auto !important;
+  background: none !important;
+  color: #d1d5db !important;
+  margin-top: 0 !important;
+  padding: 2px 4px !important;
+}
+.saved-loc-delete:hover { color: #ef4444; }
+
+.saved-popover-empty {
+  padding: 12px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+  margin: 0;
+}
+
+/* =============================================================================
+   SAVE LOCATION MODAL
+   ============================================================================= */
+
+.slm-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.slm-overlay.open { display: flex; }
+
+.slm-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px 20px 20px;
+  width: 88%;
+  max-width: 320px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+}
+
+.slm-title {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+}
+
+.slm-address {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0 0 16px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.slm-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.slm-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 0;
+}
+
+.slm-input:focus { border-color: #2563eb; }
+
+.slm-error {
+  min-height: 18px;
+  font-size: 12px;
+  color: #ef4444;
+  margin: 4px 0 0;
+}
+
+.slm-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.slm-cancel, .slm-save {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.slm-cancel { background: #f3f4f6; color: #374151; }
+.slm-save   { background: #2563eb; color: white; }
+.slm-cancel:hover, .slm-save:hover { opacity: 0.85; }
 
 /* =============================================================================
    BUTTONS

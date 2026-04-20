@@ -607,6 +607,247 @@ function renderTripHistory(){
 }
 
 // =============================================================================
+// SAVED LOCATIONS
+// =============================================================================
+
+let savedLocations = [];
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+// Fetch all saved locations from backend and re-render both popovers
+async function loadSavedLocations() {
+  try {
+    const res = await fetch("/api/saved-locations", {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    savedLocations = data.locations || [];
+    renderSavedPopover("pickup");
+    renderSavedPopover("dropoff");
+  } catch (err) {
+    console.error("Failed to load saved locations:", err);
+  }
+}
+
+// Render the list inside a given popover ("pickup" or "dropoff")
+function renderSavedPopover(which) {
+  const list   = document.getElementById(`${which}SavedList`);
+  const empty  = document.getElementById(`${which}PopoverEmpty`);
+
+  list.innerHTML = "";
+
+  if (savedLocations.length === 0) {
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+
+  savedLocations.forEach(loc => {
+    const icon = getLocationIcon(loc.name);
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class="saved-loc-icon">${icon}</span>
+      <div class="saved-loc-info">
+        <div class="saved-loc-name">${escapeHtml(loc.name)}</div>
+        <div class="saved-loc-addr">${escapeHtml(loc.address)}</div>
+      </div>
+      <button class="saved-loc-delete" data-id="${loc.id}" title="Remove">✕</button>
+    `;
+
+    // Click row → fill the input and close popover
+    li.addEventListener("click", (e) => {
+      if (e.target.classList.contains("saved-loc-delete")) return;
+      fillFromSaved(which, loc);
+      closeAllPopovers();
+    });
+
+    // Delete button
+    li.querySelector(".saved-loc-delete").addEventListener("click", async (e) => {
+      e.stopPropagation();
+      await deleteSavedLocation(loc.id);
+    });
+
+    list.appendChild(li);
+  });
+}
+
+// Fill pickup or dropoff input from a saved location object
+async function fillFromSaved(which, loc) {
+  const input  = document.getElementById(`${which}Input`);
+  input.value  = loc.address;
+
+  const coords = { lat: parseFloat(loc.lat), lng: parseFloat(loc.lng) };
+
+  if (which === "pickup") {
+    if (markerPickup) map.removeLayer(markerPickup);
+    pickup = coords;
+    markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+    map.setView(coords, 15);
+  } else {
+    if (markerDropoff) map.removeLayer(markerDropoff);
+    dropoff = coords;
+    markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
+    map.setView(coords, 15);
+  }
+
+  if (pickup && dropoff) tomRoute(pickup, dropoff);
+}
+
+// Delete a saved location by id
+async function deleteSavedLocation(id) {
+  try {
+    const res = await fetch(`/api/saved-locations/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (!res.ok) throw new Error("Delete failed");
+    savedLocations = savedLocations.filter(l => l.id !== id);
+    renderSavedPopover("pickup");
+    renderSavedPopover("dropoff");
+  } catch (err) {
+    console.error("Failed to delete saved location:", err);
+  }
+}
+
+// Open the "name this location" modal to save current input address
+function openSaveModal(which) {
+  const input   = document.getElementById(`${which}Input`);
+  const address = input.value.trim();
+  const coords  = which === "pickup" ? pickup : dropoff;
+
+  if (!address || !coords) {
+    alert("Please confirm a location first before saving it.");
+    return;
+  }
+
+  const modal = document.getElementById("saveLocationModal");
+  document.getElementById("slmAddress").textContent = address;
+  document.getElementById("slmNameInput").value = "";
+  document.getElementById("slmError").textContent = "";
+  modal.classList.add("open");
+  document.getElementById("slmNameInput").focus();
+
+  // Wire up Save button (replace to remove stale listeners)
+  const saveBtn = document.getElementById("slmSave");
+  const newSave = saveBtn.cloneNode(true);
+  saveBtn.replaceWith(newSave);
+
+  newSave.addEventListener("click", async () => {
+    const name = document.getElementById("slmNameInput").value.trim();
+    const errEl = document.getElementById("slmError");
+    if (!name) { errEl.textContent = "Please enter a name."; return; }
+
+    try {
+      const res = await fetch("/api/saved-locations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`
+        },
+        body: JSON.stringify({ name, address, lat: coords.lat, lng: coords.lng })
+      });
+
+      const data = await res.json();
+      if (!res.ok) { errEl.textContent = data.error || "Failed to save."; return; }
+
+      savedLocations.unshift(data.location);
+      renderSavedPopover("pickup");
+      renderSavedPopover("dropoff");
+      closeSaveModal();
+    } catch (err) {
+      document.getElementById("slmError").textContent = "Something went wrong.";
+    }
+  });
+}
+
+function closeSaveModal() {
+  document.getElementById("saveLocationModal").classList.remove("open");
+}
+
+function closeAllPopovers() {
+  document.getElementById("pickupPopover").classList.remove("open");
+  document.getElementById("dropoffPopover").classList.remove("open");
+}
+
+// Toggle a popover open/closed
+function togglePopover(which) {
+  const popover = document.getElementById(`${which}Popover`);
+  const other   = which === "pickup" ? "dropoffPopover" : "pickupPopover";
+  document.getElementById(other).classList.remove("open");
+  popover.classList.toggle("open");
+}
+
+// Pick an icon emoji based on the location name
+function getLocationIcon(name) {
+  const n = name.toLowerCase();
+  if (n.includes("home"))   return "🏠";
+  if (n.includes("work") || n.includes("office")) return "🏢";
+  if (n.includes("gym"))    return "💪";
+  if (n.includes("school") || n.includes("uni") || n.includes("college")) return "🎓";
+  if (n.includes("airport")) return "✈️";
+  if (n.includes("hotel"))  return "🏨";
+  return "📍";
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// =============================================================================
+// SAVED LOCATIONS EVENT LISTENERS
+// =============================================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Star buttons → toggle popover
+  document.getElementById("pickupStarBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePopover("pickup");
+  });
+  document.getElementById("dropoffStarBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePopover("dropoff");
+  });
+
+  // "Save current" buttons inside popovers → open naming modal
+  document.getElementById("pickupSaveCurrentBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeAllPopovers();
+    openSaveModal("pickup");
+  });
+  document.getElementById("dropoffSaveCurrentBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeAllPopovers();
+    openSaveModal("dropoff");
+  });
+
+  // Cancel button in modal
+  document.getElementById("slmCancel").addEventListener("click", closeSaveModal);
+
+  // Close modal on backdrop click
+  document.getElementById("saveLocationModal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("saveLocationModal")) closeSaveModal();
+  });
+
+  // Close popovers when clicking anywhere outside
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".autocomplete-container")) closeAllPopovers();
+  });
+
+  // Enter key in modal name input → trigger save
+  document.getElementById("slmNameInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("slmSave").click();
+  });
+
+  // Load saved locations on page load
+  loadSavedLocations();
+});
+
+
+// =============================================================================
 // UTILITIES
 // =============================================================================
 

@@ -818,6 +818,87 @@ app.get("/api/verify-reset-token", async (req, res) => {
   }
 });
 
+// =============================================================================
+// SAVED LOCATIONS
+// =============================================================================
+
+// GET all saved locations for current user
+app.get("/api/saved-locations", verifyToken, async (req, res) => {
+  if (req.user.id === -1) return res.json({ locations: [] }); // dev shortcut
+  try {
+    const result = await pool.query(
+      "SELECT id, name, address, lat, lng FROM saved_locations WHERE user_id = $1 ORDER BY created_at DESC",
+      [req.user.id]
+    );
+    res.json({ locations: result.rows });
+  } catch (err) {
+    console.error("Get saved locations error:", err);
+    res.status(500).json({ error: "Failed to fetch saved locations" });
+  }
+});
+
+// POST — save a new location
+app.post("/api/saved-locations", verifyToken, async (req, res) => {
+  if (req.user.id === -1) return res.status(403).json({ error: "Not available in dev mode" });
+  const { name, address, lat, lng } = req.body;
+  if (!name || !address || lat == null || lng == null) {
+    return res.status(400).json({ error: "All fields required" });
+  }
+  if (name.length > 50) return res.status(400).json({ error: "Name too long (max 50 chars)" });
+  try {
+    // Limit to 20 saved locations per user
+    const countResult = await pool.query(
+      "SELECT COUNT(*) FROM saved_locations WHERE user_id = $1",
+      [req.user.id]
+    );
+    if (parseInt(countResult.rows[0].count) >= 20) {
+      return res.status(400).json({ error: "Maximum 20 saved locations allowed" });
+    }
+    const result = await pool.query(
+      "INSERT INTO saved_locations (user_id, name, address, lat, lng) VALUES ($1,$2,$3,$4,$5) RETURNING id, name, address, lat, lng",
+      [req.user.id, name.trim(), address, lat, lng]
+    );
+    res.status(201).json({ location: result.rows[0] });
+  } catch (err) {
+    console.error("Save location error:", err);
+    res.status(500).json({ error: "Failed to save location" });
+  }
+});
+
+// PUT — rename a saved location
+app.put("/api/saved-locations/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  if (!name || name.length > 50) return res.status(400).json({ error: "Invalid name" });
+  try {
+    const result = await pool.query(
+      "UPDATE saved_locations SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING id, name, address, lat, lng",
+      [name.trim(), id, req.user.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: "Location not found" });
+    res.json({ location: result.rows[0] });
+  } catch (err) {
+    console.error("Rename location error:", err);
+    res.status(500).json({ error: "Failed to rename location" });
+  }
+});
+
+// DELETE — remove a saved location
+app.delete("/api/saved-locations/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      "DELETE FROM saved_locations WHERE id = $1 AND user_id = $2 RETURNING id",
+      [id, req.user.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: "Location not found" });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Delete location error:", err);
+    res.status(500).json({ error: "Failed to delete location" });
+  }
+});
+
 
 /////update user in database
 app.put("/update-user-db", verifyToken, async(req, res)=>{

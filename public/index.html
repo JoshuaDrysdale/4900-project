@@ -33,21 +33,45 @@
   <div class="inputs-row">
 
     <!-- Pickup input -->
-    <div class="autocomplete-container">
-      <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
-      <button onclick="setPickup()">Confirm Pickup</button>
-      <ul id="pickupSuggestions" class="suggestions"></ul>
+<div class="autocomplete-container">
+  <div class="input-with-star">
+    <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
+    <button class="star-btn" id="pickupStarBtn" title="Saved locations">☆</button>
+  </div>
+  <button onclick="setPickup()">Confirm Pickup</button>
+  <ul id="pickupSuggestions" class="suggestions"></ul>
+  <!-- Saved locations popover -->
+  <div class="saved-popover" id="pickupPopover">
+    <div class="saved-popover-header">
+      <span>Saved Locations</span>
+      <button class="save-current-btn" id="pickupSaveCurrentBtn">+ Save current</button>
     </div>
+    <ul class="saved-popover-list" id="pickupSavedList"></ul>
+    <p class="saved-popover-empty" id="pickupPopoverEmpty">No saved locations yet.</p>
+  </div>
+</div>
 
-    <!-- Swap button — reverses pickup and dropoff -->
-    <button id="swapLocations">⇅ Swap </button>
+<!-- Swap button — reverses pickup and dropoff -->
+<button id="swapLocations">⇅ Swap</button>
 
-    <!-- Dropoff input -->
-    <div class="autocomplete-container">
-      <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
-      <button onclick="setDropoff()">Confirm Dropoff</button>
-      <ul id="dropoffSuggestions" class="suggestions"></ul>
+<!-- Dropoff input -->
+<div class="autocomplete-container">
+  <div class="input-with-star">
+    <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
+    <button class="star-btn" id="dropoffStarBtn" title="Saved locations">☆</button>
+  </div>
+  <button onclick="setDropoff()">Confirm Dropoff</button>
+  <ul id="dropoffSuggestions" class="suggestions"></ul>
+  <!-- Saved locations popover -->
+  <div class="saved-popover" id="dropoffPopover">
+    <div class="saved-popover-header">
+      <span>Saved Locations</span>
+      <button class="save-current-btn" id="dropoffSaveCurrentBtn">+ Save current</button>
     </div>
+    <ul class="saved-popover-list" id="dropoffSavedList"></ul>
+    <p class="saved-popover-empty" id="dropoffPopoverEmpty">No saved locations yet.</p>
+  </div>
+</div>
 
     <div id="routeInfo" style="text-align:center; font-size: 14px; color: #555; margin-top: 6px;"></div>
 
@@ -56,7 +80,8 @@
 
 
 <!-- History View — Show The Users Recent History -->
- <div class="trip-history-panel">
+<!--
+<div class="trip-history-panel">
   <div class="trip-history-header">
     <h3>Recent Trips</h3>
   </div>
@@ -64,6 +89,7 @@
     <p class="trip-history-empty">No recent trips yet.</p>
     </div>
   </div>
+  -->
 
 <!-- Reset button — clears all markers and the drawn route -->
 <button id="resetBtn">Clear Trip</button>
@@ -92,6 +118,21 @@
     <div id="geoModalBtns">
       <button id="geoSetPickup">🟢 Set as Pickup</button>
       <button id="geoRecenterOnly">No Thanks</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save Location Modal -->
+<div id="saveLocationModal" class="slm-overlay">
+  <div class="slm-card">
+    <h3 class="slm-title">Save Location</h3>
+    <p class="slm-address" id="slmAddress"></p>
+    <label class="slm-label" for="slmNameInput">Give it a name</label>
+    <input class="slm-input" id="slmNameInput" placeholder='e.g. "Home", "Work", "Gym"' maxlength="50" autocomplete="off">
+    <p class="slm-error" id="slmError"></p>
+    <div class="slm-btns">
+      <button class="slm-cancel" id="slmCancel">Cancel</button>
+      <button class="slm-save"   id="slmSave">Save</button>
     </div>
   </div>
 </div>
