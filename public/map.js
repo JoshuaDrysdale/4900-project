@@ -608,6 +608,18 @@ function renderTripHistory(){
 
 renderTripHistory();
 
+function saveTripHistory(){
+  const trips = getTripHistory();
+
+  trips.unshift(trip);
+
+  if(trips.length > 5){
+    trips.pop();
+  }
+
+  localStorage.setItem(TRIP_HISTORY_KEY, JSON.stringify(trips));
+}
+
 // =============================================================================
 // SAVED LOCATIONS
 // =============================================================================
