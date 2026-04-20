@@ -563,6 +563,13 @@ document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1000)
 // if we want to show miles, below is the routeInfo display 
 //document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1609.34).toFixed(1)} mi · ${data.estimatedMinutes} min`;
 
+saveTripToHistory({
+  pickupLabel: pickupInput.value,
+  dropoffLabel: dropoffInput.value,
+  savedAt: new Date().toLocaleTimeString()
+});
+
+renderTripHistory(); 
 
     // Fit map to route bounds
     map.fitBounds(window.currentRoute.getBounds());
@@ -608,7 +615,7 @@ function renderTripHistory(){
 
 renderTripHistory();
 
-function saveTripHistory(){
+function saveTripToHistory(trip){
   const trips = getTripHistory();
 
   trips.unshift(trip);
