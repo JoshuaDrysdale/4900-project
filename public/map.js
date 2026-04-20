@@ -559,22 +559,24 @@ async function tomRoute(pickup, dropoff) {
     window.startMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Start").openPopup();
     window.endMarker = L.marker([dropoff.lat, dropoff.lng]).addTo(map).bindPopup("End");
 
-document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1000).toFixed(1)} km · ${data.estimatedMinutes} min`;
-// if we want to show miles, below is the routeInfo display 
-//document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1609.34).toFixed(1)} mi · ${data.estimatedMinutes} min`;
+  document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1000).toFixed(1)} km · ${data.estimatedMinutes} min`;
 
-saveTripToHistory({
-  pickupLabel: pickupInput.value,
-  dropoffLabel: dropoffInput.value,
-  savedAt: new Date().toLocaleTimeString()
-});
+  // if we want to show miles, below is the routeInfo display 
+  //document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1609.34).toFixed(1)} mi · ${data.estimatedMinutes} min`;
 
-renderTripHistory(); 
+  saveTripToHistory({
+    pickupLabel: pickupInput.value,
+    dropoffLabel: dropoffInput.value,
+    savedAt: new Date().toLocaleTimeString()
+  });
+
+  renderTripHistory(); 
 
     // Fit map to route bounds
     map.fitBounds(window.currentRoute.getBounds());
 
     console.log(`Route added! Distance: ${data.distanceMeters}m, ETA: ${data.estimatedMinutes} min`);
+    showBottomTab();
   } catch (err) {
     console.error("Routing error:", err);
   }
@@ -867,6 +869,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSavedLocations();
 });
 
+//Comparison tab functionality
+async function showBottomTab(){
+  const tab = document.getElementById("comparisonTab");
+  tab.classList.add("show");
+}
 
 // =============================================================================
 // UTILITIES
