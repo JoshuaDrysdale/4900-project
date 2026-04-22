@@ -220,56 +220,6 @@ map.on("click", async function (e) {
 });
 
 // =============================================================================
-// ROUTING
-// =============================================================================
-
-// async function getRoute(pickup, dropoff) {
-//     document.getElementById("loadingIndicator").style.display = "block";
-
-//   try {
-//     const response = await fetch("/route", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({
-//         coordinates: [
-//           [pickup.lng, pickup.lat],
-//           [dropoff.lng, dropoff.lat]
-//         ]
-//       })
-//     });
-
-//     const data = await response.json();
-//     console.log("Route =", data);
-
-//     if (routeLayer) map.removeLayer(routeLayer);
-
-//     if (!data.features || data.features.length === 0) {
-//       console.error("No route found");
-//       return;
-//     }
-
-//     // // extract distance and duration from ORS response
-//     // const summary = data.features[0].properties.summary;
-//     // const distanceKm = (summary.distance / 1000).toFixed(1);
-//     // const durationMin = Math.round(summary.duration / 60);
-
-//     // document.getElementById("routeInfo").textContent = `${distanceKm} km · ${durationMin} min`;
-
-//     routeLayer = L.geoJSON(data, {
-//       style: { color: "blue", weight: 5 }
-//     }).addTo(map);
-
-//     map.fitBounds(routeLayer.getBounds());
-//         document.getElementById("loadingIndicator").style.display = "none";
-
-//   } catch (error) {
-//     console.error(error);
-//         document.getElementById("loadingIndicator").style.display = "none";
-
-//   }
-// }
-
-// =============================================================================
 // GEOCODING
 // =============================================================================
 
@@ -433,39 +383,6 @@ function getUserLocation() {
 }
 getUserLocation();
 
-// function showGeoModal(lat, lng, addressLabel) {
-//   const modal    = document.getElementById("geoModal");
-//   const addrEl   = document.getElementById("geoAddressLabel");
-
-//   addrEl.textContent = addressLabel;
-//   modal.classList.add("open");
-
-//   // Clone buttons to remove any stale listeners from previous calls
-//   ["geoRecenterOnly"].forEach(id => {
-//     const el = document.getElementById(id);
-//     el.replaceWith(el.cloneNode(true));
-//   });
-
-//   const coords = { lat, lng };
-//   const close  = () => modal.classList.remove("open");
-
-//   document.getElementById("geoSetPickup").addEventListener("click", () => {
-//     if (markerPickup) map.removeLayer(markerPickup);
-//     pickup = coords;
-//     pickupInput.value = addressLabel;
-//     markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
-//     if (pickup && dropoff) tomRoute(pickup, dropoff);
-//     close();
-//   });
-
-//   document.getElementById("geoRecenterOnly").addEventListener("click", close);
-
-//   // Tap backdrop to dismiss
-//   modal.addEventListener("click", (e) => { if (e.target === modal) close(); }, { once: true });
-// }
-
-
-
 // =============================================================================
 // AUTOCOMPLETE
 // =============================================================================
@@ -503,30 +420,6 @@ async function autocomplete(e, suggestionId) {
   }
 }
 
-//get route time  
-/*
-async function routeTime(pickup, dropoff){
-  try{
-    const start = { lat: pickup.lat, lon: pickup.lng };
-    const end = { lat: dropoff.lat, lon: dropoff.lng };
-
-    const response = await fetch("/route-time", {
-      method: "POST",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify({start, end})
-    }) ;
-
-    const data = await response.json();
-    console.log("Route time =", data);
-
-     document.getElementById("routeInfo").textContent = `${data.distanceMeters/1000} km · ${data.estimatedMinutes} min`;
-
-  }catch(err){
-    console.error(err);
-  }
-}
- */
-
 //tomtom draw route
 async function tomRoute(pickup, dropoff) {
   try {
@@ -563,9 +456,6 @@ async function tomRoute(pickup, dropoff) {
 
     showBottomTab(data);
 
-  // if we want to show miles, below is the routeInfo display 
-  //document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1609.34).toFixed(1)} mi · ${data.estimatedMinutes} min`;
-
   saveTripToHistory({
     pickupLabel: pickupInput.value,
     dropoffLabel: dropoffInput.value,
@@ -583,13 +473,11 @@ async function tomRoute(pickup, dropoff) {
 }
 //buttons: home, settings profile
 document.getElementById("profileBtn").addEventListener("click", ()=>{
-  window.location.href= "menu/profile.html";
+  window.location.href= "../pages/profile.html";
 })
 document.getElementById("settingsBtn").addEventListener("click", ()=>{
-  window.location.href= "menu/settings.html";
+  window.location.href= "../pages/settings.html";
 })
-
-
 
 // =============================================================================
 // READ TRIP HISTORY
