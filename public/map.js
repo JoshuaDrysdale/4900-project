@@ -34,10 +34,6 @@ function logout() {
   console.log("✅ Logged out, token removed from localStorage");
   window.location.href = "/login.html";
 }
- 
-
-
-console.log("map.js loaded");
 // =============================================================================
 // MAP INITIALIZATION
 // =============================================================================
@@ -150,6 +146,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   pickupInput.value  = "";
   dropoffInput.value = "";
   document.getElementById("routeInfo").textContent = "";
+  hideBottomTab();
 });
 document.getElementById("addressModeBtn").addEventListener("click", () => {
   inputMode = "address";
@@ -424,43 +421,48 @@ function getUserLocation() {
       map.setView([lat, lng], 15);
 
       const addressLabel = await reverseGeocode(lat, lng);
-      showGeoModal(lat, lng, addressLabel);
+
+      //setting user location as default pickup position
+      pickupInput.value = addressLabel;
+      setPickup();
+      
+      // showGeoModal(lat, lng, addressLabel);
     },
     (error) => { console.error("Could not get location:", error.message); }
   );
 }
 getUserLocation();
 
-function showGeoModal(lat, lng, addressLabel) {
-  const modal    = document.getElementById("geoModal");
-  const addrEl   = document.getElementById("geoAddressLabel");
+// function showGeoModal(lat, lng, addressLabel) {
+//   const modal    = document.getElementById("geoModal");
+//   const addrEl   = document.getElementById("geoAddressLabel");
 
-  addrEl.textContent = addressLabel;
-  modal.classList.add("open");
+//   addrEl.textContent = addressLabel;
+//   modal.classList.add("open");
 
-  // Clone buttons to remove any stale listeners from previous calls
-  ["geoSetPickup", "geoRecenterOnly"].forEach(id => {
-    const el = document.getElementById(id);
-    el.replaceWith(el.cloneNode(true));
-  });
+//   // Clone buttons to remove any stale listeners from previous calls
+//   ["geoRecenterOnly"].forEach(id => {
+//     const el = document.getElementById(id);
+//     el.replaceWith(el.cloneNode(true));
+//   });
 
-  const coords = { lat, lng };
-  const close  = () => modal.classList.remove("open");
+//   const coords = { lat, lng };
+//   const close  = () => modal.classList.remove("open");
 
-  document.getElementById("geoSetPickup").addEventListener("click", () => {
-    if (markerPickup) map.removeLayer(markerPickup);
-    pickup = coords;
-    pickupInput.value = addressLabel;
-    markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
-    if (pickup && dropoff) tomRoute(pickup, dropoff);
-    close();
-  });
+//   document.getElementById("geoSetPickup").addEventListener("click", () => {
+//     if (markerPickup) map.removeLayer(markerPickup);
+//     pickup = coords;
+//     pickupInput.value = addressLabel;
+//     markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+//     if (pickup && dropoff) tomRoute(pickup, dropoff);
+//     close();
+//   });
 
-  document.getElementById("geoRecenterOnly").addEventListener("click", close);
+//   document.getElementById("geoRecenterOnly").addEventListener("click", close);
 
-  // Tap backdrop to dismiss
-  modal.addEventListener("click", (e) => { if (e.target === modal) close(); }, { once: true });
-}
+//   // Tap backdrop to dismiss
+//   modal.addEventListener("click", (e) => { if (e.target === modal) close(); }, { once: true });
+// }
 
 
 
@@ -559,7 +561,7 @@ async function tomRoute(pickup, dropoff) {
     window.startMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Start").openPopup();
     window.endMarker = L.marker([dropoff.lat, dropoff.lng]).addTo(map).bindPopup("End");
 
-  document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1000).toFixed(1)} km · ${data.estimatedMinutes} min`;
+    showBottomTab(data);
 
   // if we want to show miles, below is the routeInfo display 
   //document.getElementById("routeInfo").textContent = `${(data.distanceMeters/1609.34).toFixed(1)} mi · ${data.estimatedMinutes} min`;
@@ -574,9 +576,7 @@ async function tomRoute(pickup, dropoff) {
 
     // Fit map to route bounds
     map.fitBounds(window.currentRoute.getBounds());
-
-    console.log(`Route added! Distance: ${data.distanceMeters}m, ETA: ${data.estimatedMinutes} min`);
-    showBottomTab();
+    
   } catch (err) {
     console.error("Routing error:", err);
   }
@@ -870,9 +870,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //Comparison tab functionality
-async function showBottomTab(){
+async function showBottomTab(data){
   const tab = document.getElementById("comparisonTab");
   tab.classList.add("show");
+
+  tab.textContent = "Ride Information = "+`${(data.distanceMeters/1000).toFixed(1)} km · ${data.estimatedMinutes} min`;
+}
+
+async function hideBottomTab(){
+  const tab = document.getElementById("comparisonTab");
+  tab.classList.remove("show");
+
 }
 
 // =============================================================================
