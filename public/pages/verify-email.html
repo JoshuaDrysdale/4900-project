@@ -1,0 +1,71 @@
+<!-- =============================================================================
+     EMAIL VERIFICATION PAGE (verify-email.html)
+     ============================================================================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Email - RHA</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
+  <link rel="stylesheet" href="../css/verify-email.css">
+</head>
+<body>
+  <div id="background" class="background"></div>
+
+  <div class="verify-container">
+    <h2>📧 Verify Email</h2>
+    <p>Confirming your email address...</p>
+
+    <!-- Loading State -->
+    <div class="status-box loading" id="loadingBox">
+      <div class="spinner"></div>
+      <h3>Verifying...</h3>
+      <p>Please wait while we verify your email</p>
+    </div>
+
+    <!-- Success State -->
+    <div class="status-box success" id="successBox" style="display: none;">
+      <h3>✓ Email Verified!</h3>
+      <p>Your email has been successfully verified.</p>
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="goToMap()">Go to Map</button>
+        <button class="btn btn-secondary" onclick="goToAccount()">View Account</button>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="status-box error" id="errorBox" style="display: none;">
+      <h3>⚠ Verification Failed</h3>
+      <p id="errorMessage"></p>
+      <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="goToLogin()">Back to Login</button>
+      </div>
+      
+      <div class="resend-section">
+        <p>Didn't receive the email or link expired?</p>
+        <button class="resend-btn" id="resendBtn" onclick="resendVerificationEmail()">
+          Resend Verification Email
+        </button>
+        <div class="countdown" id="countdown"></div>
+      </div>
+    </div>
+
+    <!-- Manual Verification Link (fallback) -->
+    <div id="manualVerificationBox" style="display: none;">
+      <p style="font-size: 12px; color: #999; margin: 15px 0 10px 0;">
+        Or paste the verification link in your browser:
+      </p>
+      <div id="verificationLink" class="link-input"></div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="/login.html" style="color: #1976d2; text-decoration: none; font-size: 14px;">← Back to Login</a>
+    </div>
+  </div>
+
+  <script src="../js/background.js"></script>
+  <script src="../js/verify-email.js"></script>
+</body>
+</html>
