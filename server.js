@@ -435,7 +435,9 @@ app.post("/route-time", async (req,res)=>{
     res.json({
         points,
         distanceMeters: summary.lengthInMeters,
-        estimatedMinutes: Math.round(summary.travelTimeInSeconds / 60)
+        estimatedMinutes: Math.round(summary.travelTimeInSeconds / 60),
+        trafficDelaySeconds: summary.trafficDelayInSeconds,
+        trafficLengthMeters: summary.trafficLengthInMeters
     });
 
     }catch (err){
