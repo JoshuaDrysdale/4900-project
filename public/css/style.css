@@ -221,6 +221,11 @@ input {
   cursor: pointer;
 }
 
+.autocomplete-container button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .autocomplete-container .star-btn {
   width: auto !important;
   background: none !important;
@@ -261,6 +266,22 @@ input {
 
 .suggestions li:last-child { border-bottom: none; }
 .suggestions li:hover { background-color: var(--hover); }
+
+.unit-toggle-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.unit-toggle-btn:hover {
+  background: var(--hover);
+}
 
 /*=============================================================================
    TRIP HISTORY PANEL
@@ -752,7 +773,7 @@ input {
   border-radius: 16px 16px 0 0;
   box-shadow: 0 -4px 20px var(--shadow);
   font-family: inherit;
-
+  flex-wrap: wrap;
   transform: translateY(100%);
   transition: transform 0.3s ease;
 }
