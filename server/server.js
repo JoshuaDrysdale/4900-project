@@ -69,11 +69,11 @@ transporter.verify((error, success) => {
 
 //Making sure login page opens first
 app.get("/", (req, res)=>{
-    res.sendFile(path.join(__dirname, "login.html"));
+    res.sendFile(path.join(__dirname, "../public/pages/login.html"));
 })
 
 app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "login.html"));
+  res.sendFile(path.join(__dirname, "../public/pages/login.html"));
 });
 
 // Serve static files from public folder (signup.html, index.html, etc.)
@@ -81,9 +81,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Also serve static files from root
 app.use(express.static(__dirname));
-//Accessing files from the public folder
-// app.get("public/index.html", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
-// app.get("public/signup.html", (req, res) => res.sendFile(path.join(__dirname, "signup.html")));
 
 
 // =============================================================================

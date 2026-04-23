@@ -55,10 +55,6 @@ function logout() {
   console.log("✅ Logged out, token removed from localStorage");
   window.location.href = "/login.html";
 }
- 
-
-
-console.log("map.js loaded");
 // =============================================================================
 // MAP INITIALIZATION
 // =============================================================================
@@ -170,9 +166,10 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   dropoff = null;
   pickupInput.value  = "";
   dropoffInput.value = "";
-  document.getElementById("routeInfo").style.display = "none";
   const trafficEl = document.getElementById("trafficIndicator");
-if (trafficEl) trafficEl.remove();
+  if (trafficEl) trafficEl.remove();
+  hideBottomTab();
+
 });
 document.getElementById("addressModeBtn").addEventListener("click", () => {
   inputMode = "address";
@@ -252,56 +249,6 @@ map.on("click", async function (e) {
 });
 
 // =============================================================================
-// ROUTING
-// =============================================================================
-
-// async function getRoute(pickup, dropoff) {
-//     document.getElementById("loadingIndicator").style.display = "block";
-
-//   try {
-//     const response = await fetch("/route", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({
-//         coordinates: [
-//           [pickup.lng, pickup.lat],
-//           [dropoff.lng, dropoff.lat]
-//         ]
-//       })
-//     });
-
-//     const data = await response.json();
-//     console.log("Route =", data);
-
-//     if (routeLayer) map.removeLayer(routeLayer);
-
-//     if (!data.features || data.features.length === 0) {
-//       console.error("No route found");
-//       return;
-//     }
-
-//     // // extract distance and duration from ORS response
-//     // const summary = data.features[0].properties.summary;
-//     // const distanceKm = (summary.distance / 1000).toFixed(1);
-//     // const durationMin = Math.round(summary.duration / 60);
-
-//     // document.getElementById("routeInfo").textContent = `${distanceKm} km · ${durationMin} min`;
-
-//     routeLayer = L.geoJSON(data, {
-//       style: { color: "blue", weight: 5 }
-//     }).addTo(map);
-
-//     map.fitBounds(routeLayer.getBounds());
-//         document.getElementById("loadingIndicator").style.display = "none";
-
-//   } catch (error) {
-//     console.error(error);
-//         document.getElementById("loadingIndicator").style.display = "none";
-
-//   }
-// }
-
-// =============================================================================
 // GEOCODING
 // =============================================================================
 
@@ -355,6 +302,7 @@ async function reverseGeocode(lat, lng) {
 // =============================================================================
 
 async function setPickup() {
+  document.getElementById("pickupSuggestions").innerHTML = "";
   if (inputMode !== "address") return;
 
   const address = pickupInput.value;
@@ -384,6 +332,7 @@ async function setPickup() {
 }
 
 async function setDropoff() {
+  document.getElementById("dropoffSuggestions").innerHTML = "";
   if (inputMode !== "address") return;
 
   const address = dropoffInput.value;
@@ -440,10 +389,7 @@ function swapLocations() {
 // =============================================================================
 
 function getUserLocation() {
-  if (!navigator.geolocation) {
-    console.log("Geolocation not supported");
-    return;
-  }
+  if (!navigator.geolocation) return;
 
   navigator.geolocation.getCurrentPosition(
     async (position) => {
@@ -453,45 +399,20 @@ function getUserLocation() {
       map.setView([lat, lng], 15);
 
       const addressLabel = await reverseGeocode(lat, lng);
-      showGeoModal(lat, lng, addressLabel);
+
+      // Set pickup directly instead of going through setPickup()
+      const coords = { lat, lng };
+      if (markerPickup) map.removeLayer(markerPickup);
+      pickup = coords;
+      pickupInput.value = addressLabel;
+      markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+
+      if (pickup && dropoff) tomRoute(pickup, dropoff);
     },
     (error) => { console.error("Could not get location:", error.message); }
   );
 }
 getUserLocation();
-
-function showGeoModal(lat, lng, addressLabel) {
-  const modal    = document.getElementById("geoModal");
-  const addrEl   = document.getElementById("geoAddressLabel");
-
-  addrEl.textContent = addressLabel;
-  modal.classList.add("open");
-
-  // Clone buttons to remove any stale listeners from previous calls
-  ["geoSetPickup", "geoRecenterOnly"].forEach(id => {
-    const el = document.getElementById(id);
-    el.replaceWith(el.cloneNode(true));
-  });
-
-  const coords = { lat, lng };
-  const close  = () => modal.classList.remove("open");
-
-  document.getElementById("geoSetPickup").addEventListener("click", () => {
-    if (markerPickup) map.removeLayer(markerPickup);
-    pickup = coords;
-    pickupInput.value = addressLabel;
-    markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
-    if (pickup && dropoff) tomRoute(pickup, dropoff);
-    close();
-  });
-
-  document.getElementById("geoRecenterOnly").addEventListener("click", close);
-
-  // Tap backdrop to dismiss
-  modal.addEventListener("click", (e) => { if (e.target === modal) close(); }, { once: true });
-}
-
-
 
 // =============================================================================
 // AUTOCOMPLETE
@@ -530,32 +451,11 @@ async function autocomplete(e, suggestionId) {
   }
 }
 
-//get route time  
-/*
-async function routeTime(pickup, dropoff){
-  try{
-    const start = { lat: pickup.lat, lon: pickup.lng };
-    const end = { lat: dropoff.lat, lon: dropoff.lng };
-
-    const response = await fetch("/route-time", {
-      method: "POST",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify({start, end})
-    }) ;
-
-    const data = await response.json();
-    console.log("Route time =", data);
-
-     document.getElementById("routeInfo").textContent = `${data.distanceMeters/1000} km · ${data.estimatedMinutes} min`;
-
-  }catch(err){
-    console.error(err);
-  }
-}
- */
-
 //tomtom draw route
 async function tomRoute(pickup, dropoff) {
+
+
+  document.getElementById("loadingIndicator").style.display = "flex";
   try {
     const res = await fetch("/route-time", {
       method: "POST",
@@ -587,25 +487,7 @@ async function tomRoute(pickup, dropoff) {
     window.startMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Start").openPopup();
     window.endMarker = L.marker([dropoff.lat, dropoff.lng]).addTo(map).bindPopup("End");
 
-    // Update badge
-    const badge = document.getElementById("routeInfo");
-    document.getElementById("routeBadgeDistance").textContent = `${(data.distanceMeters / 1000).toFixed(1)} km`;
-    document.getElementById("routeBadgeTime").textContent = `${data.estimatedMinutes} min`;
-    badge.style.display = "flex";
-
-    // Add or update traffic indicator
-    let trafficEl = document.getElementById("trafficIndicator");
-    if (!trafficEl) {
-      trafficEl = document.createElement("span");
-      trafficEl.id = "trafficIndicator";
-      trafficEl.className = "traffic-indicator";
-      badge.appendChild(trafficEl);
-    }
-    trafficEl.textContent = traffic.label;
-    trafficEl.style.color = traffic.color;
-    trafficEl.style.background = traffic.color + "18";
-
-    saveTripToHistory({
+      saveTripToHistory({
       pickupLabel: pickupInput.value,
       dropoffLabel: dropoffInput.value,
       savedAt: new Date().toLocaleTimeString()
@@ -616,21 +498,23 @@ async function tomRoute(pickup, dropoff) {
     map.fitBounds(window.currentRoute.getBounds());
 
     console.log(`Route added! Distance: ${data.distanceMeters}m, ETA: ${data.estimatedMinutes} min, Traffic delay: ${data.trafficDelaySeconds}s`);
-    showBottomTab();
+    showBottomTab(data);
 
   } catch (err) {
     console.error("Routing error:", err);
   }
+  finally {
+    // Hide spinner — runs whether it succeeded or failed
+    document.getElementById("loadingIndicator").style.display = "none";
+  }
 }
 //buttons: home, settings profile
 document.getElementById("profileBtn").addEventListener("click", ()=>{
-  window.location.href= "menu/profile.html";
+  window.location.href= "../pages/profile.html";
 })
 document.getElementById("settingsBtn").addEventListener("click", ()=>{
-  window.location.href= "menu/settings.html";
+  window.location.href= "../pages/settings.html";
 })
-
-
 
 // =============================================================================
 // READ TRIP HISTORY
@@ -675,10 +559,6 @@ function saveTripToHistory(trip){
 // =============================================================================
 
 let savedLocations = [];
-
-function getToken() {
-  return localStorage.getItem("token");
-}
 
 // Fetch all saved locations from backend and re-render both popovers
 async function loadSavedLocations() {
@@ -900,8 +780,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Close popovers when clicking anywhere outside
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".autocomplete-container")) closeAllPopovers();
-  });
+  if (!e.target.closest(".autocomplete-container")) {
+    closeAllPopovers();
+    document.getElementById("pickupSuggestions").innerHTML = "";
+    document.getElementById("dropoffSuggestions").innerHTML = "";
+  }
+});
 
   // Enter key in modal name input → trigger save
   document.getElementById("slmNameInput").addEventListener("keydown", (e) => {
@@ -912,10 +796,33 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSavedLocations();
 });
 
-//Comparison tab functionality
-async function showBottomTab(){
+async function showBottomTab(data) {
+  const traffic = getTrafficLevel(data.trafficDelaySeconds || 0);
   const tab = document.getElementById("comparisonTab");
+  tab.innerHTML = `
+    <div class="tab-stat">
+      <span class="tab-icon">📍</span>
+      <span class="tab-value">${(data.distanceMeters / 1000).toFixed(1)}</span>
+      <span class="tab-unit">km</span>
+    </div>
+    <div class="tab-divider"></div>
+    <div class="tab-stat">
+      <span class="tab-icon">⏱</span>
+      <span class="tab-value">${data.estimatedMinutes}</span>
+      <span class="tab-unit">min</span>
+    </div>
+    <div class="tab-divider"></div>
+    <div class="tab-stat">
+      <span class="tab-dot" style="background:${traffic.color}"></span>
+      <span class="tab-value" style="color:${traffic.color}">${traffic.label}</span>
+    </div>
+  `;
   tab.classList.add("show");
+}
+async function hideBottomTab(){
+  const tab = document.getElementById("comparisonTab");
+  tab.classList.remove("show");
+
 }
 
 // =============================================================================

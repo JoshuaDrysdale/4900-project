@@ -82,7 +82,7 @@ async function login() {
             }
 
         setTimeout(() => {
-        window.location.href = "/index.html";
+        window.location.href = "../pages/index.html";
       }, 300);        
     } else {
     failedAttempts++;
@@ -185,5 +185,5 @@ function checkCapsLock(e) {
 
 // redirects to the signup page
 function signup() {
-    window.location.href = "/signup.html";
+    window.location.href = "../pages/signup.html";
 }
