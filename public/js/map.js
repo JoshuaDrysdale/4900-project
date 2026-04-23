@@ -141,6 +141,22 @@ let markerDropoff = null;
 let routeLayer    = null;
 let inputMode     = "address"; // "address" = Enter Address mode (default)
 
+const pickupIcon = L.divIcon({
+  className: "",
+  html: '<div class="pulse-marker"></div>',
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  popupAnchor: [0, -10]
+});
+
+const dropoffIcon = L.divIcon({
+  className: "",
+  html: '<div class="pulse-marker dropoff"></div>',
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  popupAnchor: [0, -10]
+});
+
 // =============================================================================
 // GLOBAL EVENT LISTENERS
 // =============================================================================
@@ -227,8 +243,7 @@ map.on("click", async function (e) {
       pickup = coords;
       pickupInput.value = addressLabel;
       pickupInput.dispatchEvent(new Event("input"));
-      markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
-
+      markerPickup = L.marker(coords, { icon: pickupIcon }).addTo(map).bindPopup("Pickup").openPopup();
     // Set dropoff if pickup is already placed
     } else if (!dropoff) {
       if (markerDropoff) map.removeLayer(markerDropoff);
@@ -236,8 +251,8 @@ map.on("click", async function (e) {
       dropoff = coords;
       dropoffInput.value = addressLabel;
       dropoffInput.dispatchEvent(new Event("input"));
-      markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
-    }
+    markerDropoff = L.marker(coords, { icon: dropoffIcon }).addTo(map).bindPopup("Dropoff").openPopup();   
+   }
 
     if (pickup && dropoff) {
     // getRoute(pickup, dropoff);
@@ -327,7 +342,7 @@ async function setPickup() {
   if (markerPickup) map.removeLayer(markerPickup);
 
   pickup = coords;
-  markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+      markerPickup = L.marker(coords, { icon: pickupIcon }).addTo(map).bindPopup("Pickup").openPopup();
   map.setView(coords, 15);
 
   if (pickup && dropoff) tomRoute(pickup, dropoff);
@@ -358,7 +373,8 @@ async function setDropoff() {
   if (markerDropoff) map.removeLayer(markerDropoff);
 
   dropoff = coords;
-  markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
+  markerDropoff = L.marker(coords, { icon: dropoffIcon }).addTo(map).bindPopup("Dropoff").openPopup();
+
   map.setView(coords, 15);
 
   if (pickup && dropoff) tomRoute(pickup, dropoff);
@@ -381,8 +397,8 @@ dropoffInput.dispatchEvent(new Event("input"));
   if (markerPickup)  map.removeLayer(markerPickup);
   if (markerDropoff) map.removeLayer(markerDropoff);
 
-  if (pickup)  markerPickup  = L.marker(pickup).addTo(map).bindPopup("Pickup");
-  if (dropoff) markerDropoff = L.marker(dropoff).addTo(map).bindPopup("Dropoff");
+if (pickup)  markerPickup  = L.marker(pickup, { icon: pickupIcon }).addTo(map).bindPopup("Pickup");
+if (dropoff) markerDropoff = L.marker(dropoff, { icon: dropoffIcon }).addTo(map).bindPopup("Dropoff");
 
   // Redraw route
   if (pickup && dropoff) tomRoute(pickup, dropoff);
@@ -410,7 +426,7 @@ function getUserLocation() {
       pickup = coords;
       pickupInput.value = addressLabel;
       pickupInput.dispatchEvent(new Event("input"));
-      markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+    markerPickup = L.marker(coords, { icon: pickupIcon }).addTo(map).bindPopup("Pickup").openPopup();
 
       if (pickup && dropoff) tomRoute(pickup, dropoff);
     },
@@ -489,8 +505,8 @@ async function tomRoute(pickup, dropoff) {
     // Draw route with traffic color
     window.currentRoute = L.polyline(latlngs, { color: traffic.color, weight: 5 }).addTo(map);
 
-    window.startMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Start").openPopup();
-    window.endMarker = L.marker([dropoff.lat, dropoff.lng]).addTo(map).bindPopup("End");
+window.startMarker = L.marker([pickup.lat, pickup.lng], { icon: pickupIcon }).addTo(map).bindPopup("Start").openPopup();
+window.endMarker = L.marker([dropoff.lat, dropoff.lng], { icon: dropoffIcon }).addTo(map).bindPopup("End");
 
       saveTripToHistory({
       pickupLabel: pickupInput.value,
@@ -500,8 +516,10 @@ async function tomRoute(pickup, dropoff) {
 
     renderTripHistory();
 
-    map.fitBounds(window.currentRoute.getBounds());
-
+map.fitBounds(window.currentRoute.getBounds(), {
+  padding: [80, 80],
+  maxZoom: 14
+});
     console.log(`Route added! Distance: ${data.distanceMeters}m, ETA: ${data.estimatedMinutes} min, Traffic delay: ${data.trafficDelaySeconds}s`);
     showBottomTab(data);
 
@@ -644,12 +662,11 @@ async function fillFromSaved(which, loc) {
   if (which === "pickup") {
     if (markerPickup) map.removeLayer(markerPickup);
     pickup = coords;
-    markerPickup = L.marker([coords.lat, coords.lng]).addTo(map).bindPopup("Pickup").openPopup();
-    map.setView([coords.lat, coords.lng], 15);
+markerPickup = L.marker([coords.lat, coords.lng], { icon: pickupIcon }).addTo(map).bindPopup("Pickup").openPopup();    map.setView([coords.lat, coords.lng], 15);
   } else {
     if (markerDropoff) map.removeLayer(markerDropoff);
     dropoff = coords;
-    markerDropoff = L.marker([coords.lat, coords.lng]).addTo(map).bindPopup("Dropoff").openPopup();
+markerDropoff = L.marker([coords.lat, coords.lng], { icon: dropoffIcon }).addTo(map).bindPopup("Dropoff").openPopup();
     map.setView([coords.lat, coords.lng], 15);
   }
 
@@ -845,10 +862,12 @@ async function showBottomTab(data) {
 });
 
   tab.classList.add("show");
+  document.body.classList.add("tab-open");
 }
 async function hideBottomTab(){
   const tab = document.getElementById("comparisonTab");
   tab.classList.remove("show");
+  document.body.classList.remove("tab-open");
 
 }
 
