@@ -18,7 +18,28 @@ window.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/login.html";
   }
 });
- 
+
+// =============================================================================
+// DARK MODE
+// =============================================================================
+const DARK_MODE_KEY = "rha_dark_mode";
+
+function initDarkMode() {
+  const isDark = localStorage.getItem(DARK_MODE_KEY) === "true";
+  if (isDark) {
+    document.body.classList.add("dark");
+    document.getElementById("darkModeBtn").textContent = "☀️";
+  }
+}
+
+document.getElementById("darkModeBtn").addEventListener("click", () => {
+  const isDark = document.body.classList.toggle("dark");
+  localStorage.setItem(DARK_MODE_KEY, isDark);
+  document.getElementById("darkModeBtn").textContent = isDark ? "☀️" : "🌙";
+});
+
+initDarkMode();
+
 // =============================================================================
 // LOGOUT FUNCTION
 // =============================================================================
@@ -145,8 +166,10 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   dropoff = null;
   pickupInput.value  = "";
   dropoffInput.value = "";
-  document.getElementById("routeInfo").textContent = "";
+  const trafficEl = document.getElementById("trafficIndicator");
+  if (trafficEl) trafficEl.remove();
   hideBottomTab();
+
 });
 document.getElementById("addressModeBtn").addEventListener("click", () => {
   inputMode = "address";
@@ -171,6 +194,12 @@ document.getElementById("mapModeBtn").addEventListener("click", () => {
   document.getElementById("mapModeBtn").classList.add("active");
   document.getElementById("addressModeBtn").classList.remove("active");
 });
+
+function getTrafficLevel(delaySeconds) {
+  if (delaySeconds < 60)  return { level: "light",    label: "Light traffic",    color: "#22c55e" };
+  if (delaySeconds < 300) return { level: "moderate",  label: "Moderate traffic", color: "#f59e0b" };
+  return                         { level: "heavy",     label: "Heavy traffic",    color: "#ef4444" };
+}
 
 //Recenter button will always reset the optional pickup assignment
 document.getElementById("recenterBtn").addEventListener("click", getUserLocation);
@@ -273,6 +302,7 @@ async function reverseGeocode(lat, lng) {
 // =============================================================================
 
 async function setPickup() {
+  document.getElementById("pickupSuggestions").innerHTML = "";
   if (inputMode !== "address") return;
 
   const address = pickupInput.value;
@@ -302,6 +332,7 @@ async function setPickup() {
 }
 
 async function setDropoff() {
+  document.getElementById("dropoffSuggestions").innerHTML = "";
   if (inputMode !== "address") return;
 
   const address = dropoffInput.value;
@@ -358,10 +389,7 @@ function swapLocations() {
 // =============================================================================
 
 function getUserLocation() {
-  if (!navigator.geolocation) {
-    console.log("Geolocation not supported");
-    return;
-  }
+  if (!navigator.geolocation) return;
 
   navigator.geolocation.getCurrentPosition(
     async (position) => {
@@ -372,11 +400,14 @@ function getUserLocation() {
 
       const addressLabel = await reverseGeocode(lat, lng);
 
-      //setting user location as default pickup position
+      // Set pickup directly instead of going through setPickup()
+      const coords = { lat, lng };
+      if (markerPickup) map.removeLayer(markerPickup);
+      pickup = coords;
       pickupInput.value = addressLabel;
-      setPickup();
-      
-      // showGeoModal(lat, lng, addressLabel);
+      markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
+
+      if (pickup && dropoff) tomRoute(pickup, dropoff);
     },
     (error) => { console.error("Could not get location:", error.message); }
   );
@@ -422,8 +453,10 @@ async function autocomplete(e, suggestionId) {
 
 //tomtom draw route
 async function tomRoute(pickup, dropoff) {
+
+
+  document.getElementById("loadingIndicator").style.display = "flex";
   try {
-    // Send POST request to backend
     const res = await fetch("/route-time", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -439,36 +472,40 @@ async function tomRoute(pickup, dropoff) {
       throw new Error("No route points returned");
     }
 
-    // Map points to Leaflet [lat, lon] array
     const latlngs = data.points.map(p => [p.latitude, p.longitude]);
 
-    // Remove previous route if it exists
     if (window.currentRoute) map.removeLayer(window.currentRoute);
     if (window.startMarker) map.removeLayer(window.startMarker);
     if (window.endMarker) map.removeLayer(window.endMarker);
 
-    // Add polyline for route
-    window.currentRoute = L.polyline(latlngs, { color: "red", weight: 5 }).addTo(map);
+    // Get traffic level BEFORE drawing polyline so we can color it correctly
+    const traffic = getTrafficLevel(data.trafficDelaySeconds || 0);
 
-    // Add markers for start and end
+    // Draw route with traffic color
+    window.currentRoute = L.polyline(latlngs, { color: traffic.color, weight: 5 }).addTo(map);
+
     window.startMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Start").openPopup();
     window.endMarker = L.marker([dropoff.lat, dropoff.lng]).addTo(map).bindPopup("End");
 
+      saveTripToHistory({
+      pickupLabel: pickupInput.value,
+      dropoffLabel: dropoffInput.value,
+      savedAt: new Date().toLocaleTimeString()
+    });
+
+    renderTripHistory();
+
+    map.fitBounds(window.currentRoute.getBounds());
+
+    console.log(`Route added! Distance: ${data.distanceMeters}m, ETA: ${data.estimatedMinutes} min, Traffic delay: ${data.trafficDelaySeconds}s`);
     showBottomTab(data);
 
-  saveTripToHistory({
-    pickupLabel: pickupInput.value,
-    dropoffLabel: dropoffInput.value,
-    savedAt: new Date().toLocaleTimeString()
-  });
-
-  renderTripHistory(); 
-
-    // Fit map to route bounds
-    map.fitBounds(window.currentRoute.getBounds());
-    
   } catch (err) {
     console.error("Routing error:", err);
+  }
+  finally {
+    // Hide spinner — runs whether it succeeded or failed
+    document.getElementById("loadingIndicator").style.display = "none";
   }
 }
 //buttons: home, settings profile
@@ -522,10 +559,6 @@ function saveTripToHistory(trip){
 // =============================================================================
 
 let savedLocations = [];
-
-function getToken() {
-  return localStorage.getItem("token");
-}
 
 // Fetch all saved locations from backend and re-render both popovers
 async function loadSavedLocations() {
@@ -588,23 +621,25 @@ function renderSavedPopover(which) {
 
 // Fill pickup or dropoff input from a saved location object
 async function fillFromSaved(which, loc) {
-  const input  = document.getElementById(`${which}Input`);
-  input.value  = loc.address;
+  const input = document.getElementById(`${which}Input`);
+  input.value = loc.address;
 
   const coords = { lat: parseFloat(loc.lat), lng: parseFloat(loc.lng) };
+  console.log("fillFromSaved", which, coords, "pickup:", pickup, "dropoff:", dropoff);
 
   if (which === "pickup") {
     if (markerPickup) map.removeLayer(markerPickup);
     pickup = coords;
-    markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
-    map.setView(coords, 15);
+    markerPickup = L.marker([coords.lat, coords.lng]).addTo(map).bindPopup("Pickup").openPopup();
+    map.setView([coords.lat, coords.lng], 15);
   } else {
     if (markerDropoff) map.removeLayer(markerDropoff);
     dropoff = coords;
-    markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
-    map.setView(coords, 15);
+    markerDropoff = L.marker([coords.lat, coords.lng]).addTo(map).bindPopup("Dropoff").openPopup();
+    map.setView([coords.lat, coords.lng], 15);
   }
 
+  console.log("after set — pickup:", pickup, "dropoff:", dropoff);
   if (pickup && dropoff) tomRoute(pickup, dropoff);
 }
 
@@ -745,8 +780,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Close popovers when clicking anywhere outside
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".autocomplete-container")) closeAllPopovers();
-  });
+  if (!e.target.closest(".autocomplete-container")) {
+    closeAllPopovers();
+    document.getElementById("pickupSuggestions").innerHTML = "";
+    document.getElementById("dropoffSuggestions").innerHTML = "";
+  }
+});
 
   // Enter key in modal name input → trigger save
   document.getElementById("slmNameInput").addEventListener("keydown", (e) => {
@@ -757,14 +796,29 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSavedLocations();
 });
 
-//Comparison tab functionality
-async function showBottomTab(data){
+async function showBottomTab(data) {
+  const traffic = getTrafficLevel(data.trafficDelaySeconds || 0);
   const tab = document.getElementById("comparisonTab");
+  tab.innerHTML = `
+    <div class="tab-stat">
+      <span class="tab-icon">📍</span>
+      <span class="tab-value">${(data.distanceMeters / 1000).toFixed(1)}</span>
+      <span class="tab-unit">km</span>
+    </div>
+    <div class="tab-divider"></div>
+    <div class="tab-stat">
+      <span class="tab-icon">⏱</span>
+      <span class="tab-value">${data.estimatedMinutes}</span>
+      <span class="tab-unit">min</span>
+    </div>
+    <div class="tab-divider"></div>
+    <div class="tab-stat">
+      <span class="tab-dot" style="background:${traffic.color}"></span>
+      <span class="tab-value" style="color:${traffic.color}">${traffic.label}</span>
+    </div>
+  `;
   tab.classList.add("show");
-
-  tab.textContent = "Ride Information = "+`${(data.distanceMeters/1000).toFixed(1)} km · ${data.estimatedMinutes} min`;
 }
-
 async function hideBottomTab(){
   const tab = document.getElementById("comparisonTab");
   tab.classList.remove("show");
@@ -818,3 +872,7 @@ document.getElementById("dropoffInput").addEventListener("keydown", (e) => {
     setDropoff();
   }
 });
+
+
+
+

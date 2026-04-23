@@ -1,149 +1,173 @@
 /* =============================================================================
+   CSS VARIABLES — LIGHT & DARK THEME
+   ============================================================================= */
+
+:root {
+  --bg:           #f9fafb;
+  --surface:      #ffffff;
+  --surface2:     #f3f4f6;
+  --border:       #e5e7eb;
+  --border2:      #ccc;
+  --text:         #111111;
+  --text2:        #374151;
+  --text3:        #6b7280;
+  --text4:        #9ca3af;
+  --hover:        #e5e7eb;
+  --hover2:       #f0f4ff;
+  --shadow:       rgba(0,0,0,0.15);
+  --shadow2:      rgba(0,0,0,0.20);
+  --brand:        #3D53CA;
+  --accent:       #2563eb;
+  --accent-light: #f0f4ff;
+  --accent-border:#c7d7fd;
+  --accent-muted: #93c5fd;
+}
+
+body.dark {
+  --bg:           #0f1117;
+  --surface:      #1e2130;
+  --surface2:     #2a2d3e;
+  --border:       #2e3248;
+  --border2:      #3a3f5c;
+  --text:         #f1f5f9;
+  --text2:        #cbd5e1;
+  --text3:        #94a3b8;
+  --text4:        #64748b;
+  --hover:        #2e3248;
+  --hover2:       #1e2a4a;
+  --shadow:       rgba(0,0,0,0.4);
+  --shadow2:      rgba(0,0,0,0.5);
+  --accent-light: #1e2a4a;
+  --accent-border:#2d4a8a;
+  --accent-muted: #3b5998;
+}
+
+/* =============================================================================
    BASE & LAYOUT
    ============================================================================= */
 
 html, body {
   height: 100%;
   margin: 0;
-  background-color: whitesmoke;
+  background-color: var(--bg);
+  transition: background-color 0.3s ease;
 }
 
 body {
   display: flex;
   flex-direction: column;
 }
-
 /* =============================================================================
    MAP PAGE BRANDING
 ============================================================================= */
 .mapBranding {
-    position: absolute;
-    top: 10px;
-    left: 60px;
-    z-index: 1000;
-    background: white;
-    padding: 6px 12px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  position: absolute;
+  top: 10px;
+  left: 60px;
+  z-index: 1000;
+  background: var(--surface);
+  padding: 6px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px var(--shadow);
+  transition: background 0.3s;
 }
 
 .mapAppName {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 18px;
-    font-weight: 900;
-    color: #3D53CA;
-    letter-spacing: 2px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--brand);
+  letter-spacing: 2px;
 }
 
 /* =============================================================================
    MAP
    ============================================================================= */
-
 #map {
   flex: 1;
   width: 100%;
   margin-top: 1px;
 }
 
-
 /* =============================================================================
-   MODE CONTROLS (top center bar)
+   MODE CONTROLS
    ============================================================================= */
-
 .mode-controls {
   position: absolute;
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
-
   display: flex;
   gap: 8px;
-
-  background: white;
+  background: var(--surface);
   padding: 6px;
-
   border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-
+  box-shadow: 0 3px 10px var(--shadow);
   z-index: 1000;
+  transition: background 0.3s;
 }
 
 .mode-btn {
   border: none;
   padding: 10px 16px;
-
   font-size: 14px;
   font-weight: 500;
-
   border-radius: 8px;
   cursor: pointer;
-
-  background: #f3f4f6;
-  color: #333;
-
+  background: var(--surface2);
+  color: var(--text2);
   transition: all 0.2s ease;
 }
 
-.mode-btn:hover {
-  background: #e5e7eb;
-}
+.mode-btn:hover { background: var(--hover); }
+.mode-btn.active { background: var(--accent); color: white; }
 
-.mode-btn.active {
-  background: #2563eb;
-  color: white;
-}
 /* =============================================================================
    LOADING INDICATOR
 ============================================================================= */
 #loadingIndicator {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-    background: white;
-    padding: 20px 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    text-align: center;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    color: #3D53CA;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background: var(--surface);
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px var(--shadow2);
+  text-align: center;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: var(--brand);
 }
 
 .spinner {
-    width: 36px;
-    height: 36px;
-    border: 4px solid #e0e0e0;
-    border-top-color: #3D53CA;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 10px auto;
+  width: 36px;
+  height: 36px;
+  border: 4px solid var(--border);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 10px auto;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* =============================================================================
-   SEARCH CONTAINER (bottom/top floating panel)
+   SEARCH CONTAINER
    ============================================================================= */
-
 .search-container {
   position: absolute;
   top: 60px;
   left: 50%;
   transform: translateX(-50%);
-
   width: 100%;
   max-width: 1000px;
-
-  background: white;
+  background: var(--surface);
   padding: 12px;
-
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-
+  box-shadow: 0 4px 15px var(--shadow);
   z-index: 1000;
+  transition: background 0.3s;
 }
 
 .inputs-row {
@@ -161,13 +185,14 @@ input {
   margin-bottom: 5px;
   font-size: 16px;
   box-sizing: border-box;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border2);
 }
-
 
 /* =============================================================================
    AUTOCOMPLETE
    ============================================================================= */
-
 .autocomplete-container {
   position: relative;
   flex: 1;
@@ -178,22 +203,21 @@ input {
   padding: 8px 36px 8px 8px !important;
   font-size: 15px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border2) !important;
   box-sizing: border-box;
   margin-bottom: 0;
+  background: var(--surface) !important;
+  color: var(--text) !important;
 }
 
 .autocomplete-container button {
   margin-top: 4px;
   width: 100%;
   padding: 6px;
-
   border-radius: 6px;
   border: none;
-
-  background: #2563eb;
+  background: var(--accent);
   color: white;
-
   cursor: pointer;
 }
 
@@ -217,82 +241,31 @@ input {
   top: 100%;
   left: 0;
   right: 0;
-
-  background: white;
-  border: 1px solid #ccc;
+  background: var(--surface);
+  border: 1px solid var(--border2);
   border-radius: 4px;
-
   max-height: 200px;
   overflow-y: auto;
-
   list-style: none;
   margin: 0;
   padding: 0;
-
   z-index: 2000;
 }
 
 .suggestions li {
   padding: 8px 12px;
   cursor: pointer;
-  color: black;
-  border-bottom: 1px solid #eee;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
 }
 
-.suggestions li:last-child {
-  border-bottom: none;
-}
+.suggestions li:last-child { border-bottom: none; }
+.suggestions li:hover { background-color: var(--hover); }
 
-.suggestions li:hover {
-  background-color: #f0f0f0;
-}
-/*=============================================================================
-   TRIP HISTORY PANEL
-============================================================================= */
 
-  .trip-history-panel {
-   position: absolute;
-   top: 185px;
-   left: 50%;
-   transform: translateX(-50%);
-
-  width: 100%;
-  max-width: 1000px;
-
-  background: white;
-  padding: 12px;
-
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-
-  z-index: 1000;
-}
-
-.trip-history-header {
-  margin-bottom: 8px;
-}
-
-.trip-history-header h3 {
-  margin: 0;
-  font-size: 14px;
-  color: #111;
-}
-
-.trip-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.trip-history-empty {
-  margin: 0;
-  font-size: 13px;
-  color: #666;
-}
 /* =============================================================================
    INPUT WITH STAR BUTTON
    ============================================================================= */
-
 .input-with-star {
   position: relative;
   width: 100%;
@@ -305,9 +278,11 @@ input {
   box-sizing: border-box;
   padding: 6px 36px 6px 8px;
   font-size: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border2);
   border-radius: 6px;
   margin-bottom: 0;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .star-btn {
@@ -323,27 +298,25 @@ input {
   padding: 2px;
   line-height: 1;
   transition: transform 0.15s ease;
-  width: auto;        /* override any global button width */
-  margin-top: 0;      /* override any global button margin */
+  width: auto;
+  margin-top: 0;
 }
 
 .star-btn:hover { transform: translateY(-50%) scale(1.2); }
-.star-btn.starred { color: #f59e0b; }
 
 /* =============================================================================
    SAVED LOCATIONS POPOVER
    ============================================================================= */
-
 .saved-popover {
   display: none;
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 24px var(--shadow);
   z-index: 3000;
   overflow: hidden;
 }
@@ -357,18 +330,22 @@ input {
   padding: 10px 12px 6px;
   font-size: 12px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text3);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border);
 }
 
 .save-current-btn {
   width: auto !important;
   background: none !important;
-  color: #2563eb !important;
+  color: var(--accent) !important;
   margin-top: 0 !important;
   padding: 2px 4px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  cursor: pointer !important;
 }
 
 .save-current-btn:hover { text-decoration: underline; }
@@ -388,16 +365,15 @@ input {
   padding: 8px 12px;
   cursor: pointer;
   font-size: 14px;
-  color: #111;
-  border-bottom: 1px solid #f9fafb;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
   transition: background 0.1s;
 }
 
 .saved-popover-list li:last-child { border-bottom: none; }
-.saved-popover-list li:hover { background: #f0f4ff; }
+.saved-popover-list li:hover { background: var(--hover2); }
 
 .saved-loc-icon { font-size: 16px; flex-shrink: 0; }
-
 .saved-loc-info { flex: 1; overflow: hidden; }
 
 .saved-loc-name {
@@ -406,11 +382,12 @@ input {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text);
 }
 
 .saved-loc-addr {
   font-size: 11px;
-  color: #6b7280;
+  color: var(--text3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -419,16 +396,20 @@ input {
 .saved-loc-delete {
   width: auto !important;
   background: none !important;
-  color: #d1d5db !important;
+  color: var(--text4) !important;
   margin-top: 0 !important;
   padding: 2px 4px !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
 }
-.saved-loc-delete:hover { color: #ef4444; }
+
+.saved-loc-delete:hover { color: #ef4444 !important; }
 
 .saved-popover-empty {
   padding: 12px;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--text4);
   text-align: center;
   margin: 0;
 }
@@ -436,7 +417,6 @@ input {
 /* =============================================================================
    SAVE LOCATION MODAL
    ============================================================================= */
-
 .slm-overlay {
   display: none;
   position: fixed;
@@ -450,24 +430,24 @@ input {
 .slm-overlay.open { display: flex; }
 
 .slm-card {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   padding: 24px 20px 20px;
   width: 88%;
   max-width: 320px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+  box-shadow: 0 16px 48px var(--shadow2);
 }
 
 .slm-title {
   margin: 0 0 4px;
   font-size: 17px;
   font-weight: 700;
-  color: #111;
+  color: var(--text);
 }
 
 .slm-address {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text3);
   margin: 0 0 16px;
   line-height: 1.4;
   word-break: break-word;
@@ -477,7 +457,7 @@ input {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text2);
   margin-bottom: 6px;
 }
 
@@ -486,14 +466,16 @@ input {
   box-sizing: border-box;
   padding: 10px 12px;
   font-size: 15px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--border2);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.15s;
   margin-bottom: 0;
+  background: var(--surface);
+  color: var(--text);
 }
 
-.slm-input:focus { border-color: #2563eb; }
+.slm-input:focus { border-color: var(--accent); }
 
 .slm-error {
   min-height: 18px;
@@ -519,28 +501,23 @@ input {
   transition: opacity 0.15s;
 }
 
-.slm-cancel { background: #f3f4f6; color: #374151; }
-.slm-save   { background: #2563eb; color: white; }
+.slm-cancel { background: var(--surface2); color: var(--text2); }
+.slm-save   { background: var(--accent); color: white; }
 .slm-cancel:hover, .slm-save:hover { opacity: 0.85; }
 
 /* =============================================================================
    BUTTONS
    ============================================================================= */
-
 #resetBtn {
   position: absolute;
   top: 10px;
   right: 10px;
-
   padding: 6px 10px;
   font-size: 13px;
-
   background: #ef4444;
   color: white;
-
   border: none;
   border-radius: 6px;
-
   cursor: pointer;
   z-index: 1000;
 }
@@ -549,168 +526,151 @@ input {
   position: absolute;
   top: 175px;
   right: 10px;
-
   width: 62px;
   height: 62px;
-
-  background: white;
+  background: var(--surface);
   border: none;
   border-radius: 6px;
-
   font-size: 18px;
   cursor: pointer;
-
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px var(--shadow);
   z-index: 1000;
-
+  transition: background 0.3s;
 }
 
-#recenterBtn:hover {
-  background: #e5e7eb;
-}
+#recenterBtn:hover { background: var(--hover); }
 
-#settingsBtn{
+#settingsBtn {
   position: absolute;
   top: 250px;
   right: 10px;
-
   width: 62px;
   height: 62px;
-
-  background: white;
+  background: var(--surface);
   border: none;
   border-radius: 6px;
-
   font-size: 18px;
   cursor: pointer;
-
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px var(--shadow);
   z-index: 1000;
+  transition: background 0.3s;
 }
 
-#settingsBtn:hover {
-  background: #e5e7eb;
-}
+#settingsBtn:hover { background: var(--hover); }
 
-#profileBtn{
+#profileBtn {
   position: absolute;
   top: 325px;
   right: 10px;
-
   width: 62px;
   height: 62px;
-
-  background: white;
+  background: var(--surface);
   border: none;
   border-radius: 6px;
-
   font-size: 18px;
   cursor: pointer;
-
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px var(--shadow);
   z-index: 1000;
+  transition: background 0.3s;
 }
 
-#profileBtn:hover {
-  background: #e5e7eb;
-}
-
+#profileBtn:hover { background: var(--hover); }
 
 #swapLocations {
   align-self: center;
-
   width: 40px;
   height: 40px;
-
   border-radius: 50%;
   border: none;
-
   font-size: 16px;
-  background: white;
-
+  background: var(--surface);
+  color: var(--text);
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.2s;
 }
 
-#swapLocations:hover {
-  background: #e5e7eb;
-}
+#swapLocations:hover { background: var(--hover); }
 
 .logout-button {
-     bottom: 10px;
-     right: 10px;
-     padding: 8px 16px;
-     background-color: #e74c3c;
-     color: white;
-     border: none;
-     border-radius: 5px;
-     font-size: 14px;
-     cursor: pointer;
-   }
-   
-   .logout-button:hover {
-     background-color: #c0392b;
-   }
-
-/*layer control */
-
-.leaflet-top.leaflet-right { 
-    top: 100px; 
-}
-/* smaller layer control */
-.leaflet-control-layers {
-    font-size: 12px;
+  padding: 8px 16px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
+.logout-button:hover { background-color: #c0392b; }
+
+/* =============================================================================
+   DARK MODE TOGGLE BUTTON
+   ============================================================================= */
+#darkModeBtn {
+  position: absolute;
+  top: 400px;
+  right: 10px;
+  width: 62px;
+  height: 62px;
+  background: var(--surface);
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--shadow);
+  z-index: 1000;
+  transition: background 0.3s;
+}
+
+#darkModeBtn:hover { background: var(--hover); }
+
+/* layer control */
+.leaflet-top.leaflet-right { top: 100px; }
+.leaflet-control-layers { font-size: 12px; }
 .leaflet-control-layers-toggle {
-    width: 30px !important;
-    height: 30px !important;
-    background-size: 16px 16px !important;
+  width: 30px !important;
+  height: 30px !important;
+  background-size: 16px 16px !important;
 }
+
 /* =============================================================================
    GEOLOCATION MODAL
    ============================================================================= */
-
 #geoModal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0,0,0,0.4);
   z-index: 9999;
   align-items: center;
   justify-content: center;
 }
 
-#geoModal.open {
-  display: flex;
-}
+#geoModal.open { display: flex; }
 
 #geoModalCard {
-  background: white;
+  background: var(--surface);
   border-radius: 14px;
   padding: 24px 20px 20px;
   width: 88%;
   max-width: 300px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 40px var(--shadow2);
   text-align: center;
 }
 
-#geoModalIcon {
-  font-size: 28px;
-  margin-bottom: 6px;
-}
+#geoModalIcon { font-size: 28px; margin-bottom: 6px; }
 
 #geoModalTitle {
   margin: 0 0 4px;
   font-size: 15px;
   font-weight: 600;
-  color: #111;
+  color: var(--text);
 }
 
 #geoAddressLabel {
   margin: 0 0 18px;
   font-size: 13px;
-  color: #666;
+  color: var(--text3);
   line-height: 1.4;
 }
 
@@ -730,53 +690,106 @@ input {
   transition: opacity 0.15s ease;
 }
 
-#geoModalBtns button:hover {
-  opacity: 0.85;
+#geoModalBtns button:hover { opacity: 0.85; }
+#geoSetPickup    { background: #22c55e; color: white; }
+#geoRecenterOnly { background: var(--surface2); color: var(--text2); }
+
+#comparisonTab {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  min-height:240px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 20px var(--shadow);
+  font-family: inherit;
+
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
 }
 
-#geoSetPickup   { background: #22c55e; color: white; }
-#geoRecenterOnly { background: #f3f4f6; color: #333; }
+#comparisonTab.show {
+  transform: translateY(0);
+}
 
+.tab-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-icon {
+  font-size: 14px;
+}
+
+.tab-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tab-unit {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.tab-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+}
+
+.tab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+/* Dark mode */
+body.dark #comparisonTab {
+  background: #1e1e1e;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+}
+
+body.dark .tab-value {
+  color: #f5f5f5;
+}
+
+body.dark .tab-divider {
+  background: #333;
+}
 
 /* =============================================================================
-   RESPONSIVE — SMALL SCREENS (max-width: 600px)
+   RESPONSIVE — SMALL SCREENS
    ============================================================================= */
-
 @media (max-width: 600px) {
+  #map { margin-top: 1px; }
+  .mapBranding { left: 10px; }
+  .leaflet-control-zoom { display: none; }
 
-  /* Map */
-  #map {
-    margin-top: 1px;
-  }
-  .mapBranding {
-    left:10px;
-  }
-  /* Hide zoom controls on mobile to reduce clutter — remove if needed */
-  .leaflet-control-zoom {
-    display: none;
-  }
-
-  /* Mode controls */
   .mode-controls {
     top: 45px;
     flex-wrap: wrap;
     justify-content: center;
   }
 
-  .mode-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
+  .mode-btn { padding: 6px 10px; font-size: 12px; }
 
-  /* Search container */
   .search-container {
     top: auto;
     bottom: 10px;
     transform: translateX(-50%);
-
     width: 92%;
     padding: 8px;
-
     border-radius: 16px;
   }
 
@@ -786,7 +799,6 @@ input {
     margin: 10px 0;
   }
 
-  /* Inputs */
   input {
     width: 100%;
     padding: 6px 8px;
@@ -800,11 +812,7 @@ input {
     font-size: 13px;
   }
 
-  /* Buttons */
-  #resetBtn {
-    padding: 6px 10px;
-    font-size: 10px;
-  }
+  #resetBtn { padding: 6px 10px; font-size: 10px; }
 
   #recenterBtn {
     right: 5px;
@@ -818,25 +826,4 @@ input {
     height: 30px;
     font-size: 14px;
   }
-
-  
-
-}
-
-#comparisonTab {
-  position: fixed;
-  left: 0;
-  bottom: 0;           
-  width: 100%;
-  height: 200px;
-  background: rgb(255, 255, 255);
-  color: rgb(0, 0, 0);
-  z-index: 999999;
-
-  transform: translateY(100%); 
-  transition: transform 0.3s ease;
-}
-
-#comparisonTab.show {
-  transform: translateY(0);
 }
