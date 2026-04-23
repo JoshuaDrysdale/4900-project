@@ -126,7 +126,7 @@ L.control.layers({
 // =============================================================================
 // GLOBAL VARIABLES
 // =============================================================================
-
+let distanceUnit = "km";
 const pickupInput  = document.getElementById("pickupInput");
 const dropoffInput = document.getElementById("dropoffInput");
 
@@ -166,6 +166,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   dropoff = null;
   pickupInput.value  = "";
   dropoffInput.value = "";
+  pickupInput.dispatchEvent(new Event("input")); 
+dropoffInput.dispatchEvent(new Event("input")); 
   const trafficEl = document.getElementById("trafficIndicator");
   if (trafficEl) trafficEl.remove();
   hideBottomTab();
@@ -224,7 +226,7 @@ map.on("click", async function (e) {
 
       pickup = coords;
       pickupInput.value = addressLabel;
-
+      pickupInput.dispatchEvent(new Event("input"));
       markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
 
     // Set dropoff if pickup is already placed
@@ -233,7 +235,7 @@ map.on("click", async function (e) {
 
       dropoff = coords;
       dropoffInput.value = addressLabel;
-
+      dropoffInput.dispatchEvent(new Event("input"));
       markerDropoff = L.marker(coords).addTo(map).bindPopup("Dropoff").openPopup();
     }
 
@@ -372,6 +374,8 @@ function swapLocations() {
 
   // Swap input text
   [pickupInput.value, dropoffInput.value] = [dropoffInput.value, pickupInput.value];
+  pickupInput.dispatchEvent(new Event("input")); 
+dropoffInput.dispatchEvent(new Event("input")); 
 
   // Redraw markers
   if (markerPickup)  map.removeLayer(markerPickup);
@@ -405,6 +409,7 @@ function getUserLocation() {
       if (markerPickup) map.removeLayer(markerPickup);
       pickup = coords;
       pickupInput.value = addressLabel;
+      pickupInput.dispatchEvent(new Event("input"));
       markerPickup = L.marker(coords).addTo(map).bindPopup("Pickup").openPopup();
 
       if (pickup && dropoff) tomRoute(pickup, dropoff);
@@ -501,7 +506,15 @@ async function tomRoute(pickup, dropoff) {
     showBottomTab(data);
 
   } catch (err) {
-    console.error("Routing error:", err);
+     console.error("Routing error:", err);
+  const tab = document.getElementById("comparisonTab");
+  tab.innerHTML = `
+    <div class="tab-stat">
+      <span class="tab-icon">⚠️</span>
+      <span class="tab-value" style="color:#ef4444; font-size:15px;">Could not find a route. Please try again.</span>
+    </div>
+  `;
+  tab.classList.add("show");;
   }
   finally {
     // Hide spinner — runs whether it succeeded or failed
@@ -623,6 +636,7 @@ function renderSavedPopover(which) {
 async function fillFromSaved(which, loc) {
   const input = document.getElementById(`${which}Input`);
   input.value = loc.address;
+  input.dispatchEvent(new Event("input"));
 
   const coords = { lat: parseFloat(loc.lat), lng: parseFloat(loc.lng) };
   console.log("fillFromSaved", which, coords, "pickup:", pickup, "dropoff:", dropoff);
@@ -799,11 +813,14 @@ document.addEventListener("DOMContentLoaded", () => {
 async function showBottomTab(data) {
   const traffic = getTrafficLevel(data.trafficDelaySeconds || 0);
   const tab = document.getElementById("comparisonTab");
+
+  const km = (data.distanceMeters / 1000).toFixed(1);
+  const miles = (data.distanceMeters / 1609.34).toFixed(1);
   tab.innerHTML = `
     <div class="tab-stat">
-      <span class="tab-icon">📍</span>
-      <span class="tab-value">${(data.distanceMeters / 1000).toFixed(1)}</span>
-      <span class="tab-unit">km</span>
+   <span class="tab-icon">📍</span>
+      <span class="tab-value" id="distanceValue">${distanceUnit === "km" ? km : miles}</span>
+      <span class="tab-unit" id="distanceUnit">${distanceUnit}</span>
     </div>
     <div class="tab-divider"></div>
     <div class="tab-stat">
@@ -815,8 +832,18 @@ async function showBottomTab(data) {
     <div class="tab-stat">
       <span class="tab-dot" style="background:${traffic.color}"></span>
       <span class="tab-value" style="color:${traffic.color}">${traffic.label}</span>
-    </div>
+       </div>
+       <div class="tab-divider"></div>
+  <button id="unitToggleBtn" class="unit-toggle-btn">Switch to ${distanceUnit === "km" ? "mi" : "km"}</button>   
   `;
+
+   document.getElementById("unitToggleBtn").addEventListener("click", () => {
+    distanceUnit = distanceUnit === "km" ? "mi" : "km";
+    document.getElementById("distanceValue").textContent = distanceUnit === "km" ? km : miles;
+    document.getElementById("distanceUnit").textContent = distanceUnit;
+  document.getElementById("unitToggleBtn").textContent = `Switch to ${distanceUnit === "km" ? "mi" : "km"}`;  
+});
+
   tab.classList.add("show");
 }
 async function hideBottomTab(){
@@ -872,6 +899,21 @@ document.getElementById("dropoffInput").addEventListener("keydown", (e) => {
     setDropoff();
   }
 });
+
+const confirmPickupBtn = document.querySelector(".autocomplete-container:first-of-type button:not(.star-btn)");
+const confirmDropoffBtn = document.querySelector(".autocomplete-container:last-of-type button:not(.star-btn)");
+
+pickupInput.addEventListener("input", () => {
+  confirmPickupBtn.disabled = pickupInput.value.trim() === "";
+});
+
+dropoffInput.addEventListener("input", () => {
+  confirmDropoffBtn.disabled = dropoffInput.value.trim() === "";
+});
+
+// Set initial state on page load
+confirmPickupBtn.disabled = true;
+confirmDropoffBtn.disabled = true;
 
 
 
