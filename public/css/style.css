@@ -80,6 +80,13 @@ body {
   letter-spacing: 2px;
 }
 
+.mapTagline {
+  font-size: 14px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
 /* =============================================================================
    MAP
    ============================================================================= */
@@ -589,12 +596,12 @@ input {
   position: absolute;
   top: 175px;
   right: 10px;
-  width: 62px;
-  height: 62px;
+  width: 45px;
+  height: 45px;
   background: var(--surface);
   border: none;
   border-radius: 6px;
-  font-size: 18px;
+  font-size: 14px;
   cursor: pointer;
   box-shadow: 0 2px 6px var(--shadow);
   z-index: 1000;
@@ -605,10 +612,10 @@ input {
 
 #settingsBtn {
   position: absolute;
-  top: 250px;
+  top: 224px;
   right: 10px;
-  width: 62px;
-  height: 62px;
+  width: 45px;
+  height: 45px;
   background: var(--surface);
   border: none;
   border-radius: 6px;
@@ -623,10 +630,10 @@ input {
 
 #profileBtn {
   position: absolute;
-  top: 325px;
+  top: 273px;
   right: 10px;
-  width: 62px;
-  height: 62px;
+  width: 45px;
+  height: 45px;
   background: var(--surface);
   border: none;
   border-radius: 6px;
@@ -671,10 +678,10 @@ input {
    ============================================================================= */
 #darkModeBtn {
   position: absolute;
-  top: 400px;
+  top: 322px;
   right: 10px;
-  width: 62px;
-  height: 62px;
+  width: 45px;
+  height: 45px;
   background: var(--surface);
   border: none;
   border-radius: 6px;

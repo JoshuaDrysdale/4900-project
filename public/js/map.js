@@ -135,10 +135,8 @@ const TRIP_HISTORY_KEY = "rha_trip_history";
 
 let pickup        = null;
 let dropoff       = null;
-let routingControl = null;
 let markerPickup  = null;
 let markerDropoff = null;
-let routeLayer    = null;
 let inputMode     = "address"; // "address" = Enter Address mode (default)
 
 const pickupIcon = L.divIcon({
@@ -170,7 +168,6 @@ dropoffInput.addEventListener("input", debouncedDropoff);
 document.getElementById("swapLocations").addEventListener("click", swapLocations);
 
 document.getElementById("resetBtn").addEventListener("click", () => {
-  if (routeLayer)    { map.removeLayer(routeLayer);    routeLayer    = null; }
   if (markerPickup)  { map.removeLayer(markerPickup);  markerPickup  = null; }
   if (markerDropoff) { map.removeLayer(markerDropoff); markerDropoff = null; }
   
@@ -255,8 +252,6 @@ map.on("click", async function (e) {
    }
 
     if (pickup && dropoff) {
-    // getRoute(pickup, dropoff);
-    // routeTime(pickup, dropoff);
      tomRoute(pickup, dropoff);
    }
 
