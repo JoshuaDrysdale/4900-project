@@ -1,24 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="stylesheet" href="../css/menu.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — RHA</title>
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
 </head>
 <body>
 
-    <label>Username</label>
-    <input type="text" id="username"><br>
+  <div class="page-wrapper">
 
-    <label>E-mail</label>
-    <input type="text" id="email"><br>
+    <div class="page-header">
+      <button id="homeBtn" class="back-btn">← Back</button>
+      <h1 class="page-title">🚗 RHA</h1>
+      <button id="darkModeBtn" class="icon-btn">🌙</button>
+    </div>
 
-    <label>Update Profile</label>
-    <button type="submit" id="updateProfile">Update</button>
+    <div class="page-card">
+      <div class="profile-avatar">👤</div>
+      <h2 class="profile-name" id="displayUsername">Loading...</h2>
+      <p class="profile-email" id="displayEmail">Loading...</p>
+    </div>
 
-    <button id="homeBtn">🏠</button>
-    
-    <script src="../js/profile.js"></script>
+    <div class="page-card">
+      <h3 class="card-title">Edit Profile</h3>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" type="text" id="username" placeholder="Your username">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="email" placeholder="Your email">
+      </div>
+
+      <p class="form-success" id="updateSuccess"></p>
+      <p class="form-error" id="updateError"></p>
+
+      <button class="btn-primary" id="updateProfile">Save Changes</button>
+    </div>
+
+    <div class="page-card danger-card">
+      <h3 class="card-title">Account</h3>
+      <button class="btn-danger" id="logoutBtn">Logout</button>
+    </div>
+
+  </div>
+
+  <script src="../js/profile.js"></script>
+  
 </body>
 </html>
