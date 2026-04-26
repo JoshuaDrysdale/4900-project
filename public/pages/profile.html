@@ -43,6 +43,33 @@
         <button class="btn-primary" id="updateProfile">Save Changes</button>
       </div>
 
+      <div class="page-card">
+  <h3 class="card-title">Change Password</h3>
+
+  <div class="form-group">
+    <label class="form-label">Current Password</label>
+    <input class="form-input" type="password" id="currentPassword" placeholder="Your current password">
+    <p id="currentPasswordError" class="form-error" style="display:none"></p>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">New Password</label>
+    <input class="form-input" type="password" id="newPassword" placeholder="Your new password">
+    <p id="newPasswordError" class="form-error" style="display:none"></p>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Confirm New Password</label>
+    <input class="form-input" type="password" id="confirmNewPassword" placeholder="Confirm new password">
+    <p id="confirmNewPasswordError" class="form-error" style="display:none"></p>
+  </div>
+
+  <p class="form-success" id="passwordSuccess"></p>
+  <p class="form-error" id="passwordError"></p>
+
+  <button class="btn-primary" id="updatePassword">Update Password</button>
+</div>
+
       <div class="page-card danger-card">
         <h3 class="card-title">Account</h3>
         <button class="btn-danger" id="logoutBtn">Logout</button>
