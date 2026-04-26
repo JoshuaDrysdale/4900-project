@@ -9,47 +9,48 @@
 </head>
 <body>
 
-  <div class="page-wrapper">
+    <div class="page-wrapper">
 
-    <div class="page-header">
-      <button id="homeBtn" class="back-btn">← Back</button>
-      <h1 class="page-title">🚗 RHA</h1>
-      <button id="darkModeBtn" class="icon-btn">🌙</button>
-    </div>
-
-    <div class="page-card">
-      <div class="profile-avatar">👤</div>
-      <h2 class="profile-name" id="displayUsername">Loading...</h2>
-      <p class="profile-email" id="displayEmail">Loading...</p>
-    </div>
-
-    <div class="page-card">
-      <h3 class="card-title">Edit Profile</h3>
-
-      <div class="form-group">
-        <label class="form-label">Username</label>
-        <input class="form-input" type="text" id="username" placeholder="Your username">
+      <div class="page-header">
+        <button id="homeBtn" class="back-btn">← Back</button>
+        <h1 class="page-title">🚗 RHA</h1>
+        <button id="darkModeBtn" class="icon-btn">🌙</button>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input class="form-input" type="email" id="email" placeholder="Your email">
+      <div class="page-card">
+        <div class="profile-avatar">👤</div>
+        <h2 class="profile-name" id="displayUsername">Loading...</h2>
+        <p class="profile-email" id="displayEmail">Loading...</p>
       </div>
 
-      <p class="form-success" id="updateSuccess"></p>
-      <p class="form-error" id="updateError"></p>
+      <div class="page-card">
+        <h3 class="card-title">Edit Profile</h3>
 
-      <button class="btn-primary" id="updateProfile">Save Changes</button>
+      <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-input" type="text" id="username" placeholder="Your username">
+      <p id="usernameError" class="form-error" style="display:none"></p>
+      </div>
+
+    <div class="form-group">
+    <label class="form-label">Email</label>
+    <input class="form-input" type="email" id="email" placeholder="Your email">
+    <p id="emailError" class="form-error" style="display:none"></p>
+    </div>
+        <p class="form-success" id="updateSuccess"></p>
+        <p class="form-error" id="updateError"></p>
+
+        <button class="btn-primary" id="updateProfile">Save Changes</button>
+      </div>
+
+      <div class="page-card danger-card">
+        <h3 class="card-title">Account</h3>
+        <button class="btn-danger" id="logoutBtn">Logout</button>
+      </div>
+
     </div>
 
-    <div class="page-card danger-card">
-      <h3 class="card-title">Account</h3>
-      <button class="btn-danger" id="logoutBtn">Logout</button>
-    </div>
-
-  </div>
-
-  <script src="../js/profile.js"></script>
-  
-</body>
-</html>
+    <script src="../js/profile.js"></script>
+    
+  </body>
+  </html>
