@@ -239,7 +239,7 @@ app.post("/signup", async(req,res)=>{
         );
  
         // Send verification email
-        const verificationUrl = `http://localhost:3000/verify-email.html?token=${verificationToken}&email=${encodeURIComponent(email)}`;
+        const verificationUrl = `http://localhost:3000/pages/verify-email.html?token=${verificationToken}&email=${encodeURIComponent(email)}`;
  
         const mailOptions = {
           from: '"Ride App" <myappemail@gmail.com>',
@@ -484,7 +484,7 @@ app.post("/api/forgot-password", async (req, res) => {
       [resetTokenHash, resetTokenExpiry, user.id]
     );
  
-    const resetUrl = `http://localhost:3000/resetPassword.html?token=${resetToken}&email=${encodeURIComponent(email)}`;
+    const resetUrl = `http://localhost:3000/pages/resetPassword.html?token=${resetToken}&email=${encodeURIComponent(email)}`;
  
     const mailOptions = {
       from: '"Ride App" <myappemail@gmail.com>',
@@ -743,7 +743,7 @@ app.post("/api/resend-verification-email", async (req, res) => {
     );
  
     // Send verification email
-    const verificationUrl = `http://localhost:3000/verify-email.html?token=${verificationToken}&email=${encodeURIComponent(email)}`;
+    const verificationUrl = `http://localhost:3000/pages/verify-email.html?token=${verificationToken}&email=${encodeURIComponent(email)}`;
  
     const mailOptions = {
       from: '"Ride App" <myappemail@gmail.com>',
@@ -905,18 +905,78 @@ app.put("/update-user-db", verifyToken, async(req, res)=>{
   const {username, email} = req.body;
 
   try{
-    const result = await pool.query(
-      'UPDATE users SET username = $1, email = $2 WHERE id = $3 RETURNING id, username, email',
-      [username, email, id]);
-    
-      res.json({user: result.rows[0]})
+    // Get current email to compare
+    const current = await pool.query(
+      "SELECT email FROM users WHERE id = $1",
+      [id]
+    );
 
+    const emailChanged = current.rows[0].email !== email;
+
+    const result = await pool.query(
+      `UPDATE users 
+       SET username = $1, email = $2 ${emailChanged ? ", email_verified = FALSE" : ""}
+       WHERE id = $3 
+       RETURNING id, username, email`,
+      [username, email, id]
+    );
+
+    res.json({ user: result.rows[0], emailChanged });
   }catch (err){
     console.error(err);
     res.status(500).json({ error: "Update failed" });
   }
 
 })
+
+// =============================================================================
+// UPDATE PASSWORD
+// =============================================================================
+app.put("/update-password", verifyToken, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const id = req.user.id;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  const passwordError = validatePassword(newPassword);
+  if (passwordError) {
+    return res.status(400).json({ error: passwordError });
+  }
+
+  try {
+    // Get current hashed password
+    const result = await pool.query(
+      "SELECT password FROM users WHERE id = $1",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Verify current password is correct
+    const match = await bcrypt.compare(currentPassword, result.rows[0].password);
+    if (!match) {
+      return res.status(401).json({ error: "Current password is incorrect." });
+    }
+
+    // Hash and save new password
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await pool.query(
+      "UPDATE users SET password = $1 WHERE id = $2",
+      [hashed, id]
+    );
+
+    console.log(`✅ Password updated for user id: ${id}`);
+    res.status(200).json({ success: true, message: "Password updated successfully." });
+
+  } catch (err) {
+    console.error("Update password error:", err);
+    res.status(500).json({ error: "Failed to update password." });
+  }
+});
 
 
 app.use(express.static("public"));

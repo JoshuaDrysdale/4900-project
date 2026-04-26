@@ -15,7 +15,7 @@ function isAuthenticated() {
 window.addEventListener("DOMContentLoaded", () => {
   if (!isAuthenticated()) {
     console.warn("⚠️ No token found, redirecting to login");
-    window.location.href = "/login.html";
+    window.location.href = "/pages/login.html";
   }
 });
 
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function logout() {
   localStorage.removeItem("token");
   console.log("✅ Logged out, token removed from localStorage");
-  window.location.href = "/login.html";
+  window.location.href = "/pages/login.html";
 }
 // =============================================================================
 // MAP INITIALIZATION

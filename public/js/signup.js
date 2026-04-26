@@ -87,7 +87,7 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
  
         // Redirect to map
         setTimeout(() => {
-          window.location.href = "/index.html";
+          window.location.href = "/pages/index.html";
         }, 300);
       } else {
         showError("formError", data.error || "Signup failed. Please try again.");

@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Logout button
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("token");
-    window.location.href = "/login.html";
+    window.location.href = "/pages/login.html";
   });
 
   // Live username validation
@@ -122,18 +122,132 @@ document.getElementById("updateProfile").addEventListener("click", async (e) => 
       },
       body: JSON.stringify({ username, email })
     });
-    if (res.ok) {
-      successEl.textContent = "Profile updated successfully!";
-      document.getElementById("displayUsername").textContent = username;
-      document.getElementById("displayEmail").textContent = email;
+  if (res.ok) {
+    const data = await res.json();
+    console.log("emailChanged:", data.emailChanged);
 
-      setTimeout(() => {
-    successEl.textContent = "";
-}, 3000);
+    if (data.emailChanged) {
+      successEl.textContent = "Profile updated! Check your email to verify your new address.";
+      await fetch("/api/resend-verification-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ email })
+      });
     } else {
-      errorEl.textContent = "Failed to update profile.";
+      successEl.textContent = "Profile updated successfully!";
     }
-  } catch (err) {
+    document.getElementById("displayUsername").textContent = username;
+    document.getElementById("displayEmail").textContent = email;
+    setTimeout(() => { successEl.textContent = ""; }, 5000);
+  } else {
+    const data = await res.json();
+    console.log("Update failed:", data);
+    errorEl.textContent = "Failed to update profile.";
+  }
+} catch (err) {
+  errorEl.textContent = "Something went wrong. Try again later";
+}
+});
+
+// Live new password validation
+document.getElementById("newPassword").addEventListener("input", function () {
+  const val = this.value;
+  const error = document.getElementById("newPasswordError");
+  if (!val) {
+    setHint(error, "Please enter a new password.", "error");
+  } else if (getPasswordStrength(val) < 4) {
+    setHint(error, "Password is too weak.", "error");
+  } else {
+    setHint(error, "✔ Strong password!", "success");
+  }
+
+  // recheck confirm if already typed
+  const confirmVal = document.getElementById("confirmNewPassword").value;
+  if (confirmVal) {
+    const confirmError = document.getElementById("confirmNewPasswordError");
+    if (confirmVal !== val) {
+      setHint(confirmError, "Passwords do not match.", "error");
+    } else {
+      setHint(confirmError, "✔ Passwords match!", "success");
+    }
+  }
+});
+
+// Live confirm password validation
+document.getElementById("confirmNewPassword").addEventListener("input", function () {
+  const val = this.value;
+  const newPassword = document.getElementById("newPassword").value;
+  const error = document.getElementById("confirmNewPasswordError");
+  if (!val) {
+    setHint(error, "Please confirm your password.", "error");
+  } else if (val !== newPassword) {
+    setHint(error, "Passwords do not match.",  "error");
+  } else {
+    setHint(error, "✔ Passwords match!", "success");
+  }
+});
+
+// Update password
+document.getElementById("updatePassword").addEventListener("click", async () => {
+  const currentPassword = document.getElementById("currentPassword").value.trim();
+  const newPassword = document.getElementById("newPassword").value.trim();
+  const confirmNewPassword = document.getElementById("confirmNewPassword").value.trim();
+  const successEl = document.getElementById("passwordSuccess");
+  const errorEl = document.getElementById("passwordError");
+
+  successEl.textContent = "";
+  errorEl.textContent = "";
+
+  let valid = true;
+
+  if (!currentPassword) {
+    showFormError("currentPasswordError", "Please enter your current password.");
+    valid = false;
+  }
+
+  if (!newPassword) {
+    showFormError("newPasswordError", "Please enter a new password.");
+    valid = false;
+  } else if (getPasswordStrength(newPassword) < 4) {
+    showFormError("newPasswordError", "Password is too weak.");
+    valid = false;
+  }
+
+  if (!confirmNewPassword) {
+    showFormError("confirmNewPasswordError", "Please confirm your new password.");
+    valid = false;
+  } else if (confirmNewPassword !== newPassword) {
+    showFormError("confirmNewPasswordError", "Passwords do not match.");
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  try {
+    const res = await fetch("http://localhost:3000/update-password", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+
+if (res.ok) {
+  successEl.textContent = "Password updated successfully!";
+  document.getElementById("currentPassword").value = "";
+  document.getElementById("newPassword").value = "";
+  document.getElementById("confirmNewPassword").value = "";
+  setTimeout(() => { successEl.textContent = ""; }, 3000);
+} else {
+  const data = await res.json();
+  errorEl.textContent = data.error || "Failed to update password.";
+}
+
+ } catch (err) {
     errorEl.textContent = "Something went wrong.";
   }
 });
@@ -166,4 +280,13 @@ function setHint(el, message, type) {
     el.style.display = "block";
     el.style.color = type === "success" ? "#2ecc71" : "#e74c3c";
   }
+}
+
+function getPasswordStrength(val) {
+  let strength = 0;
+  if (val.length >= 8) strength++;
+  if (/[A-Z]/.test(val)) strength++;
+  if (/[0-9]/.test(val)) strength++;
+  if (/[^A-Za-z0-9]/.test(val)) strength++;
+  return strength;
 }
