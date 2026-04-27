@@ -19,7 +19,10 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 -  **Route distance and duration** displayed after route is drawn
 -  **Address autocomplete** via ORS Geocode API
 -  **Geocoding & Reverse Geocoding** via Photon (address ↔ coordinates)
--  **TomTom routing** for real-time distance and duration calculations
+-  **TomTom routing** for real-time distance, duration, and traffic calculations
+-  **Bottom info tab** — shows distance, ETA, and traffic level after a route is drawn; slides up automatically (Will Soon Show Ride Share Apps info)
+- **Saved locations** — Users cansave frequently used addresses with custom names and icons; accessible from pickup/dropoff inputs
+- **Dark mode** — full dark theme toggle, persisted across sessions
 -  **Responsive design** — works on both desktop and mobile
 
 
@@ -31,15 +34,30 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
   * Users can access the app before verifying email
 - 🔒 **Login** with username or email
 -  **Forgot password flow** with secure email reset link 
--  **Password strength checker** with live feedback
+-  **Password strength checker** with live feedback and requirements checklist
 -  **Live validation hints** on all signup fields
 -  **Show/Hide password** toggle on login and signup
 -  **Caps lock warning** on login password field
 -  **Forgot password** page (email flow coming soon)
--  **PostgreSQL database** for storing user credentials (bcrypt hashed passwords)
+-  **PostgreSQL database** via Supabase for storing user credentials (bcrypt hashed passwords) and saved locatiosn
 -  **Server-side password validation** matching frontend rules
 -  **Supabase** cloud database for deployment
 -  **JWT authentication** with 7-day token expiry for protected routes
+
+
+### 👤 Profile Page
+ 
+- View and update username and email
+- **Live input validation** on all fields matching signup rules
+- **Email change verification** — sends a new verification email when email is updated, only if email actually changed
+- **Password change** — requires current password, validates new password strength
+- **Logout** from profile page
+- **Dark mode** support matching the map page
+- More coming soon!
+
+⚙️ Settings Page
+
+-Coming soon!
 
 ### Modals/Panels (Soon)
 
@@ -65,9 +83,11 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 | Frontend   | HTML, CSS, JavaScript |
 | Map        | [Leaflet.js](https://leafletjs.com/) v1.9.4 |
 | Backend    | [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/) |
-| Routing    | [OpenRouteService API](https://openrouteservice.org/) |
+| Routing    | [TomTom Routing API](https://developer.tomtom.com/) |
+| Autocomplete | [OpenRouteService API](https://openrouteservice.org/) |
 | Geocoding  | [Photon by Komoot](https://photon.komoot.io/) |
 | Database   | [Supabase (PostgreSQL)](https://supabase.com/) |
+| Auth       | [JSON Web Tokens (JWT)](https://jwt.io/) + [bcrypt](https://www.npmjs.com/package/bcrypt) |
 | Email      | [Nodemailer](https://nodemailer.com/) + Gmail SMTP |
 
 
@@ -78,7 +98,7 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
-- [PostgreSQL](https://www.postgresql.org/) installed and running
+- [PostgreSQL](https://www.postgresql.org/) installed and running or or Supabase project
 - A free [OpenRouteService API key](https://openrouteservice.org/dev/#/signup)
 - [Tomtom API key](https://developer.tomtom.com/)
 - **Gmail account** with app-specific password for email functionality
@@ -96,18 +116,23 @@ npm install
 Create a .env file in the root directory:
 
 ORS_API_KEY=your_api_key_here
+TOM_TOM_KEY=your_tomtom_api_key_here
 GMAIL_USER=your-email@gmail.com
 GMAIL_PASS=your-app-specific-password
 JWT_SECRET=your-secret-key-here
+DATABASE_URL=your-supabase-connection-string or other Database url
+
 
 Follow your database instructions on how to set up the database creditials in your env
 
 # 4. Set up the database
+# - users
+# - saved_locations
 
 # 5. Start the server
-node server.js
+node server/server.js
 # or with nodemon:
-nodemon server.jsim
+nodemon server/server.js
 
 # Server runs at http://localhost:3000
 Open your browser and navigate to the URL above to begin using the application.
@@ -128,12 +153,14 @@ Please allow location permissions for full functionality.
    - Click "🗺 Select on Map" button
    - Click any two points on the map
    - First click sets pickup, second sets dropoff
-   - Route draws immediately
- 
+   - Route appears automatically with distance, ETA, and traffic info in the bottom tab
+   
 3. **Other Features**:
    - Click **⇅ Swap** to reverse pickup and dropoff
    - Click **Clear Trip** to remove all markers and route
-   - Click **📍 My Location** to fly to your current locatio
+   - Click **📍 My Location** to fly to your current location
+   - Click the distance unit on the bottom tab to toggle between km and miles
+   - Click **☆** next to an input to access or save locations
 
 ### 🔒 Authentication
  
@@ -142,7 +169,7 @@ Please allow location permissions for full functionality.
    - Enter email
    - Enter password (8+ chars, uppercase, number, special character)
    - Enter date of birth
-   - Verification email sent automatically
+   - Verification email sent automatically 
    - Click link in email to verify (valid 24 hours)
  
 2. **Log In** at `/login`:
@@ -159,15 +186,42 @@ Please allow location permissions for full functionality.
    - Confirm password and reset
    - Log in with new password
 
+
+### 👤 Profile
+ 
+- Access via the 👤 button on the map page
+- Update username and email — email change triggers a new verification email
+- Change password — requires current password
+- Logout from the Account card
+
+
+## 📁 Project Structure
+ 
+```
+project/
+├── public/
+│   ├── pages/          # HTML files
+│   ├── css/            # Stylesheets
+│   └── js/             # JavaScript files
+└── server/
+    ├── server.js       # Express server + API endpoints
+    └── db.js           # Database connection
+```
+
+
 ## Some of future implementations
 
--  Ride price comparison across Uber, Lyft and other providers
--  Fare estimation based on route distance
--  Server-side rate limiting for login attempts
--  Multiple transportation modes
--  Saved locations
--  Traffic-aware routing
--  Full account & booking management system
+- Ride price comparison across Uber, Lyft and other providers
+- Fare estimation based on route distance and traffic
+- Trip history saved to database per user
+- Trip count display on profile page
+- Server-side rate limiting for login attempts
+- Account deletion
+- Multiple transportation modes
+- Profile picture upload
+- Saved locations
+- Traffic-aware routing
+- Full account & booking management system
 
 
 ## 🧪 Testing
@@ -180,3 +234,10 @@ To test email flows:
 2. Sign up with a real email address
 3. Check your inbox for verification email
 4. Use "Forgot Password" to test reset flow
+
+### Dev Shortcut
+For quick testing without a real account, log in with:
+- Username: `1`
+- Password: `1`
+
+This bypasses authentication and loads an account for quick and easy use. Note that some features like saved locations and password change are not available in this mode.
