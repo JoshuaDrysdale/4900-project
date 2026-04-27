@@ -562,7 +562,7 @@ function renderTripHistory(){
   }
 
   tripHistoryList.innerHTML = trips
-   .map(trip => `${trip.pickupLabel} -> ${trip.dropoffLabel}`)
+   .map(trip => `${trip.pickupLabel} → ${trip.dropoffLabel} (${trip.savedAt})`)
    .join("<br>"); 
 }
 
