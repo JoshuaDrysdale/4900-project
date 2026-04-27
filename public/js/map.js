@@ -568,6 +568,11 @@ function renderTripHistory(){
 
 renderTripHistory();
 
+document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
+  localStorage.removeItem(TRIP_HISTORY_KEY);
+  renderTripHistory();
+});
+
 function saveTripToHistory(trip){
   const trips = getTripHistory();
 
