@@ -562,11 +562,16 @@ function renderTripHistory(){
   }
 
   tripHistoryList.innerHTML = trips
-   .map(trip => `${trip.pickupLabel} -> ${trip.dropoffLabel}`)
+   .map(trip => `${trip.pickupLabel} → ${trip.dropoffLabel} (${trip.savedAt})`)
    .join("<br>"); 
 }
 
 renderTripHistory();
+
+document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
+  localStorage.removeItem(TRIP_HISTORY_KEY);
+  renderTripHistory();
+});
 
 function saveTripToHistory(trip){
   const trips = getTripHistory();
