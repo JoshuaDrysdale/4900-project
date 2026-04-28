@@ -591,12 +591,21 @@ function renderTripHistory(){
 renderTripHistory();
 
 document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
-  localStorage.removeItem(TRIP_HISTORY_KEY);
-  renderTripHistory();
+  if (confirm("Clear recent trips?")){
+    localStorage.removeItem(TRIP_HISTORY_KEY);
+    renderTripHistory();
+  }
 });
 
 function saveTripToHistory(trip){
   const trips = getTripHistory();
+
+  const isDuplicate = trips.some(t =>
+    t.pickupLabel === trip.pickupLabel &&
+    t.dropoffLabel === trip.dropoffLabel
+  ); 
+
+  if (isDuplicate) return;
 
   trips.unshift(trip);
 

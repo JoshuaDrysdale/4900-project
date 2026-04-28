@@ -30,7 +30,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const isDark = e.target.checked;
     document.body.classList.toggle("dark", isDark);
     localStorage.setItem(DARK_MODE_KEY, isDark);
-    document.getElementById("darkModeBtn").textContent = isDark ? "☀️" : "🌙";
+    
+    const darkModeBtn = document.getElementById("darkModeBtn");
+    if(darkModeBtn){
+      darkModeBtn.textContent = isDark ? "☀️" : "🌙";
+    }
   });
 
   // Distance unit
@@ -38,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   unitSelect.value = localStorage.getItem(UNIT_KEY) || "km";
   unitSelect.addEventListener("change", () => {
     localStorage.setItem(UNIT_KEY, unitSelect.value);
+    showToast("Distance unit updated");
   });
 
   // Default map layer
@@ -45,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   layerSelect.value = localStorage.getItem(LAYER_KEY) || "street";
   layerSelect.addEventListener("change", () => {
     localStorage.setItem(LAYER_KEY, layerSelect.value);
+    showToast("Map layer updated"); 
   });
 
   // Auto pickup toggle
@@ -52,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   autoPickup.checked = localStorage.getItem(AUTO_PICKUP_KEY) !== "false";
   autoPickup.addEventListener("change", () => {
     localStorage.setItem(AUTO_PICKUP_KEY, autoPickup.checked);
+    showToast("Auto pickup preference updated");
   });
 
   // Clear trip history
