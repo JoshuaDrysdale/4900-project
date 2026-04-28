@@ -1,18 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
-    <title>Settings</title>
-    <link rel="stylesheet" href="../css/menu.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — RHA</title>
+  <link rel="stylesheet" href="../css/settings.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
 </head>
 <body>
 
-    <button id="homeBtn">🏠</button>
-    
+  <div class="page-wrapper">
 
+    <div class="page-header">
+      <button id="homeBtn" class="back-btn">← Back</button>
+      <h1 class="page-title">🚗 RHA</h1>
+   <!--   <button id="darkModeBtn" class="icon-btn">🌙</button> -->
+    </div>
 
-    
-    <script src="../js/settings.js"></script>
+    <!-- APPEARANCE -->
+    <div class="page-card">
+      <h3 class="card-title">Appearance</h3>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Dark Mode</div>
+          <div class="setting-desc">Switch between light and dark theme</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- MAP PREFERENCES -->
+    <div class="page-card">
+      <h3 class="card-title">Map Preferences</h3>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Distance Unit</div>
+          <div class="setting-desc">Shown on the route info tab</div>
+        </div>
+        <select class="setting-select" id="distanceUnitSelect">
+          <option value="km">km</option>
+          <option value="mi">mi</option>
+        </select>
+      </div>
+
+      <div class="setting-divider"></div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Default Map Layer</div>
+          <div class="setting-desc">Map style shown on load</div>
+        </div>
+        <select class="setting-select" id="defaultLayerSelect">
+          <option value="street">Street</option>
+          <option value="satellite">Satellite</option>
+          <option value="esriStreet">Esri Street</option>
+          <option value="esriTopo">Esri Topo</option>
+          <option value="osmHum">OSM Humanitarian</option>
+        </select>
+      </div>
+
+      <div class="setting-divider"></div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Auto-set Pickup</div>
+          <div class="setting-desc">Automatically set your location as pickup on load</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="autoPickupToggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+<!-- CLEAR DATA -->
+<div class="page-card">
+  <h3 class="card-title">Clear Data</h3>
+  <div class="setting-row">
+    <div class="setting-info">
+      <div class="setting-name">Trip History</div>
+      <div class="setting-desc">Clear your last 5 recent routes</div>
+    </div>
+    <button class="btn-clear" id="clearTripHistoryBtn">Clear</button>
+  </div>
+</div>
+     
+
+    <!-- ACCOUNT -->
+    <div class="page-card">
+      <h3 class="card-title">Account</h3>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Profile</div>
+          <div class="setting-desc">Edit your username, email and password</div>
+        </div>
+        <button class="btn-nav" id="profileBtn">→</button>
+      </div>
+
+      <div class="setting-divider"></div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Logout</div>
+          <div class="setting-desc">Sign out of your account</div>
+        </div>
+        <button class="btn-danger-small" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+  <script src="../js/settings.js"></script>
 </body>
 </html>

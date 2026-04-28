@@ -1,4 +1,4 @@
-const DARK_MODE_KEY = "rha_dark_mode";
+/*const DARK_MODE_KEY = "rha_dark_mode";
 
 function initDarkMode() {
   const isDark = localStorage.getItem(DARK_MODE_KEY) === "true";
@@ -6,22 +6,33 @@ function initDarkMode() {
     document.body.classList.add("dark");
     document.getElementById("darkModeBtn").textContent = "☀️";
   }
-}
+}*/
+
+const DARK_MODE_KEY = "rha_dark_mode";
+(function initDarkMode() {
+  if (localStorage.getItem(DARK_MODE_KEY) === "true") {
+    document.body.classList.add("dark");
+  }
+})()
 
 document.addEventListener("DOMContentLoaded", async () => {
-  initDarkMode();
+  /*initDarkMode();
 
   // Dark mode toggle
   document.getElementById("darkModeBtn").addEventListener("click", () => {
     const isDark = document.body.classList.toggle("dark");
     localStorage.setItem(DARK_MODE_KEY, isDark);
     document.getElementById("darkModeBtn").textContent = isDark ? "☀️" : "🌙";
-  });
+  }); */
 
   // Home button
   document.getElementById("homeBtn").addEventListener("click", () => {
     window.location.href = "../pages/index.html";
   });
+ //Settings button
+  document.getElementById("settingsBtn").addEventListener("click", () => {
+  window.location.href = "/pages/settings.html";
+});
 
   // Logout button
   document.getElementById("logoutBtn").addEventListener("click", () => {

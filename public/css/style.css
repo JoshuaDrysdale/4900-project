@@ -675,7 +675,7 @@ input {
 
 /* =============================================================================
    DARK MODE TOGGLE BUTTON
-   ============================================================================= */
+   =============================================================================
 #darkModeBtn {
   position: absolute;
   top: 322px;
@@ -692,17 +692,17 @@ input {
   transition: background 0.3s;
 }
 
-#darkModeBtn:hover { background: var(--hover); }
+#darkModeBtn:hover { background: var(--hover); }  */
 
-/* layer control */
+/* layer control
 .leaflet-top.leaflet-right { top: 100px; }
 .leaflet-control-layers { font-size: 12px; }
 .leaflet-control-layers-toggle {
   width: 30px !important;
   height: 30px !important;
-  background-size: 16px 16px !important;
+  background-size: 16px 16px !important; 
 }
-
+ */
 /* =============================================================================
    GEOLOCATION MODAL
    ============================================================================= */
@@ -770,17 +770,13 @@ input {
   left: 0;
   right: 0;
   z-index: 1000;
-  min-height:240px;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 12px;
-  padding: 20px 24px;
+  flex-direction: column;
+  align-items: stretch;
   background: var(--surface);
   border-radius: 16px 16px 0 0;
   box-shadow: 0 -4px 20px var(--shadow);
   font-family: inherit;
-  flex-wrap: wrap;
   transform: translateY(100%);
   transition: transform 0.3s ease;
 }
@@ -962,4 +958,63 @@ input {
     transform: translateX(-50%);
   }
   
+}
+
+#tabRouteInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+#tabRideOptions {
+  display: flex;
+  gap: 12px;
+  padding: 12px 24px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.ride-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  flex: 1;
+  min-width: 140px;
+  opacity: 0.6;
+}
+
+.ride-logo {
+  font-size: 22px;
+}
+
+.ride-info {
+  flex: 1;
+}
+
+.ride-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.ride-eta {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+.ride-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text3);
 }
