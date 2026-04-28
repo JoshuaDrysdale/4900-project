@@ -30,7 +30,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const isDark = e.target.checked;
     document.body.classList.toggle("dark", isDark);
     localStorage.setItem(DARK_MODE_KEY, isDark);
-    document.getElementById("darkModeBtn").textContent = isDark ? "☀️" : "🌙";
+    
+    const darkModeBtn = document.getElementById("darkModeBtn");
+    if(darkModeBtn){
+      darkModeBtn.textContent = isDark ? "☀️" : "🌙";
+    }
   });
 
   // Distance unit
