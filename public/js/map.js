@@ -600,6 +600,13 @@ document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
 function saveTripToHistory(trip){
   const trips = getTripHistory();
 
+  const isDuplicate = trips.some(t =>
+    t.pickupLabel === trip.pickupLabel &&
+    t.dropoffLabel === trip.dropoffLabel
+  ); 
+
+  if (isDuplicate) return;
+
   trips.unshift(trip);
 
   if(trips.length > 5){
