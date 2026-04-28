@@ -22,7 +22,7 @@ window.addEventListener("DOMContentLoaded", () => {
 // =============================================================================
 // DARK MODE
 // =============================================================================
-const DARK_MODE_KEY = "rha_dark_mode";
+/*const DARK_MODE_KEY = "rha_dark_mode";
 
 function initDarkMode() {
   const isDark = localStorage.getItem(DARK_MODE_KEY) === "true";
@@ -39,7 +39,13 @@ document.getElementById("darkModeBtn").addEventListener("click", () => {
 });
 
 initDarkMode();
-
+*/
+const DARK_MODE_KEY = "rha_dark_mode";
+(function initDarkMode() {
+  if (localStorage.getItem(DARK_MODE_KEY) === "true") {
+    document.body.classList.add("dark");
+  }
+})()
 // =============================================================================
 // LOGOUT FUNCTION
 // =============================================================================
@@ -110,23 +116,38 @@ const osmHum = L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.pn
 
 
 // Add default layer
-streetLayer.addTo(map);
 
-// Layer control
+
+/* Layer control
 L.control.layers({
   "Street":    streetLayer,
   "Satellite": satelliteLayer,
-  "Test1":     esriStreet,
-  "Test2":     esriTopo,
-  "Test3":     osmHum
+  "Streetv2":     esriStreet,
+  "Topo":     esriTopo,
+  "Humanitarian ":     osmHum
   // "Light":  lightLayer,
   // "Dark":   darkLayer
 }).addTo(map);
 
+*/
+
+
+const savedLayer = localStorage.getItem("rha_default_layer") || "street";
+const layerMap = {
+  street:     streetLayer,
+  satellite:  satelliteLayer,
+  esriStreet: esriStreet,
+  esriTopo:   esriTopo,
+  osmHum:     osmHum
+};
+
+streetLayer.remove();
+(layerMap[savedLayer] || streetLayer).addTo(map);
+
 // =============================================================================
 // GLOBAL VARIABLES
 // =============================================================================
-let distanceUnit = "km";
+let distanceUnit = localStorage.getItem("rha_distance_unit") || "km";
 const pickupInput  = document.getElementById("pickupInput");
 const dropoffInput = document.getElementById("dropoffInput");
 
@@ -428,8 +449,9 @@ function getUserLocation() {
     (error) => { console.error("Could not get location:", error.message); }
   );
 }
-getUserLocation();
-
+if (localStorage.getItem("rha_auto_pickup") !== "false") {
+  getUserLocation();
+}
 // =============================================================================
 // AUTOCOMPLETE
 // =============================================================================
@@ -834,24 +856,45 @@ async function showBottomTab(data) {
   const km = (data.distanceMeters / 1000).toFixed(1);
   const miles = (data.distanceMeters / 1609.34).toFixed(1);
   tab.innerHTML = `
-    <div class="tab-stat">
-   <span class="tab-icon">📍</span>
-      <span class="tab-value" id="distanceValue">${distanceUnit === "km" ? km : miles}</span>
-      <span class="tab-unit" id="distanceUnit">${distanceUnit}</span>
+    <div id="tabRouteInfo">
+      <div class="tab-stat">
+        <span class="tab-icon">📍</span>
+        <span class="tab-value" id="distanceValue">${distanceUnit === "km" ? km : miles}</span>
+        <span class="tab-unit" id="distanceUnit">${distanceUnit}</span>
+      </div>
+      <div class="tab-divider"></div>
+      <div class="tab-stat">
+        <span class="tab-icon">⏱</span>
+        <span class="tab-value">${data.estimatedMinutes}</span>
+        <span class="tab-unit">min</span>
+      </div>
+      <div class="tab-divider"></div>
+      <div class="tab-stat">
+        <span class="tab-dot" style="background:${traffic.color}"></span>
+        <span class="tab-value" style="color:${traffic.color}">${traffic.label}</span>
+      </div>
+      <div class="tab-divider"></div>
+      <button id="unitToggleBtn" class="unit-toggle-btn">Switch to ${distanceUnit === "km" ? "mi" : "km"}</button>
     </div>
-    <div class="tab-divider"></div>
-    <div class="tab-stat">
-      <span class="tab-icon">⏱</span>
-      <span class="tab-value">${data.estimatedMinutes}</span>
-      <span class="tab-unit">min</span>
+
+    <div id="tabRideOptions">
+      <div class="ride-card">
+        <span class="ride-logo">⬛</span>
+        <div class="ride-info">
+          <div class="ride-name">Uber</div>
+          <div class="ride-eta">Coming soon</div>
+        </div>
+        <div class="ride-price">--</div>
+      </div>
+      <div class="ride-card">
+        <span class="ride-logo">⬛</span>
+        <div class="ride-info">
+          <div class="ride-name">Lyft</div>
+          <div class="ride-eta">Coming soon</div>
+        </div>
+        <div class="ride-price">--</div>
+      </div>
     </div>
-    <div class="tab-divider"></div>
-    <div class="tab-stat">
-      <span class="tab-dot" style="background:${traffic.color}"></span>
-      <span class="tab-value" style="color:${traffic.color}">${traffic.label}</span>
-       </div>
-       <div class="tab-divider"></div>
-  <button id="unitToggleBtn" class="unit-toggle-btn">Switch to ${distanceUnit === "km" ? "mi" : "km"}</button>   
   `;
 
    document.getElementById("unitToggleBtn").addEventListener("click", () => {
