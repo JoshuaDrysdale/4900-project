@@ -542,6 +542,7 @@ map.fitBounds(window.currentRoute.getBounds(), {
       <span class="tab-icon">⚠️</span>
       <span class="tab-value" style="color:#ef4444; font-size:15px;">Could not find a route. Please try again.</span>
     </div>
+    <button id="retryBtn" class="unit-toggle-btn">Retry Route</button>
   `;
   tab.classList.add("show");;
     document.getElementById("retryBtn").addEventListener("click", () => {
