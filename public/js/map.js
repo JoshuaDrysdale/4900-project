@@ -581,11 +581,31 @@ function renderTripHistory(){
   }
 
   tripHistoryList.innerHTML = trips
-   .map(trip => `${trip.pickupLabel} → ${trip.dropoffLabel} (${trip.savedAt})`)
-   .join("<br>"); 
+   .map((trip, index) => `
+    <button class="trip-history-item" data-index="${index}">
+      ${trip.pickupLabel} → ${trip.dropoffLabel} (${trip.savedAt})
+    </button>
+  `)
+  .join("");
 }
 
 renderTripHistory();
+
+tripHistoryList?.addEventListener("click", (e) => {
+  const tripButton = e.target.closest(".trip-history-item");
+  if (!tripButton) return;
+
+  const trips = getTripHistory();
+  const trip = trips[tripButton.dataset.index];
+
+  if (!trip) return;
+
+  pickupInput.value = trip.pickupLabel;
+  dropoffInput.value = trip.dropoffLabel;
+
+  pickupInput.dispatchEvent(new Event("input"));
+  dropoffInput.dispatchEvent(new Event("input"));
+});
 
 document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
   if (confirm("Clear recent trips?")){
