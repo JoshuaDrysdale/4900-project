@@ -78,14 +78,23 @@ document.getElementById("email").addEventListener("input", function () {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-    document.getElementById("username").value = data.user.username;
-    document.getElementById("email").value = data.user.email;
-    document.getElementById("displayUsername").textContent = data.user.username;
-    document.getElementById("displayEmail").textContent = data.user.email;
-  } catch (err) {
-    console.error(err);
-  }
+ // Replace skeleton with real content
+  document.getElementById("profileCard").innerHTML = `
+    <div class="profile-avatar">👤</div>
+    <h2 class="profile-name" id="displayUsername">${data.user.username}</h2>
+    <p class="profile-email" id="displayEmail">${data.user.email}</p>
+  `;
 
+  document.getElementById("username").value = data.user.username;
+  document.getElementById("email").value = data.user.email;
+} catch (err) {
+  document.getElementById("profileCard").innerHTML = `
+    <div class="profile-avatar">👤</div>
+    <h2 class="profile-name">Could not load profile</h2>
+    <p class="profile-email">Please refresh the page</p>
+  `;
+  console.error(err);
+}
   // Update profile
 document.getElementById("updateProfile").addEventListener("click", async (e) => {
   e.preventDefault();
@@ -300,4 +309,15 @@ function getPasswordStrength(val) {
   if (/[0-9]/.test(val)) strength++;
   if (/[^A-Za-z0-9]/.test(val)) strength++;
   return strength;
+}
+
+function toggleInput(id, btn) {
+  const input = document.getElementById(id);
+  if (input.type === "password") {
+    input.type = "text";
+    btn.textContent = "Hide";
+  } else {
+    input.type = "password";
+    btn.textContent = "Show";
+  }
 }

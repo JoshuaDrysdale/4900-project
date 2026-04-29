@@ -46,21 +46,7 @@ const DARK_MODE_KEY = "rha_dark_mode";
     document.body.classList.add("dark");
   }
 })()
-// =============================================================================
-// LOGOUT FUNCTION
-// =============================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", logout);
-  }
-});
 
-function logout() {
-  localStorage.removeItem("token");
-  console.log("✅ Logged out, token removed from localStorage");
-  window.location.href = "/pages/login.html";
-}
 // =============================================================================
 // MAP INITIALIZATION
 // =============================================================================
@@ -474,8 +460,16 @@ async function autocomplete(e, suggestionId) {
 
     data.forEach(place => {
       const li = document.createElement("li");
-      li.textContent = place.properties.label;
-
+const label = place.properties.label;
+const index = label.toLowerCase().indexOf(value.toLowerCase());
+if (index !== -1) {
+  li.innerHTML =
+    label.slice(0, index) +
+    `<span class="autocomplete-highlight">${label.slice(index, index + value.length)}</span>` +
+    label.slice(index + value.length);
+} else {
+  li.textContent = label;
+}
       li.addEventListener("click", () => {
         e.target.value = place.properties.label;
         suggestions.innerHTML = "";
@@ -550,6 +544,9 @@ map.fitBounds(window.currentRoute.getBounds(), {
     </div>
   `;
   tab.classList.add("show");;
+    document.getElementById("retryBtn").addEventListener("click", () => {
+    if (pickup && dropoff) tomRoute(pickup, dropoff);
+  });
   }
   finally {
     // Hide spinner — runs whether it succeeded or failed

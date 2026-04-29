@@ -17,11 +17,11 @@
        <!-- <button id="darkModeBtn" class="icon-btn">🌙</button> -->
       </div>
 
-      <div class="page-card">
-        <div class="profile-avatar">👤</div>
-        <h2 class="profile-name" id="displayUsername">Loading...</h2>
-        <p class="profile-email" id="displayEmail">Loading...</p>
-      </div>
+  <div class="page-card" id="profileCard">
+  <div class="skeleton-avatar"></div>
+  <div class="skeleton-line wide"></div>
+  <div class="skeleton-line narrow"></div>
+  </div>
 
       <div class="page-card">
         <h3 class="card-title">Edit Profile</h3>
@@ -46,23 +46,32 @@
       <div class="page-card">
   <h3 class="card-title">Change Password</h3>
 
-  <div class="form-group">
-    <label class="form-label">Current Password</label>
+<div class="form-group">
+  <label class="form-label">Current Password</label>
+  <div class="input-toggle-wrapper">
     <input class="form-input" type="password" id="currentPassword" placeholder="Your current password">
-    <p id="currentPasswordError" class="form-error" style="display:none"></p>
+    <button type="button" class="input-toggle-btn" onclick="toggleInput('currentPassword', this)">Show</button>
   </div>
+  <p id="currentPasswordError" class="form-error" style="display:none"></p>
+</div>
 
-  <div class="form-group">
-    <label class="form-label">New Password</label>
+<div class="form-group">
+  <label class="form-label">New Password</label>
+  <div class="input-toggle-wrapper">
     <input class="form-input" type="password" id="newPassword" placeholder="Your new password">
-    <p id="newPasswordError" class="form-error" style="display:none"></p>
+    <button type="button" class="input-toggle-btn" onclick="toggleInput('newPassword', this)">Show</button>
   </div>
+  <p id="newPasswordError" class="form-error" style="display:none"></p>
+</div>
 
-  <div class="form-group">
-    <label class="form-label">Confirm New Password</label>
+<div class="form-group">
+  <label class="form-label">Confirm New Password</label>
+  <div class="input-toggle-wrapper">
     <input class="form-input" type="password" id="confirmNewPassword" placeholder="Confirm new password">
-    <p id="confirmNewPasswordError" class="form-error" style="display:none"></p>
+    <button type="button" class="input-toggle-btn" onclick="toggleInput('confirmNewPassword', this)">Show</button>
   </div>
+  <p id="confirmNewPasswordError" class="form-error" style="display:none"></p>
+</div>
 
   <p class="form-success" id="passwordSuccess"></p>
   <p class="form-error" id="passwordError"></p>

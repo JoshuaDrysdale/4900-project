@@ -80,16 +80,15 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 
         const data = await res.json();
 
-        if (data.success) {
-             // Store JWT token in localStorage
-        localStorage.setItem("token", data.token);
-        console.log("✅ Signup successful, JWT token stored");
- 
-        // Redirect to map
-        setTimeout(() => {
-          window.location.href = "/pages/index.html";
-        }, 300);
-      } else {
+if (data.success) {
+  localStorage.setItem("token", data.token);
+  console.log("✅ Signup successful, JWT token stored");
+
+  showToast("Account created! Redirecting...");
+  setTimeout(() => {
+    window.location.href = "/pages/index.html";
+  }, 2000);
+} else {
         showError("formError", data.error || "Signup failed. Please try again.");
       }
     } catch (err) {
@@ -308,4 +307,16 @@ function copyPassword() {
             btn.textContent = "📋";
         }, 5000); // resets after 5 seconds, change as needed
     });
+}
+
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "signup-toast";
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add("show"), 10);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 1800);
 }

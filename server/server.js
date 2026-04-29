@@ -77,7 +77,7 @@ app.get("/login", (req, res) => {
 });
 
 // Serve static files from public folder (signup.html, index.html, etc.)
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../public")));
 
 // Also serve static files from root
 app.use(express.static(__dirname));
@@ -978,7 +978,10 @@ app.put("/update-password", verifyToken, async (req, res) => {
   }
 });
 
-
+// 404 handler — must be last
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "../public/pages/404.html"));
+});
 app.use(express.static("public"));
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
