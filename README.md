@@ -14,10 +14,10 @@ Built with **Leaflet.js** on the frontend and a  **Node.js/Express** backend tha
 - 🗺 **Interactive map** powered by Leaflet.js with multiple tile layer options (Street, Satellite, Topo, etc.)
 -  **Two input modes** — type an address or click directly on the map to place markers
 -  **Swap pickup/dropoff** with a single button click
--  **Driving route rendering** via OpenRouteService Directions API
+-  **Driving route rendering** via TomTom Routing API
 -  **Geolocation support** — detects your current location and optionally sets it as your pickup
 -  **Route distance and duration** displayed after route is drawn
--  **Address autocomplete** via ORS Geocode API
+-  **Address autocomplete** via OpenRideShare Geocode API
 -  **Geocoding & Reverse Geocoding** via Photon (address ↔ coordinates)
 -  **TomTom routing** for real-time distance, duration, and traffic calculations
 -  **Bottom info tab** — shows distance, ETA, and traffic level after a route is drawn; slides up automatically (Will Soon Show Ride Share Apps info)
