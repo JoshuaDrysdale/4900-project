@@ -323,3 +323,60 @@ html, body {
 
 .toggle input:checked + .toggle-slider { background: var(--accent); }
 .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+
+/* =============================================================================
+   SKELETON LOADER
+============================================================================= */
+.skeleton-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--surface2);
+  margin: 0 auto 12px;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: var(--surface2);
+  margin: 8px auto;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-line.wide  { width: 60%; }
+.skeleton-line.narrow { width: 40%; }
+
+@keyframes shimmer {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.input-toggle-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-toggle-wrapper .form-input {
+  flex: 1;
+  padding-right: 56px;
+}
+
+.input-toggle-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.input-toggle-btn:hover {
+  text-decoration: underline;
+}
