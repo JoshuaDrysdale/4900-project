@@ -169,8 +169,18 @@ const dropoffIcon = L.divIcon({
 const debouncedPickup  = debounce((e) => autocomplete(e, "pickupSuggestions"), 200);
 const debouncedDropoff = debounce((e) => autocomplete(e, "dropoffSuggestions"), 200);
 
-pickupInput.addEventListener("input", debouncedPickup);
-dropoffInput.addEventListener("input", debouncedDropoff);
+pickupInput.addEventListener("input", (e) => {
+  debouncedPickup(e);
+
+  const tab = document.getElementById("comparisonTab");
+  tab.classList.remove("show");
+});
+dropoffInput.addEventListener("input", (e) => {
+  debouncedDropoff(e);
+
+  const tab = document.getElementById("comparisonTab");
+  tab.classList.remove("show");
+});
 
 document.getElementById("swapLocations").addEventListener("click", swapLocations);
 
