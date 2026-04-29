@@ -169,8 +169,18 @@ const dropoffIcon = L.divIcon({
 const debouncedPickup  = debounce((e) => autocomplete(e, "pickupSuggestions"), 200);
 const debouncedDropoff = debounce((e) => autocomplete(e, "dropoffSuggestions"), 200);
 
-pickupInput.addEventListener("input", debouncedPickup);
-dropoffInput.addEventListener("input", debouncedDropoff);
+pickupInput.addEventListener("input", (e) => {
+  debouncedPickup(e);
+
+  const tab = document.getElementById("comparisonTab");
+  tab.classList.remove("show");
+});
+dropoffInput.addEventListener("input", (e) => {
+  debouncedDropoff(e);
+
+  const tab = document.getElementById("comparisonTab");
+  tab.classList.remove("show");
+});
 
 document.getElementById("swapLocations").addEventListener("click", swapLocations);
 
@@ -542,6 +552,7 @@ map.fitBounds(window.currentRoute.getBounds(), {
       <span class="tab-icon">⚠️</span>
       <span class="tab-value" style="color:#ef4444; font-size:15px;">Could not find a route. Please try again.</span>
     </div>
+    <button id="retryBtn" class="unit-toggle-btn">Retry Route</button>
   `;
   tab.classList.add("show");;
     document.getElementById("retryBtn").addEventListener("click", () => {
@@ -581,11 +592,31 @@ function renderTripHistory(){
   }
 
   tripHistoryList.innerHTML = trips
-   .map(trip => `${trip.pickupLabel} → ${trip.dropoffLabel} (${trip.savedAt})`)
-   .join("<br>"); 
+   .map((trip, index) => `
+    <button class="trip-history-item" data-index="${index}">
+      ${trip.pickupLabel} → ${trip.dropoffLabel} (${trip.savedAt})
+    </button>
+  `)
+  .join("");
 }
 
 renderTripHistory();
+
+tripHistoryList?.addEventListener("click", (e) => {
+  const tripButton = e.target.closest(".trip-history-item");
+  if (!tripButton) return;
+
+  const trips = getTripHistory();
+  const trip = trips[tripButton.dataset.index];
+
+  if (!trip) return;
+
+  pickupInput.value = trip.pickupLabel;
+  dropoffInput.value = trip.dropoffLabel;
+
+  pickupInput.dispatchEvent(new Event("input"));
+  dropoffInput.dispatchEvent(new Event("input"));
+});
 
 document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
   if (confirm("Clear recent trips?")){
