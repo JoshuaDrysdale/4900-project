@@ -576,6 +576,75 @@ document.getElementById("settingsBtn").addEventListener("click", ()=>{
 // READ TRIP HISTORY
 // =============================================================================
 
+async function openHistoryDropdown() {
+  const dropdown = document.getElementById('dropdown');
+  const arrow = document.getElementById('arrow');
+  
+
+  // Toggle closed if already open
+  if (dropdown.classList.contains('open')) {
+    dropdown.classList.remove('open');
+    arrow.classList.remove('open');
+    return;
+  }
+
+  // Show loading state while fetching
+  dropdown.innerHTML = `<div class="dropdown-option muted">Loading...</div>`;
+  dropdown.classList.add('open');
+  arrow.classList.add('open');
+
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/history', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+
+    if (!data.history || data.history.length === 0) {
+      dropdown.innerHTML = `<div class="dropdown-option muted">No history yet</div>`;
+      return;
+    }
+
+    dropdown.innerHTML = data.history.map(item => `
+      <div class="dropdown-option" onclick="selectHistory('${item.origin}', '${item.destination}')">
+        <div class="history-route">
+          <span class="history-origin">${item.origin}</span>
+          <span class="history-arrow">→</span>
+          <span class="history-dest">${item.destination}</span>
+        </div>
+        <div class="history-date">${formatDate(item.created_at)}</div>
+      </div>
+    `).join('');
+
+  } catch (err) {
+    dropdown.innerHTML = `<div class="dropdown-option muted">Failed to load history</div>`;
+    console.error("History error:", err);
+  }
+}
+
+function selectHistory(origin, destination) {
+  document.getElementById('origin-input').value = origin;
+  document.getElementById('destination-input').value = destination;
+
+  document.getElementById('dropdown').classList.remove('open');
+  document.getElementById('arrow').classList.remove('open');
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'short', year: 'numeric'
+  });
+}
+
+// Close when clicking outside
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('trigger').contains(e.target)) {
+    document.getElementById('dropdown').classList.remove('open');
+    document.getElementById('arrow').classList.remove('open');
+  }
+});
+
 function getTripHistory(){
   const data = localStorage.getItem(TRIP_HISTORY_KEY);
   return data ? JSON.parse(data) : [];
@@ -600,30 +669,30 @@ function renderTripHistory(){
   .join("");
 }
 
-renderTripHistory();
+// renderTripHistory();
 
-tripHistoryList?.addEventListener("click", (e) => {
-  const tripButton = e.target.closest(".trip-history-item");
-  if (!tripButton) return;
+// tripHistoryList?.addEventListener("click", (e) => {
+//   const tripButton = e.target.closest(".trip-history-item");
+//   if (!tripButton) return;
 
-  const trips = getTripHistory();
-  const trip = trips[tripButton.dataset.index];
+//   const trips = getTripHistory();
+//   const trip = trips[tripButton.dataset.index];
 
-  if (!trip) return;
+//   if (!trip) return;
 
-  pickupInput.value = trip.pickupLabel;
-  dropoffInput.value = trip.dropoffLabel;
+//   pickupInput.value = trip.pickupLabel;
+//   dropoffInput.value = trip.dropoffLabel;
 
-  pickupInput.dispatchEvent(new Event("input"));
-  dropoffInput.dispatchEvent(new Event("input"));
-});
+//   pickupInput.dispatchEvent(new Event("input"));
+//   dropoffInput.dispatchEvent(new Event("input"));
+// });
 
-document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
-  if (confirm("Clear recent trips?")){
-    localStorage.removeItem(TRIP_HISTORY_KEY);
-    renderTripHistory();
-  }
-});
+// document.getElementById("clearHistoryBtn")?.addEventListener("click", () => {
+//   if (confirm("Clear recent trips?")){
+//     localStorage.removeItem(TRIP_HISTORY_KEY);
+//     renderTripHistory();
+//   }
+// });
 
 function saveTripToHistory(trip){
   const trips = getTripHistory();

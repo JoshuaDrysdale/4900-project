@@ -32,62 +32,54 @@
   <div class="inputs-row">
 
     <!-- Pickup input -->
-<div class="autocomplete-container">
-  <div class="input-with-star">
-    <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
-    <button class="star-btn" id="pickupStarBtn" title="Saved locations">☆</button>
-  </div>
-  <button onclick="setPickup()">Confirm Pickup</button>
-  <ul id="pickupSuggestions" class="suggestions"></ul>
-  <!-- Saved locations popover -->
-  <div class="saved-popover" id="pickupPopover">
-    <div class="saved-popover-header">
-      <span>Saved Locations</span>
-      <button class="save-current-btn" id="pickupSaveCurrentBtn">+ Save current</button>
+    <div class="autocomplete-container">
+      <div class="input-with-star">
+        <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
+        <button class="star-btn" id="pickupStarBtn" title="Saved locations">☆</button>
+      </div>
+      <button onclick="setPickup()">Confirm Pickup</button>
+      <ul id="pickupSuggestions" class="suggestions"></ul>
+      <div class="saved-popover" id="pickupPopover">
+        <div class="saved-popover-header">
+          <span>Saved Locations</span>
+          <button class="save-current-btn" id="pickupSaveCurrentBtn">+ Save current</button>
+        </div>
+        <ul class="saved-popover-list" id="pickupSavedList"></ul>
+        <p class="saved-popover-empty" id="pickupPopoverEmpty">No saved locations yet.</p>
+      </div>
     </div>
-    <ul class="saved-popover-list" id="pickupSavedList"></ul>
-    <p class="saved-popover-empty" id="pickupPopoverEmpty">No saved locations yet.</p>
-  </div>
-</div>
 
-<!-- Swap button — reverses pickup and dropoff -->
-<button id="swapLocations">⇅ Swap</button>
+    <!-- Swap button -->
+    <button id="swapLocations">⇅ Swap</button>
 
-<!-- Dropoff input -->
-<div class="autocomplete-container">
-  <div class="input-with-star">
-    <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
-    <button class="star-btn" id="dropoffStarBtn" title="Saved locations">☆</button>
-  </div>
-  <button onclick="setDropoff()">Confirm Dropoff</button>
-  <ul id="dropoffSuggestions" class="suggestions"></ul>
-  <!-- Saved locations popover -->
-  <div class="saved-popover" id="dropoffPopover">
-    <div class="saved-popover-header">
-      <span>Saved Locations</span>
-      <button class="save-current-btn" id="dropoffSaveCurrentBtn">+ Save current</button>
+    <!-- Dropoff input -->
+    <div class="autocomplete-container">
+      <div class="input-with-star">
+        <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
+        <button class="star-btn" id="dropoffStarBtn" title="Saved locations">☆</button>
+      </div>
+      <button onclick="setDropoff()">Confirm Dropoff</button>
+      <ul id="dropoffSuggestions" class="suggestions"></ul>
+      <div class="saved-popover" id="dropoffPopover">
+        <div class="saved-popover-header">
+          <span>Saved Locations</span>
+          <button class="save-current-btn" id="dropoffSaveCurrentBtn">+ Save current</button>
+        </div>
+        <ul class="saved-popover-list" id="dropoffSavedList"></ul>
+        <p class="saved-popover-empty" id="dropoffPopoverEmpty">No saved locations yet.</p>
+      </div>
     </div>
-    <ul class="saved-popover-list" id="dropoffSavedList"></ul>
-    <p class="saved-popover-empty" id="dropoffPopoverEmpty">No saved locations yet.</p>
+
   </div>
+
+  <!-- HISTORY DROPDOWN -->
+  <div class="dropdown-trigger" id="trigger" onclick="openHistoryDropdown()">
+    <span id="selected-label">Recent routes</span>
+    <span id="arrow" class="arrow">▼</span>
+  </div>
+  <div class="dropdown-menu" id="dropdown"></div>
+
 </div>
-
-
-  </div>
-</div>
-
-<!-- Recent trip history -->
- <div class ="trip-history-panel">
-  <div class="trip-history-header">
-    <h3>Recent Trips</h3>
-  </div>
-
-  <button id="clearHistoryBtn">Clear History</button>
-  
-  <div id="tripHistoryList" class="trip-history-list">
-    <p class="trip-history-empty">No recent trips.</p>
-  </div>
- </div> 
 
 
 <!-- Reset button — clears all markers and the drawn route -->
