@@ -9,68 +9,80 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="../css/style.css"/>
     <title>RHA</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">  </head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>"> 
+   </head>
 <body>
 
-<div class="mapBranding">
-    <span class="mapAppName">🚗 RHA</span>
-    <span class="mapTagline">Find your best ride</span>
-</div>
+<div class="outer-container">
 
-<!-- =========================================================================
-     MODE TOGGLE — switches between typing an address and clicking the map
-     ========================================================================= -->
-<div class="mode-controls">
-  <button id="addressModeBtn" class="mode-btn active">✏️ Enter Address</button>
-  <button id="mapModeBtn"     class="mode-btn">🗺 Select on Map</button>
-</div>
+  <div class="top-bar">
 
-<!-- =========================================================================
-     SEARCH PANEL — pickup / dropoff address inputs with autocomplete
-     ========================================================================= -->
-<div class="search-container">
-  <div class="inputs-row">
-
-    <!-- Pickup input -->
-    <div class="autocomplete-container">
-      <div class="input-with-star">
-        <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
-        <button class="star-btn" id="pickupStarBtn" title="Saved locations">☆</button>
-      </div>
-      <button onclick="setPickup()">Confirm Pickup</button>
-      <ul id="pickupSuggestions" class="suggestions"></ul>
-      <div class="saved-popover" id="pickupPopover">
-        <div class="saved-popover-header">
-          <span>Saved Locations</span>
-          <button class="save-current-btn" id="pickupSaveCurrentBtn">+ Save current</button>
-        </div>
-        <ul class="saved-popover-list" id="pickupSavedList"></ul>
-        <p class="saved-popover-empty" id="pickupPopoverEmpty">No saved locations yet.</p>
-      </div>
+    <div class="top-bar-left">
+      <span class="mapAppName">🚗 RHA</span>
+      <span class="mapTagline">Find your best ride</span>
     </div>
 
-    <!-- Swap button -->
-    <button id="swapLocations">⇅ Swap</button>
+    <!-- =========================================================================
+         TOP BAR CENTER — mode toggle + search panel
+         ========================================================================= -->
+    <div class="top-bar-center">
 
-    <!-- Dropoff input -->
-    <div class="autocomplete-container">
-      <div class="input-with-star">
-        <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
-        <button class="star-btn" id="dropoffStarBtn" title="Saved locations">☆</button>
+      <!-- MODE TOGGLE — switches between typing an address and clicking the map -->
+      <div class="mode-controls">
+        <button id="addressModeBtn" class="mode-btn active">✏️ Enter Address</button>
+        <button id="mapModeBtn" class="mode-btn">🗺 Select on Map</button>
       </div>
-      <button onclick="setDropoff()">Confirm Dropoff</button>
-      <ul id="dropoffSuggestions" class="suggestions"></ul>
-      <div class="saved-popover" id="dropoffPopover">
-        <div class="saved-popover-header">
-          <span>Saved Locations</span>
-          <button class="save-current-btn" id="dropoffSaveCurrentBtn">+ Save current</button>
-        </div>
-        <ul class="saved-popover-list" id="dropoffSavedList"></ul>
-        <p class="saved-popover-empty" id="dropoffPopoverEmpty">No saved locations yet.</p>
-      </div>
+
+      <!-- SEARCH PANEL — pickup / dropoff address inputs with autocomplete -->
+      <div class="search-container">
+        <div class="inputs-row">
+
+          <!-- Pickup input -->
+              <div class="autocomplete-container">
+                <div class="input-with-star">
+                  <input id="pickupInput" placeholder="Pickup address" autocomplete="off">
+                  <button class="star-btn" id="pickupStarBtn" title="Saved locations">☆</button>
+                </div>
+                <button onclick="setPickup()">Confirm Pickup</button>
+                <ul id="pickupSuggestions" class="suggestions"></ul>
+                   <!-- Saved locations popover -->
+                    <div class="saved-popover" id="pickupPopover">
+                  <div class="saved-popover-header">
+                    <span>Saved Locations</span>
+                    <button class="save-current-btn" id="pickupSaveCurrentBtn">+ Save current</button>
+                  </div>
+                  <ul class="saved-popover-list" id="pickupSavedList"></ul>
+                  <p class="saved-popover-empty" id="pickupPopoverEmpty">No saved locations yet.</p>
+                </div>
+              </div>
+
+          <!-- Swap button — reverses pickup and dropoff -->
+          <button id="swapLocations">⇅ Swap</button>
+
+          <!-- Dropoff input -->
+          <div class="autocomplete-container">
+            <div class="input-with-star">
+              <input id="dropoffInput" placeholder="Dropoff address" autocomplete="off">
+              <button class="star-btn" id="dropoffStarBtn" title="Saved locations">☆</button>
+            </div>
+            <button onclick="setDropoff()">Confirm Dropoff</button>
+            <ul id="dropoffSuggestions" class="suggestions"></ul>
+            <!-- Saved locations popover -->
+            <div class="saved-popover" id="dropoffPopover">
+              <div class="saved-popover-header">
+                <span>Saved Locations</span>
+                <button class="save-current-btn" id="dropoffSaveCurrentBtn">+ Save current</button>
+              </div>
+              <ul class="saved-popover-list" id="dropoffSavedList"></ul>
+              <p class="saved-popover-empty" id="dropoffPopoverEmpty">No saved locations yet.</p>
+            </div>
+          </div>
+          <!-- Reset button — clears all markers and the drawn route -->
+          <button id="resetBtn">Clear Trip</button>
     </div>
-
+    <!-- end inputs-row -->
   </div>
+  <!-- end search-container -->
 
   <!-- HISTORY DROPDOWN -->
   <div class="dropdown-trigger" id="trigger" onclick="openHistoryDropdown()">
@@ -78,26 +90,40 @@
     <span id="arrow" class="arrow">▼</span>
   </div>
   <div class="dropdown-menu" id="dropdown"></div>
+</div>
+    <!-- end top-bar-center -->
+
+
+
+    <div class="top-bar-right">
+      <!-- Recenter / My Location button -->
+      <button id="recenterBtn" title="My Location">📍</button>
+      <button id="settingsBtn">⚙️</button>
+      <button id="profileBtn">👤</button>
+      <!--<button id="darkModeBtn" title="Toggle dark mode">🌙</button>-->
+    </div>
+
+  </div>
+  <!-- end top-bar -->
+   
+  <!-- MAP WRAPPER -->
+  <div class="map-wrapper">
+    <div id="map"></div>
+
+    <div id="loadingIndicator" style="display:none;">
+      <div class="spinner"></div>
+      <p>Finding route...</p>
+    </div>
+  </div>
+  <!-- end map-wrapper -->
+
+  <!-- Tab to show the rideshare providers comparisons -->
+  <div id="comparisonTab"></div>
 
 </div>
+<!-- end outer-container -->
 
-
-<!-- Reset button — clears all markers and the drawn route -->
-<button id="resetBtn">Clear Trip</button>
-
-<!-- Recenter / My Location button -->
-<button id="recenterBtn" title="My Location">📍</button>
-
-<button id="settingsBtn">⚙️</button>
-<button id="profileBtn">👤</button>
-<!--<button id="darkModeBtn" title="Toggle dark mode">🌙</button>  -->
-
-<div id="loadingIndicator" style="display:none;">
-    <div class="spinner"></div>
-    <p>Finding route...</p>
-</div>
-
-<!-- Save Location Modal -->
+<!-- Save Location Modal — outside outer-container so it overlays everything -->
 <div id="saveLocationModal" class="slm-overlay">
   <div class="slm-card">
     <h3 class="slm-title">Save Location</h3>
@@ -107,16 +133,13 @@
     <p class="slm-error" id="slmError"></p>
     <div class="slm-btns">
       <button class="slm-cancel" id="slmCancel">Cancel</button>
-      <button class="slm-save"   id="slmSave">Save</button>
+      <button class="slm-save" id="slmSave">Save</button>
     </div>
   </div>
 </div>
 
-<!--Tab to show the rideshare provoders comparisons-->
-<div id="comparisonTab"> Lyft information to be added here</div>
+<!--<button id="darkModeBtn" title="Toggle dark mode">🌙</button>-->
 
-
-<div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="../js/map.js"></script>
