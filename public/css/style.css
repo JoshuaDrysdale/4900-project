@@ -43,19 +43,103 @@ body.dark {
 }
 
 /* =============================================================================
-   BASE & LAYOUT
+      BASE & LAYOUT-OUTER CONTAINER
    ============================================================================= */
-
 html, body {
   height: 100%;
   margin: 0;
-  background-color: var(--bg);
-  transition: background-color 0.3s ease;
+  padding: 0;
 }
 
 body {
   display: flex;
   flex-direction: column;
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 16px;
+  gap: 12px;
+  background: var(--surface);
+  box-sizing: border-box;
+}
+body.dark .outer-container {
+  background: var(--surface);
+}
+
+/* =============================================================================
+   TOP BAR
+   ============================================================================= */
+.top-bar {
+  display: flex;
+  align-items: center;
+  max-width: fit-content;
+  gap: 12px;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.top-bar-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 80px;
+}
+
+.top-bar-center {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+
+.top-bar-right {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* =============================================================================
+   MAP WRAPPER
+   ============================================================================= */
+.map-wrapper {
+  height: 1200px;
+  position: relative;
+  margin-top: 140px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* =============================================================================
+   BOTTOM TAB
+   ============================================================================= */
+#comparisonTab {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  transform: none;
+  border-radius: 12px;
+  display: none;
+}
+
+#comparisonTab.show {
+  display: flex;
 }
 /* =============================================================================
    MAP PAGE BRANDING
@@ -101,7 +185,7 @@ body {
    ============================================================================= */
 .mode-controls {
   position: absolute;
-  top: 10px;
+  top: 15px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -164,7 +248,7 @@ body {
    ============================================================================= */
 .search-container {
   position: absolute;
-  top: 60px;
+  top: 65px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -199,7 +283,7 @@ input {
 
 .dropdown-trigger {
   position: absolute;
-  top: calc(100% + 4px);
+  top: 199px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -644,28 +728,27 @@ input {
    BUTTONS
    ============================================================================= */
 #resetBtn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   padding: 6px 10px;
   font-size: 13px;
   background: #ef4444;
+  white-space: nowrap;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  z-index: 1000;
+ 
 }
 
 #recenterBtn {
   position: absolute;
-  top: 175px;
+  top: 320px;
   right: 10px;
   width: 45px;
   height: 45px;
   background: var(--surface);
-  border: none;
-  border-radius: 6px;
+    padding: 6px 10px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   box-shadow: 0 2px 6px var(--shadow);
@@ -677,14 +760,15 @@ input {
 
 #settingsBtn {
   position: absolute;
-  top: 224px;
-  right: 10px;
-  width: 45px;
-  height: 45px;
+  top: 10px;
+  right: 8px;
+  width: 50px;
+  height: 50px;
+    padding: 6px 10px;
   background: var(--surface);
-  border: none;
-  border-radius: 6px;
-  font-size: 18px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 22px;
   cursor: pointer;
   box-shadow: 0 2px 6px var(--shadow);
   z-index: 1000;
@@ -695,14 +779,14 @@ input {
 
 #profileBtn {
   position: absolute;
-  top: 273px;
-  right: 10px;
-  width: 45px;
-  height: 45px;
+  top: 10px;
+  right: 80px;
+  width: 50px;
+  height: 50px;
   background: var(--surface);
   border: none;
   border-radius: 6px;
-  font-size: 18px;
+  font-size: 22px;
   cursor: pointer;
   box-shadow: 0 2px 6px var(--shadow);
   z-index: 1000;
@@ -717,7 +801,7 @@ input {
   height: 40px;
   border-radius: 50%;
   border: none;
-  font-size: 16px;
+  font-size: 18px;
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
