@@ -257,7 +257,7 @@ body.dark .outer-container {
   padding: 12px;
   border-radius: 12px;
   box-shadow: 0 4px 15px var(--shadow);
-  z-index: 1000;
+  z-index: 2000;
   transition: background 0.3s;
 }
 
@@ -281,11 +281,18 @@ input {
   border: 1px solid var(--border2);
 }
 
-.dropdown-trigger {
+.dropdown-container {
   position: absolute;
   top: 199px;
   left: 50%;
   transform: translateX(-50%);
+  width: 100%;
+  max-width: 1000px;
+  z-index: 1000;
+}
+
+.dropdown-trigger {
+  position: relative;
   width: 100%;
   max-width: 1000px;
   background: var(--surface);
@@ -313,9 +320,8 @@ input {
 .dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(100% + 2px);
+  left: 0;
   width: 100%;
   max-width: 1000px;
   background: var(--surface);
@@ -453,7 +459,7 @@ input {
   list-style: none;
   margin: 0;
   padding: 0;
-  z-index: 2000;
+  z-index: 3000;
 }
 
 .suggestions li {
