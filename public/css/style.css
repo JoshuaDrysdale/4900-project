@@ -996,6 +996,16 @@ input {
   animation: pulseRed 2s ease-out infinite;
 }
 
+button {
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+button:active {
+  transform: scale(0.96);
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+
 .leaflet-popup-content-wrapper {
   border-radius: 10px !important;
   box-shadow: 0 4px 12px var(--shadow) !important;
