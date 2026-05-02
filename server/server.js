@@ -142,42 +142,43 @@ app.get("/autocomplete", async (req, res) => {
     }
 });
 
-// =============================================================================
-// // Geocode (address -> lat/lng) (address to point on map)
-// =============================================================================
+// // =============================================================================
+// // // Geocode (address -> lat/lng) (address to point on map)
+// // =============================================================================
 app.get("/api/geocode", async (req, res) => {
     const query = req.query.q;
     if (!query) return res.status(400).json({ error: "Missing query" });
-
     try {
-        const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`);
-        if (!response.ok) throw new Error(`Photon request failed with status ${response.status}`);
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=geojson&limit=5`,
+            { headers: { "User-Agent": "your-app-name" } }
+        );
+        if (!response.ok) throw new Error(`Nominatim request failed with status ${response.status}`);
         const data = await response.json();
         res.json(data);
     } catch (err) {
-        console.error("Photon geocode failed:", err);
+        console.error("Nominatim geocode failed:", err);
         res.status(500).json({ error: "Failed to fetch geocoding data" });
     }
 });
 
-// =============================================================================
-// Reverse Geocode (lat/lng -> address) (point on map to address)
-// =============================================================================
 app.get("/api/reverse", async (req, res) => {
     const { lat, lon } = req.query;
     if (!lat || !lon) return res.status(400).json({ error: "Missing lat/lon" });
-
     try {
-        const response = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lon}`);
-        if (!response.ok) throw new Error(`Photon reverse request failed with status ${response.status}`);
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=geojson`,
+            { headers: { "User-Agent": "your-app-name" } }
+        );
+        if (!response.ok) throw new Error(`Nominatim reverse request failed with status ${response.status}`);
         const data = await response.json();
+        console.log("Nominatim reverse response:", JSON.stringify(data));
         res.json(data);
     } catch (err) {
-        console.error("Photon reverse geocode failed:", err);
+        console.error("Nominatim reverse geocode failed:", err);
         res.status(500).json({ error: "Failed to fetch reverse geocoding data" });
     }
 });
-
 
 // =============================================================================
 // SIGNUP ENDPOINT
@@ -928,6 +929,50 @@ app.put("/update-user-db", verifyToken, async(req, res)=>{
   }
 
 })
+
+/////save trip to history
+
+app.post("/api/save-trip", verifyToken, async (req, res) => {
+  const { pickup_lat, pickup_lng, dropoff_lat, dropoff_lng } = req.body;
+  try {
+    const count = await pool.query(
+      "SELECT COUNT(*) FROM ride_history WHERE user_id = $1",
+      [req.user.id]
+    );
+
+    if (parseInt(count.rows[0].count) >= 5) {
+      await pool.query(
+        "DELETE FROM ride_history WHERE id = (SELECT id FROM ride_history WHERE user_id = $1 ORDER BY id ASC LIMIT 1)",
+        [req.user.id]
+      );
+    }
+
+    const result = await pool.query(
+      "INSERT INTO ride_history (user_id, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng) VALUES ($1, $2, $3, $4, $5) RETURNING id, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng",
+      [req.user.id, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("Save trip error:", err);
+    res.status(500).json({ error: "Failed to save trip" });
+  }
+});
+
+
+//get saved trips from db
+app.get("/api/history", verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng, created_at FROM ride_history WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5",
+      [req.user.id]
+    );
+    res.json({ history: result.rows });
+  } catch (err) {
+    console.error("History fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch history" });
+  }
+});
 
 // =============================================================================
 // UPDATE PASSWORD

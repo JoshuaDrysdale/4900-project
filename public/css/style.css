@@ -313,7 +313,7 @@ input {
 .dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 4px);
+  top: 254px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
