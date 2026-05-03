@@ -529,7 +529,8 @@ window.endMarker = L.marker([dropoff.lat, dropoff.lng], { icon: dropoffIcon }).a
 saveToHistory(pickup.lat, pickup.lng, dropoff.lat, dropoff.lng);
 
 map.fitBounds(window.currentRoute.getBounds(), {
-  padding: [80, 80],
+  paddingTopLeft: [80, 80],
+  paddingBottomRight: [80, 700],
   maxZoom: 14
 });
     console.log(`Route added! Distance: ${data.distanceMeters}m, ETA: ${data.estimatedMinutes} min, Traffic delay: ${data.trafficDelaySeconds}s`);
@@ -539,11 +540,10 @@ map.fitBounds(window.currentRoute.getBounds(), {
      console.error("Routing error:", err);
   const tab = document.getElementById("comparisonTab");
   tab.innerHTML = `
-    <div class="tab-stat">
-      <span class="tab-icon">⚠️</span>
-      <span class="tab-value" style="color:#ef4444; font-size:15px;">Could not find a route. Please try again.</span>
+    <div class="tab-error">
+      <span class="tab-error-msg">Could not find a route. Please try again.</span>
+      <button class="tab-retry-btn" id="retryBtn">Retry</button>
     </div>
-    <button id="retryBtn" class="unit-toggle-btn">Retry Route</button>
   `;
   tab.classList.add("show");;
     document.getElementById("retryBtn").addEventListener("click", () => {
@@ -910,66 +910,168 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function showBottomTab(data) {
-  const traffic = getTrafficLevel(data.trafficDelaySeconds || 0);
+  window._lastRouteData = data;
   const tab = document.getElementById("comparisonTab");
+  const traffic = getTrafficLevel(data.trafficDelaySeconds || 0);
 
-  const km = (data.distanceMeters / 1000).toFixed(1);
+  const km    = (data.distanceMeters / 1000).toFixed(1);
   const miles = (data.distanceMeters / 1609.34).toFixed(1);
+  const dist  = distanceUnit === "km" ? km : miles;
+  const mins  = Math.round(data.travelTimeSeconds / 60) || data.estimatedMinutes || "—";
+  const delay = Math.round((data.trafficDelaySeconds || 0) / 60);
+
   tab.innerHTML = `
     <div id="tabRouteInfo">
-      <div class="tab-stat">
-        <span class="tab-icon">📍</span>
-        <span class="tab-value" id="distanceValue">${distanceUnit === "km" ? km : miles}</span>
-        <span class="tab-unit" id="distanceUnit">${distanceUnit}</span>
+      <div class="route-stat">
+        <span class="route-stat-label">Distance</span>
+        <span class="route-stat-value" id="tabDistVal">${dist}<span class="route-stat-unit" id="tabDistUnit">${distanceUnit}</span></span>
       </div>
-      <div class="tab-divider"></div>
-      <div class="tab-stat">
-        <span class="tab-icon">⏱</span>
-        <span class="tab-value">${data.estimatedMinutes}</span>
-        <span class="tab-unit">min</span>
+      <div class="route-stat">
+        <span class="route-stat-label">ETA</span>
+        <span class="route-stat-value">${mins}<span class="route-stat-unit">min</span></span>
       </div>
-      <div class="tab-divider"></div>
-      <div class="tab-stat">
-        <span class="tab-dot" style="background:${traffic.color}"></span>
-        <span class="tab-value" style="color:${traffic.color}">${traffic.label}</span>
+      <div class="route-stat">
+        <span class="route-stat-label">Traffic</span>
+        <div class="traffic-badge">
+          <span class="traffic-dot" style="background:${traffic.color} !important; display:inline-block;"></span>
+          <span>${traffic.label}${delay > 0 ? " ~" + delay + "m" : ""}</span>
+        </div>
       </div>
-      <div class="tab-divider"></div>
-      <button id="unitToggleBtn" class="unit-toggle-btn">Switch to ${distanceUnit === "km" ? "mi" : "km"}</button>
+      <div class="unit-toggle">
+        <button class="unit-btn ${distanceUnit === "km" ? "active" : ""}" onclick="setUnit('km')">km</button>
+        <button class="unit-btn ${distanceUnit === "mi" ? "active" : ""}" onclick="setUnit('mi')">mi</button>
+      </div>
     </div>
-
     <div id="tabRideOptions">
-      <div class="ride-card">
-        <span class="ride-logo">⬛</span>
-        <div class="ride-info">
-          <div class="ride-name">Uber</div>
-          <div class="ride-eta">Coming soon</div>
+   <div class="rides-header">
+        <span class="rides-title">Compare rides</span>
+        <div class="sort-toggle">
+          <button class="sort-btn active" id="sortDefault" onclick="renderRideCards(window._lastEstimates, 'default')">Default</button>
+          <button class="sort-btn" id="sortAsc" onclick="renderRideCards(window._lastEstimates, 'asc')">$ Low</button>
+          <button class="sort-btn" id="sortDesc" onclick="renderRideCards(window._lastEstimates, 'desc')">$ High</button>
         </div>
-        <div class="ride-price">--</div>
       </div>
-      <div class="ride-card">
-        <span class="ride-logo">⬛</span>
-        <div class="ride-info">
-          <div class="ride-name">Lyft</div>
-          <div class="ride-eta">Coming soon</div>
+      <div id="rideCardsList">
+        <div class="ride-card">
+          <div class="ride-logo uber">U</div>
+          <div class="ride-info"><div class="ride-name">UberX</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
         </div>
-        <div class="ride-price">--</div>
+        <div class="ride-card">
+          <div class="ride-logo uber">U</div>
+          <div class="ride-info"><div class="ride-name">UberXL</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
+        </div>
+        <div class="ride-card">
+          <div class="ride-logo uber">U</div>
+          <div class="ride-info"><div class="ride-name">Uber Comfort</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
+        </div>
+        <div class="ride-card">
+          <div class="ride-logo uber">U</div>
+          <div class="ride-info"><div class="ride-name">Uber Black</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
+        </div>
+        <div class="ride-card">
+          <div class="ride-logo lyft">L</div>
+          <div class="ride-info"><div class="ride-name">Lyft</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
+        </div>
+        <div class="ride-card">
+          <div class="ride-logo lyft">L</div>
+          <div class="ride-info"><div class="ride-name">Lyft XL</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
+        </div>
+        <div class="ride-card">
+          <div class="ride-logo lyft">L</div>
+          <div class="ride-info"><div class="ride-name">Lyft Lux</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
+        </div>
+        <div class="ride-card">
+          <div class="ride-logo curb">C</div>
+          <div class="ride-info"><div class="ride-name">Curb</div><div class="ride-shimmer"></div></div>
+          <div class="ride-right"><span class="ride-price-pill">Loading...</span></div>
+        </div>
       </div>
     </div>
   `;
 
-   document.getElementById("unitToggleBtn").addEventListener("click", () => {
-    distanceUnit = distanceUnit === "km" ? "mi" : "km";
-    document.getElementById("distanceValue").textContent = distanceUnit === "km" ? km : miles;
-    document.getElementById("distanceUnit").textContent = distanceUnit;
-  document.getElementById("unitToggleBtn").textContent = `Switch to ${distanceUnit === "km" ? "mi" : "km"}`;  
-});
-
   tab.classList.add("show");
   document.body.classList.add("tab-open");
+
+  fetchEstimates(data);
+}
+
+async function fetchEstimates(data) {
+  try {
+    const res = await fetch(
+      `/api/estimates?distance_meters=${data.distanceMeters}&duration_seconds=${data.travelTimeSeconds || data.estimatedMinutes * 60}`,
+      { headers: { Authorization: `Bearer ${getToken()}` } }
+    );
+
+    const json = await res.json();
+    if (!res.ok || !json.estimates) throw new Error("No estimates");
+
+    window._lastEstimates = json.estimates;
+    renderRideCards(json.estimates, "default");
+
+    const subtitle = document.getElementById("ridesSubtitle");
+    if (subtitle) subtitle.textContent = "Estimates · prices may vary";
+
+  } catch (err) {
+    console.error("Estimates failed:", err);
+    const subtitle = document.getElementById("ridesSubtitle");
+    if (subtitle) subtitle.textContent = "Estimates unavailable";
+  }
+}
+
+function renderRideCards(estimates, order) {
+  const sorted = order === "asc"
+    ? [...estimates].sort((a, b) => a.lowEstimate - b.lowEstimate)
+    : order === "desc"
+    ? [...estimates].sort((a, b) => b.lowEstimate - a.lowEstimate)
+    : estimates; // default — original order from JSON (grouped by brand)
+
+  const cardsList = document.getElementById("rideCardsList");
+  if (!cardsList) return;
+
+  const ascBtn  = document.getElementById("sortAsc");
+  const descBtn = document.getElementById("sortDesc");
+  const defBtn  = document.getElementById("sortDefault");
+  if (ascBtn && descBtn && defBtn) {
+    defBtn.classList.toggle("active", order === "default");
+    ascBtn.classList.toggle("active", order === "asc");
+    descBtn.classList.toggle("active", order === "desc");
+  }
+
+cardsList.innerHTML = sorted.map((ride, i) => `
+  <div class="ride-card ${order === "asc" && i === 0 ? "ride-card-best" : ""}" 
+       style="animation-delay: ${i * 100}ms">
+    <div class="ride-logo ${ride.brand}">${ride.logo}</div>
+    <div class="ride-info">
+      <div class="ride-name">${ride.name}</div>
+      ${ride.surge
+        ? `<div class="ride-surge">⚡ ${ride.surge}x surge</div>`
+        : `<div class="ride-soon-label">Estimate only</div>`}
+    </div>
+    <div class="ride-right">
+      <span class="ride-price-pill">$${ride.lowEstimate}–$${ride.highEstimate}</span>
+      ${order === "asc" && i === 0 ? `<span class="ride-best-label">Best value</span>` : ""}
+    </div>
+  </div>
+`).join("");
+}
+function setUnit(u) {
+  distanceUnit = u;
+  localStorage.setItem("rha_distance_unit", u);
+  if (window._lastRouteData && document.getElementById("comparisonTab").classList.contains("show")) {
+    showBottomTab(window._lastRouteData);
+  }
 }
 async function hideBottomTab(){
   const tab = document.getElementById("comparisonTab");
   tab.classList.remove("show");
+  tab.innerHTML = "";
   document.body.classList.remove("tab-open");
 
 }

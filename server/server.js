@@ -6,6 +6,7 @@ const pool = require("./db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
+const rides = require("../data/exampleRides.json");
 
 const app = express();
 app.use(express.json({ limit: "10kb" }));
@@ -1023,6 +1024,58 @@ app.put("/update-password", verifyToken, async (req, res) => {
   }
 });
 
+// =============================================================================
+// RIDE PRICE ESTIMATES
+// =============================================================================
+
+app.get("/api/estimates", verifyToken, async (req, res) => {
+  const { distance_meters, duration_seconds } = req.query;
+
+  if (!distance_meters || !duration_seconds) {
+    return res.status(400).json({ error: "Missing distance or duration" });
+  }
+
+  const miles = parseFloat(distance_meters) / 1609.34;
+  const minutes = parseFloat(duration_seconds) / 60;
+
+  // Determine surge per brand — 10% chance each brand is surging
+  const brandSurge = {};
+  const brands = [...new Set(Object.values(rides).map(r => r.brand))];
+  brands.forEach(brand => {
+    if (Math.random() < 0.10) {
+      brandSurge[brand] = parseFloat((1.2 + Math.random() * 0.6).toFixed(1));
+    }
+  });
+
+  const estimates = Object.entries(rides).map(([key, ride]) => {
+    let fare = ride.baseFare + (ride.perMile * miles) + (ride.perMinute * minutes) + ride.serviceFee;
+
+    fare = Math.max(fare, ride.minimumFare);
+
+    // ±12% variance
+    const variance = 1 + (Math.random() * 0.24 - 0.12);
+    fare = fare * variance;
+
+    // Apply brand surge if active
+    const surge = brandSurge[ride.brand] || null;
+    if (surge) fare = fare * surge;
+
+    const low  = Math.max(ride.minimumFare, fare * 0.92);
+    const high = fare * 1.08;
+
+    return {
+      key,
+      name: ride.name,
+      logo: ride.logo,
+      brand: ride.brand,
+      lowEstimate:  parseFloat(low.toFixed(2)),
+      highEstimate: parseFloat(high.toFixed(2)),
+      surge
+    };
+  });
+
+  res.json({ estimates });
+});
 // 404 handler — must be last
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "../public/pages/404.html"));
