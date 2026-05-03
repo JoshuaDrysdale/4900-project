@@ -59,7 +59,8 @@ body {
 .outer-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   padding: 16px;
   gap: 12px;
   background: var(--surface);
@@ -123,23 +124,6 @@ body.dark .outer-container {
 #map {
   width: 100%;
   height: 100%;
-}
-
-/* =============================================================================
-   BOTTOM TAB
-   ============================================================================= */
-#comparisonTab {
-  position: relative;
-  bottom: auto;
-  left: auto;
-  right: auto;
-  transform: none;
-  border-radius: 12px;
-  display: none;
-}
-
-#comparisonTab.show {
-  display: flex;
 }
 /* =============================================================================
    MAP PAGE BRANDING
@@ -908,62 +892,20 @@ input {
 #geoRecenterOnly { background: var(--surface2); color: var(--text2); }
 
 #comparisonTab {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  display: flex;
+  display: none;
   flex-direction: column;
-  align-items: stretch;
   background: var(--surface);
-  border-radius: 16px 16px 0 0;
-  box-shadow: 0 -4px 20px var(--shadow);
-  font-family: inherit;
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
+  border-radius: 16px;
+  border: 0.5px solid var(--border);
+  box-shadow: 0 -2px 16px var(--shadow);
+  overflow: visible;
+  height: auto;
+
 }
 
 #comparisonTab.show {
-  transform: translateY(0);
-}
-
-.tab-stat {
   display: flex;
-  align-items: center;
-  gap: 4px;
 }
-
-.tab-icon {
-  font-size: 14px;
-}
-
-.tab-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.tab-unit {
-  font-size: 12px;
-  color: var(--text3);
-  margin-top: 4px;
-}
-
-.tab-divider {
-  width: 1px;
-  height: 28px;
-  background: var(--border);
-}
-
-.tab-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 4px;
-}
-
 
 .pulse-marker {
   width: 16px;
@@ -1092,16 +1034,6 @@ button:active {
     font-size: 14px;
   }
 
-  /* Bottom tab on mobile */
-  #comparisonTab {
-    padding: 12px 16px;
-    min-height: 180px;
-    gap: 8px;
-  }
-
-  .tab-value { font-size: 15px; }
-  .tab-divider { height: 20px; }
-
   /* Trip history panel */
   .trip-history-panel {
     top: auto;
@@ -1117,71 +1049,52 @@ button:active {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--border);
-  box-sizing: border-box;
+  gap: 20px;
+  padding: 18px 24px;
+  border-bottom: 0.5px solid var(--border);
 }
 
 #tabRideOptions {
   display: flex;
-  gap: 12px;
-  padding: 12px 24px;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-x: auto;
+  gap: 8px;
+  flex-direction: column;
+  padding: 12px 16px 20px;
+
 }
 
 .ride-card {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px 16px;
-  flex: 1;
-  min-width: 140px;
-  opacity: 0.6;
+  border: 0.5px solid var(--border);
+  border-radius: px;
+  padding: 11px 14px;
 }
 
 .ride-logo {
-  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #fff;
 }
 
 .ride-info {
   flex: 1;
+  min-width: 0;
 }
 
 .ride-name {
   font-weight: 700;
   font-size: 14px;
   color: var(--text);
-}
-
-.ride-eta {
-  font-size: 11px;
-  color: var(--text3);
-  margin-top: 2px;
-}
-
-.ride-price {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text3);
-}
-.retry-btn {
-  background: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: opacity 0.15s;
 }
 
 .retry-btn:hover { opacity: 0.85; }
@@ -1191,4 +1104,257 @@ button:active {
   color: var(--accent);
 }
 
+.ride-logo.uber { background: #000; }
+.ride-logo.lyft { background: #EA0B8C; }
+.ride-logo.curb { background: #f59e0b; color: #fff; }
+.ride-surge { font-size: 11px; color: #f59e0b; font-weight: 600; margin-top: 2px; }
 
+.ride-shimmer {
+  height: 9px;
+  width: 72px;
+  border-radius: 5px;
+  background: var(--border);
+  margin-top: 4px;
+  animation: tab-shimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes tab-shimmer {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
+
+.ride-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.ride-price-pill {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text4);
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.ride-soon-label {
+  font-size: 11px;
+  color: var(--text4);
+}
+
+.route-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  padding: 0 24px;
+  border-right: 0.5px solid var(--border);
+}
+.route-stat:first-child { padding-left: 0; }
+.route-stat:last-child  { border-right: none; padding-right: 0; }
+
+.route-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.route-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.route-stat-unit {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text2);
+  margin-left: 2px;
+}
+
+.traffic-badge {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+}
+
+.traffic-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.rides-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.rides-subtitle {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.ride-price-pill {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.ride-soon-label {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.unit-btn {
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.unit-toggle {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  display: flex;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.unit-btn.active {
+  background: var(--brand);
+  color: #fff;
+  border-radius: 7px;
+}
+
+.rides-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rides-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.rides-subtitle {
+  font-size: 11px;
+  color: var(--text4);
+}
+
+.tab-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.tab-error-msg {
+  flex: 1;
+  font-size: 14px;
+  color: #ef4444;
+}
+
+.tab-retry-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.tab-retry-btn:hover { opacity: 0.85; }
+
+.route-stat-value { color: var(--text) !important; }
+.route-stat-label { color: var(--text3) !important; }
+.route-stat-unit  { color: var(--text) !important; }
+.traffic-badge    { color: var(--text) !important; }
+.ride-name        { color: var(--text) !important; }
+.rides-title      { color: var(--text3) !important; }
+.rides-subtitle   { color: var(--text) !important; }
+.ride-price-pill  { color: var(--text) !important; background: var(--surface2) !important; border-color: var(--border) !important; }
+.ride-soon-label  { color: var(--text) !important; }
+.unit-btn         { color: var(--text) !important; }
+
+.sort-toggle {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sort-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sort-btn.active {
+  background: var(--brand);
+  color: #fff;
+  border-radius: 7px;
+}
+
+.ride-card-best {
+  border-color: var(--accent) !important;
+  background: var(--hover2);
+}
+
+.ride-best-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ride-card {
+  animation: slideUp 0.3s ease forwards;
+  opacity: 0;
+}

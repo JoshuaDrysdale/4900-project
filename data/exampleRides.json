@@ -1,8 +1,82 @@
-[
-  {"provider": "Uber", "type": "UberX", "price": "$12–$15", "eta": "3 min", "logo": "🚗"},
-  {"provider": "Uber", "type": "Uber Comfort", "price": "$18–$22", "eta": "5 min", "logo": "🚙"},
-  {"provider": "Uber", "type": "Uber XL", "price": "$24–$28", "eta": "8 min", "logo": "🚐"},
-  {"provider": "Lyft", "type": "Lyft Standard", "price": "$11–$14", "eta": "4 min", "logo": "🚗"},
-  {"provider": "Lyft", "type": "Lyft XL", "price": "$22–$26", "eta": "6 min", "logo": "🚐"},
-  {"provider": "Lyft", "type": "Lyft Lux", "price": "$30–$35", "eta": "10 min", "logo": "🚘"}
-]
+{
+  "uberx": {
+    "name": "UberX",
+    "logo": "U",
+    "brand": "uber",
+    "baseFare": 2.55,
+    "perMile": 1.75,
+    "perMinute": 0.35,
+    "minimumFare": 7.00,
+    "serviceFee": 2.75
+  },
+  "uberxl": {
+    "name": "UberXL",
+    "logo": "U",
+    "brand": "uber",
+    "baseFare": 3.85,
+    "perMile": 2.85,
+    "perMinute": 0.50,
+    "minimumFare": 10.00,
+    "serviceFee": 2.75
+  },
+  "uber_comfort": {
+    "name": "Uber Comfort",
+    "logo": "U",
+    "brand": "uber",
+    "baseFare": 3.50,
+    "perMile": 2.20,
+    "perMinute": 0.40,
+    "minimumFare": 9.00,
+    "serviceFee": 2.75
+  },
+  "uber_black": {
+    "name": "Uber Black",
+    "logo": "U",
+    "brand": "uber",
+    "baseFare": 7.00,
+    "perMile": 3.75,
+    "perMinute": 0.65,
+    "minimumFare": 15.00,
+    "serviceFee": 2.75
+  },
+  "lyft": {
+    "name": "Lyft",
+    "logo": "L",
+    "brand": "lyft",
+    "baseFare": 2.07,
+    "perMile": 1.46,
+    "perMinute": 0.30,
+    "minimumFare": 6.00,
+    "serviceFee": 2.50
+  },
+  "lyft_xl": {
+    "name": "Lyft XL",
+    "logo": "L",
+    "brand": "lyft",
+    "baseFare": 3.50,
+    "perMile": 2.50,
+    "perMinute": 0.45,
+    "minimumFare": 9.00,
+    "serviceFee": 2.50
+  },
+  "lyft_lux": {
+    "name": "Lyft Lux",
+    "logo": "L",
+    "brand": "lyft",
+    "baseFare": 5.00,
+    "perMile": 3.20,
+    "perMinute": 0.55,
+    "minimumFare": 12.00,
+    "serviceFee": 2.50
+  },
+  "curb": {
+    "name": "Curb",
+    "logo": "C",
+    "brand": "curb",
+    "baseFare": 3.00,
+    "perMile": 3.50,
+    "perMinute": 0.50,
+    "minimumFare": 8.00,
+    "serviceFee": 1.00
+  }
+}
