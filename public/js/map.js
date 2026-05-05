@@ -202,6 +202,18 @@ dropoffInput.dispatchEvent(new Event("input"));
   if (trafficEl) trafficEl.remove();
   hideBottomTab();
 
+  renderTripHistory();
+
+  const tab = document.getElementById("comparisonTab");
+  if(tab){
+    tab.innerHTML = `
+      <div class="tab-stat">
+        <span class="tab-icon">ℹ️</span>
+        <span class="tab-value">Enter pickup and dropoff to see route info.</span>
+      </div>
+    `;
+  }
+
 });
 document.getElementById("addressModeBtn").addEventListener("click", () => {
   inputMode = "address";
