@@ -202,6 +202,18 @@ dropoffInput.dispatchEvent(new Event("input"));
   if (trafficEl) trafficEl.remove();
   hideBottomTab();
 
+  renderTripHistory();
+
+  const tab = document.getElementById("comparisonTab");
+  if(tab){
+    tab.innerHTML = `
+      <div class="tab-stat">
+        <span class="tab-icon">ℹ️</span>
+        <span class="tab-value">Enter pickup and dropoff to see route info.</span>
+      </div>
+    `;
+  }
+
 });
 document.getElementById("addressModeBtn").addEventListener("click", () => {
   inputMode = "address";
@@ -493,6 +505,17 @@ async function autocomplete(e, suggestionId) {
 //tomtom draw route
 async function tomRoute(pickup, dropoff) {
 
+const tab = document.getElementById("comparisonTab");
+if (tab) {
+  tab.innerHTML = `
+    <div class="tab-stat">
+      <span class="tab-icon">⏳</span>
+      <span class="tab-value">Calculating route...</span>
+      </div>
+  `;
+  tab.classList.add("show");
+}
+
 
   document.getElementById("loadingIndicator").style.display = "flex";
   try {
@@ -545,8 +568,8 @@ map.fitBounds(window.currentRoute.getBounds(), {
       <button class="tab-retry-btn" id="retryBtn">Retry</button>
     </div>
   `;
-  tab.classList.add("show");;
-    document.getElementById("retryBtn").addEventListener("click", () => {
+  tab.classList.add("show");
+    document.getElementById("retryBtn")?.addEventListener("click", () => {
     if (pickup && dropoff) tomRoute(pickup, dropoff);
   });
   }
