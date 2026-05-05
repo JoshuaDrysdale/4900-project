@@ -545,8 +545,8 @@ map.fitBounds(window.currentRoute.getBounds(), {
       <button class="tab-retry-btn" id="retryBtn">Retry</button>
     </div>
   `;
-  tab.classList.add("show");;
-    document.getElementById("retryBtn").addEventListener("click", () => {
+  tab.classList.add("show");
+    document.getElementById("retryBtn")?.addEventListener("click", () => {
     if (pickup && dropoff) tomRoute(pickup, dropoff);
   });
   }
