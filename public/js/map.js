@@ -201,19 +201,7 @@ dropoffInput.dispatchEvent(new Event("input"));
   const trafficEl = document.getElementById("trafficIndicator");
   if (trafficEl) trafficEl.remove();
   hideBottomTab();
-
-  renderTripHistory();
-
-  const tab = document.getElementById("comparisonTab");
-  if(tab){
-    tab.innerHTML = `
-      <div class="tab-stat">
-        <span class="tab-icon">ℹ️</span>
-        <span class="tab-value">Enter pickup and dropoff to see route info.</span>
-      </div>
-    `;
-  }
-
+  
 });
 document.getElementById("addressModeBtn").addEventListener("click", () => {
   inputMode = "address";
@@ -504,19 +492,6 @@ async function autocomplete(e, suggestionId) {
 
 //tomtom draw route
 async function tomRoute(pickup, dropoff) {
-
-const tab = document.getElementById("comparisonTab");
-if (tab) {
-  tab.innerHTML = `
-    <div class="tab-stat">
-      <span class="tab-icon">⏳</span>
-      <span class="tab-value">Calculating route...</span>
-      </div>
-  `;
-  tab.classList.add("show");
-}
-
-
   document.getElementById("loadingIndicator").style.display = "flex";
   try {
     const res = await fetch("/route-time", {
